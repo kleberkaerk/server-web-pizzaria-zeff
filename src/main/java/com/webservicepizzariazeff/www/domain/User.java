@@ -4,12 +4,15 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "username", unique = true)
     private String username;
@@ -23,11 +26,16 @@ public class User {
     protected User() {
     }
 
-    private User(Long id, String username, String password, String authorities) {
+    private User(Long id, String name, String username, String password, String authorities) {
         this.id = id;
+        this.name = name;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getUsername() {
@@ -42,6 +50,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", authorities='" + authorities + '\'' +
@@ -63,6 +72,7 @@ public class User {
 
     public static final class UserBuilder {
         private Long id;
+        private String name;
         private String username;
         private String password;
         private String authorities;
@@ -76,6 +86,11 @@ public class User {
 
         public UserBuilder id(Long id) {
             this.id = id;
+            return this;
+        }
+
+        public UserBuilder name(String name) {
+            this.name = name;
             return this;
         }
 
@@ -95,7 +110,7 @@ public class User {
         }
 
         public User build() {
-            return new User(id, username, password, authorities);
+            return new User(id, name, username, password, authorities);
         }
     }
 }

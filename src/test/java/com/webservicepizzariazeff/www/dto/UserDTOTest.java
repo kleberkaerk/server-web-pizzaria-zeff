@@ -12,6 +12,7 @@ class UserDTOTest {
     void setUserDTO() {
 
         this.userDTO = UserDTO.UserDTOBuilder.builder()
+                .name("name")
                 .password("password")
                 .username("username")
                 .build();
@@ -32,9 +33,9 @@ class UserDTOTest {
     }
 
     @Test
-    void testToString() {
+    void getName(){
 
-        Assertions.assertThat(this.userDTO)
-                .hasToString("UserDTO{username='username', password='password'}");
+        Assertions.assertThat(this.userDTO.getName())
+                .isEqualTo("name");
     }
 }

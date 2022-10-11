@@ -17,6 +17,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/users/authorization").permitAll()
                 .antMatchers("/users/register").not().authenticated()
+                .antMatchers("/products**/**").permitAll()
                 .anyRequest()
                 .denyAll();
 

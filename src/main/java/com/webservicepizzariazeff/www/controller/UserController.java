@@ -22,7 +22,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "authorization", method = RequestMethod.HEAD)
-    public ResponseEntity<Void> authorizationForRegistration (){
+    public ResponseEntity<Void> authorizationXSRF (){
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

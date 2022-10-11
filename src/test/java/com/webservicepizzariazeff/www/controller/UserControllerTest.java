@@ -32,15 +32,15 @@ class UserControllerTest {
     }
 
     @Test
-    void authorizationForRegistration_returnsAResponseEntityWithAStatusCodeOf200AndACookieWithCsrfToken_wheneverYouReceiveARequest() {
+    void authorizationXSRF_returnsAResponseEntityWithAStatusCodeOf200AndACookieWithCsrfToken_wheneverYouReceiveARequest() {
 
-        Assertions.assertThat(this.userController.authorizationForRegistration())
+        Assertions.assertThat(this.userController.authorizationXSRF())
                 .isNotNull();
 
-        Assertions.assertThat(this.userController.authorizationForRegistration().getBody())
+        Assertions.assertThat(this.userController.authorizationXSRF().getBody())
                 .isNull();
 
-        Assertions.assertThat(this.userController.authorizationForRegistration().getStatusCode())
+        Assertions.assertThat(this.userController.authorizationXSRF().getStatusCode())
                 .isEqualTo(HttpStatus.OK);
     }
 

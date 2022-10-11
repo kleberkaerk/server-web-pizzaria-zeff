@@ -5,13 +5,23 @@ import javax.validation.constraints.NotEmpty;
 public class UserDTO {
 
     @NotEmpty()
+    private final String name;
+
+    @NotEmpty()
     private final String username;
+
     @NotEmpty()
     private final String password;
 
-    private UserDTO(String username, String password) {
+    private UserDTO(String name, String username, String password) {
+
+        this.name = name;
         this.username = username;
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getUsername() {
@@ -22,23 +32,21 @@ public class UserDTO {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
-
     public static final class UserDTOBuilder {
-        private String username;
-        private String password;
+        private @NotEmpty() String name;
+        private @NotEmpty() String username;
+        private @NotEmpty() String password;
 
         private UserDTOBuilder() {
         }
 
         public static UserDTOBuilder builder() {
             return new UserDTOBuilder();
+        }
+
+        public UserDTOBuilder name(String name) {
+            this.name = name;
+            return this;
         }
 
         public UserDTOBuilder username(String username) {
@@ -52,7 +60,7 @@ public class UserDTO {
         }
 
         public UserDTO build() {
-            return new UserDTO(username, password);
+            return new UserDTO(name, username, password);
         }
     }
 }

@@ -35,6 +35,7 @@ public class UserService {
         }
 
         User userToBeSaved = User.UserBuilder.builder()
+                .name(userDTO.getName())
                 .username(userDTO.getUsername())
                 .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(userDTO.getPassword()))
                 .authorities("ROLE_USER")
