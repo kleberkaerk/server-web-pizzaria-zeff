@@ -1,17 +1,17 @@
-package com.webservicepizzariazeff.www.dto;
+package com.webservicepizzariazeff.www.dto.request;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class UserDTOTest {
 
-    UserDTO userDTO;
+    private static UserDTO userDTO;
 
-    @BeforeEach
-    void setUserDTO() {
+    @BeforeAll
+    static void setUserDTO() {
 
-        this.userDTO = UserDTO.UserDTOBuilder.builder()
+        userDTO = UserDTO.UserDTOBuilder.builder()
                 .name("name")
                 .password("password")
                 .username("username")
@@ -21,21 +21,21 @@ class UserDTOTest {
     @Test
     void getUsername() {
 
-        Assertions.assertThat(this.userDTO.getUsername())
+        Assertions.assertThat(userDTO.getUsername())
                 .isEqualTo("username");
     }
 
     @Test
     void getPassword() {
 
-        Assertions.assertThat(this.userDTO.getPassword())
+        Assertions.assertThat(userDTO.getPassword())
                 .isEqualTo("password");
     }
 
     @Test
-    void getName(){
+    void getName() {
 
-        Assertions.assertThat(this.userDTO.getName())
+        Assertions.assertThat(userDTO.getName())
                 .isEqualTo("name");
     }
 }

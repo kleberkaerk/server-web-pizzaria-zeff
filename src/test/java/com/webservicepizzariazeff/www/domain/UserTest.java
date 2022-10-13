@@ -4,6 +4,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
 
 class UserTest {
 
@@ -19,7 +22,7 @@ class UserTest {
                 .name("name")
                 .password("password")
                 .username("username")
-                .authorities("ROLE_USER")
+                .authorities("ROLE_USER,ROLE_ADMIN")
                 .build();
     }
 
@@ -40,6 +43,13 @@ class UserTest {
     }
 
     @Test
+    void getId() {
+
+        Assertions.assertThat(user.getId())
+                .isEqualTo(1L);
+    }
+
+    @Test
     void getName() {
 
         Assertions.assertThat(user.getName())
@@ -54,17 +64,52 @@ class UserTest {
     }
 
     @Test
-    void getId() {
+    void getPassword() {
 
-        Assertions.assertThat(user.getId())
-                .isEqualTo(1L);
+        Assertions.assertThat(user.getPassword())
+                .isEqualTo("password");
+    }
+
+    @Test
+    void getAuthorities() {
+
+        Assertions.assertThat(user.getAuthorities())
+                .isEqualTo(List.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("ROLE_ADMIN")));
+    }
+
+    @Test
+    void isAccountNonExpired() {
+
+        Assertions.assertThat(user.isAccountNonExpired())
+                .isTrue();
+    }
+
+    @Test
+    void isAccountNonLocked() {
+
+        Assertions.assertThat(user.isAccountNonLocked())
+                .isTrue();
+    }
+
+    @Test
+    void isCredentialsNonExpired() {
+
+        Assertions.assertThat(user.isCredentialsNonExpired())
+                .isTrue();
+    }
+
+    @Test
+    void isEnabled() {
+
+        Assertions.assertThat(user.isEnabled())
+                .isTrue();
     }
 
     @Test
     void testToString() {
 
         Assertions.assertThat(user)
-                .hasToString("User{id=1, name='name', username='username', password='password', authorities='ROLE_USER'}");
+                .hasToString("User{id=1, name='name', username='username', password='password', authorities='ROLE_USER,ROLE_ADMIN'}");
     }
 
     @Test

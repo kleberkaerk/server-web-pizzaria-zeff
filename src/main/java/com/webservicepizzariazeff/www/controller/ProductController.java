@@ -31,13 +31,13 @@ public class ProductController {
     }
 
     @GetMapping(value = "find-by-type", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<Product>> findByType(Pageable pageable, @RequestParam(required = true) String type) {
+    public ResponseEntity<Page<Product>> findByType(Pageable pageable, @RequestParam() String type) {
 
         return new ResponseEntity<>(this.productService.findByType(pageable, type), HttpStatus.OK);
     }
 
     @GetMapping(value = "find-by-price-rating", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<Product>> findByPriceRating(Pageable pageable, @RequestParam(required = true) String priceRating) {
+    public ResponseEntity<Page<Product>> findByPriceRating(Pageable pageable, @RequestParam() String priceRating) {
 
         return new ResponseEntity<>(this.productService.findByPriceRating(pageable, priceRating), HttpStatus.OK);
     }
@@ -45,8 +45,8 @@ public class ProductController {
     @GetMapping(value = "find-by-type-and-price-rating", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<Product>> findByTypeAndPriceRating(
             Pageable pageable,
-            @RequestParam(required = true) String type,
-            @RequestParam(required = true) String priceRating) {
+            @RequestParam() String type,
+            @RequestParam() String priceRating) {
 
         return new ResponseEntity<>(this.productService.findByTypeAndPriceRating(pageable, type, priceRating), HttpStatus.OK);
 

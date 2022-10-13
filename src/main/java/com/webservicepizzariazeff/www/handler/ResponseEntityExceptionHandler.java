@@ -1,6 +1,8 @@
 package com.webservicepizzariazeff.www.handler;
 
+import com.webservicepizzariazeff.www.exception.ExistingAddressException;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
+import com.webservicepizzariazeff.www.exception_handler.ExistingAddressExceptionHandler;
 import com.webservicepizzariazeff.www.exception_handler.ExistingUserExceptionHandler;
 import com.webservicepizzariazeff.www.exception_handler.MethodArgumentNotValidExceptionHandler;
 import org.springframework.http.HttpStatus;
@@ -32,5 +34,13 @@ public class ResponseEntityExceptionHandler {
                 .builder()
                 .message(message.getString("invalid.value"))
                 .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExistingAddressException.class)
+    public ResponseEntity<ExistingAddressExceptionHandler> handlerExistingAddressException(ExistingAddressException exception) {
+
+        return new ResponseEntity<>(ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
+                .message(exception.getMessage())
+                .build(), HttpStatus.CONFLICT);
     }
 }

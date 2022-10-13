@@ -16,8 +16,6 @@ import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
@@ -30,10 +28,10 @@ import java.util.Objects;
 class ProductServiceTest {
 
     @InjectMocks
-    ProductService productService;
+    private ProductService productService;
 
     @Mock
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     private static List<Product> returnFromFindAll;
 

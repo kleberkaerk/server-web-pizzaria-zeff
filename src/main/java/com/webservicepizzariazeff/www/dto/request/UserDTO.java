@@ -1,4 +1,4 @@
-package com.webservicepizzariazeff.www.dto;
+package com.webservicepizzariazeff.www.dto.request;
 
 import javax.validation.constraints.NotEmpty;
 

@@ -1,9 +1,12 @@
 package com.webservicepizzariazeff.www.handler;
 
+import com.webservicepizzariazeff.www.exception.ExistingAddressException;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
+import com.webservicepizzariazeff.www.exception_handler.ExistingAddressExceptionHandler;
 import com.webservicepizzariazeff.www.exception_handler.ExistingUserExceptionHandler;
 import com.webservicepizzariazeff.www.exception_handler.MethodArgumentNotValidExceptionHandler;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -11,55 +14,80 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ResponseEntityExceptionHandlerTest {
 
-    ResponseEntityExceptionHandler responseEntityExceptionHandler;
+    private static ResponseEntityExceptionHandler responseEntityExceptionHandler;
 
-    ResponseEntity<ExistingUserExceptionHandler> existingUserExceptionHandlerResponseEntity;
+    private ResponseEntity<ExistingUserExceptionHandler> existingUserExceptionHandlerResponseEntity;
 
-    ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandler;
+    private ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandlerResponseEntity;
 
-    ExistingUserException exception;
+    private ResponseEntity<ExistingAddressExceptionHandler> existingAddressExceptionHandlerResponseEntity;
+
+    private ExistingUserException existingUserExceptionForArgument;
+
+    private ExistingAddressException existingAddressExceptionForArgument;
+
+
+    @BeforeAll
+    static void setResponseEntityExceptionHandler() {
+
+        responseEntityExceptionHandler = new ResponseEntityExceptionHandler();
+    }
 
     @BeforeEach
-    void setResponseEntityExceptionHandler() {
+    void setObjects() {
 
-        this.responseEntityExceptionHandler = new ResponseEntityExceptionHandler();
+        this.existingUserExceptionHandlerResponseEntity = new ResponseEntity<>(
+                ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
+                        .message("message ExistingUserExceptionHandler")
+                        .build(), HttpStatus.CONFLICT
+        );
 
-        this.existingUserExceptionHandlerResponseEntity =
-                new ResponseEntity<>(
-                        ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
-                                .message("message ExistingUserExceptionHandler")
-                                .build(), HttpStatus.CONFLICT);
+        this.methodArgumentNotValidExceptionHandlerResponseEntity = new ResponseEntity<>(
+                MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
+                        .message("Invalid value.")
+                        .build(), HttpStatus.BAD_REQUEST
+        );
 
-        this.methodArgumentNotValidExceptionHandler =
-                new ResponseEntity<>(
-                        MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
-                                .message("Invalid value.")
-                                .build(), HttpStatus.BAD_REQUEST);
+        this.existingUserExceptionForArgument = new ExistingUserException("message ExistingUserExceptionHandler");
 
-        this.exception = new ExistingUserException("message ExistingUserExceptionHandler");
+        this.existingAddressExceptionHandlerResponseEntity = new ResponseEntity<>(
+                ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
+                        .message("message ExistingAddressExceptionHandler")
+                        .build(), HttpStatus.CONFLICT
+        );
+
+        this.existingAddressExceptionForArgument = new ExistingAddressException("message ExistingAddressExceptionHandler");
     }
 
     @Test
     void handlerExistingUserException_returnsAResponseEntityOfTypeExistingUserExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingUserException(this.exception).getStatusCode())
+        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(this.existingUserExceptionForArgument).getStatusCode())
                 .isEqualTo(this.existingUserExceptionHandlerResponseEntity.getStatusCode());
 
-        Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerExistingUserException(this.exception).getBody()).getMessage())
+        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingUserException(this.existingUserExceptionForArgument).getBody()).getMessage())
                 .isEqualTo(Objects.requireNonNull(this.existingUserExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 
     @Test
-    void handlerMethodArgumentNotValidException() {
+    void handlerMethodArgumentNotValidException_returnsAResponseEntityOfTypeMethodArgumentNotValidExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThat(this.responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
-                .isEqualTo(this.methodArgumentNotValidExceptionHandler.getStatusCode());
+        Assertions.assertThat(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
+                .isEqualTo(this.methodArgumentNotValidExceptionHandlerResponseEntity.getStatusCode());
 
-        Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(this.methodArgumentNotValidExceptionHandler.getBody()).getMessage());
+        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getBody()).getMessage())
+                .isEqualTo(Objects.requireNonNull(this.methodArgumentNotValidExceptionHandlerResponseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void handlerExistingAddressException_returnsAResponseEntityOfTypeExistingAddressExceptionHandler_wheneverCalled() {
+
+        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getStatusCode())
+                .isEqualTo(this.existingAddressExceptionHandlerResponseEntity.getStatusCode());
+
+        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getBody()).getMessage())
+                .isEqualTo(Objects.requireNonNull(this.existingAddressExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 }

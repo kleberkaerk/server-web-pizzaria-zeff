@@ -1,6 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.dto.UserDTO;
+import com.webservicepizzariazeff.www.dto.request.UserDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.service.UserService;
 import org.assertj.core.api.Assertions;
@@ -29,19 +29,6 @@ class UserControllerTest {
 
         BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserDTO.class), ArgumentMatchers.anyString()))
                 .thenReturn(1L);
-    }
-
-    @Test
-    void authorizationXSRF_returnsAResponseEntityWithAStatusCodeOf200AndACookieWithCsrfToken_wheneverYouReceiveARequest() {
-
-        Assertions.assertThat(this.userController.authorizationXSRF())
-                .isNotNull();
-
-        Assertions.assertThat(this.userController.authorizationXSRF().getBody())
-                .isNull();
-
-        Assertions.assertThat(this.userController.authorizationXSRF().getStatusCode())
-                .isEqualTo(HttpStatus.OK);
     }
 
     @Test

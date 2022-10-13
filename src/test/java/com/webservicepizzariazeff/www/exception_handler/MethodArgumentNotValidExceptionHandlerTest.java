@@ -1,6 +1,7 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MethodArgumentNotValidExceptionHandlerTest {
 
-    MethodArgumentNotValidExceptionHandler methodArgumentNotValidExceptionHandler;
+    private static MethodArgumentNotValidExceptionHandler methodArgumentNotValidExceptionHandler;
 
-    @BeforeEach
-    void setMethodArgumentNotValidExceptionHandler() {
+    @BeforeAll
+    static void setMethodArgumentNotValidExceptionHandler() {
 
-        this.methodArgumentNotValidExceptionHandler = MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
+        methodArgumentNotValidExceptionHandler = MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
                 .message("message")
                 .build();
     }
@@ -21,7 +22,7 @@ class MethodArgumentNotValidExceptionHandlerTest {
     @Test
     void getMessage() {
 
-        Assertions.assertThat(this.methodArgumentNotValidExceptionHandler.getMessage())
+        Assertions.assertThat(methodArgumentNotValidExceptionHandler.getMessage())
                 .isEqualTo("message");
     }
 }

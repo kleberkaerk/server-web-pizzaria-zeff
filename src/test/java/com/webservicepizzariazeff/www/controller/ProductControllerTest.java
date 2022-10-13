@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -125,14 +124,11 @@ class ProductControllerTest {
     }
 
     @Test
-    void findAll_returnsAListOfAllProductsInTheDatabase_ever() {
+    void findAll_returnsAResponseEntityOfThePageOfTheAllProductsFromTheDatabase_ever() {
 
         Assertions.assertThat(this.productController.findAll(Page.empty().getPageable()))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindAll)));
-
-        Assertions.assertThat(this.productController.findAll(Page.empty().getPageable()).getStatusCode())
-                .isEqualTo(HttpStatus.OK);
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findAll(Page.empty().getPageable()).getBody()).toList())
                 .hasSize(5);
@@ -156,9 +152,6 @@ class ProductControllerTest {
         Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindByType)));
-
-        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA").getStatusCode())
-                .isEqualTo(HttpStatus.OK);
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA").getBody()).toList())
                 .hasSize(2);
@@ -186,9 +179,6 @@ class ProductControllerTest {
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
 
-        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET").getStatusCode())
-                .isEqualTo(HttpStatus.OK);
-
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "SWEET").getBody()).toList())
                 .isEmpty();
     }
@@ -199,9 +189,6 @@ class ProductControllerTest {
         Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindByPriceRating)));
-
-        Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE").getStatusCode())
-                .isEqualTo(HttpStatus.OK);
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE").getBody()).toList())
                 .hasSize(2);
@@ -229,9 +216,6 @@ class ProductControllerTest {
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
 
-        Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR").getStatusCode())
-                .isEqualTo(HttpStatus.OK);
-
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR").getBody()).toList())
                 .isEmpty();
     }
@@ -242,9 +226,6 @@ class ProductControllerTest {
         Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindByTypeAndPriceRating)));
-
-        Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION").getStatusCode())
-                .isEqualTo(HttpStatus.OK);
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION").getBody()).toList())
                 .hasSize(1);
@@ -271,9 +252,6 @@ class ProductControllerTest {
         Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
-
-        Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR").getStatusCode())
-                .isEqualTo(HttpStatus.OK);
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR").getBody()).toList())
                 .isEmpty();
