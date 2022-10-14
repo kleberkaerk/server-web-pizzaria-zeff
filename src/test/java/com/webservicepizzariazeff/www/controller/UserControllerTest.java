@@ -1,6 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.dto.request.UserDTO;
+import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.service.UserService;
 import org.assertj.core.api.Assertions;
@@ -27,14 +27,14 @@ class UserControllerTest {
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
-        BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserDTO.class), ArgumentMatchers.anyString()))
+        BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenReturn(1L);
     }
 
     @Test
     void registerNewUser_createANewUserAndReturnsTheIdOfThisUser_WhenTheUserIsNotRegisteredInTheDatabase() {
 
-        UserDTO userToBeSaved = UserDTO.UserDTOBuilder.builder()
+        UserRequestDTO userToBeSaved = UserRequestDTO.UserDTOBuilder.builder()
                 .password("")
                 .username("")
                 .build();
@@ -47,12 +47,12 @@ class UserControllerTest {
     @Test
     void registerNewUser_throwsExistingUserException_whenTheUserIsAlreadyRegisteredInTheDatabase() {
 
-        UserDTO user = UserDTO.UserDTOBuilder.builder()
+        UserRequestDTO user = UserRequestDTO.UserDTOBuilder.builder()
                 .password("")
                 .username("")
                 .build();
 
-        BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserDTO.class), ArgumentMatchers.anyString()))
+        BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenThrow(ExistingUserException.class);
 
         Assertions.assertThatExceptionOfType(ExistingUserException.class)

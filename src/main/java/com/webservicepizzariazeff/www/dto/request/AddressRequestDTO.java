@@ -2,7 +2,7 @@ package com.webservicepizzariazeff.www.dto.request;
 
 import javax.validation.constraints.NotEmpty;
 
-public class AddressDTO {
+public class AddressRequestDTO {
 
     @NotEmpty()
     private final String number;
@@ -19,7 +19,7 @@ public class AddressDTO {
     @NotEmpty()
     private final String state;
 
-    private AddressDTO(String number, String road, String district, String city, String state){
+    private AddressRequestDTO(String number, String road, String district, String city, String state){
 
         this.number = number;
         this.road = road;
@@ -59,47 +59,47 @@ public class AddressDTO {
         return state;
     }
 
-    public static final class AddressDTOBuilder {
-        private @NotEmpty String number;
-        private @NotEmpty String road;
-        private @NotEmpty String district;
-        private @NotEmpty String city;
-        private @NotEmpty String state;
+    public static final class AddressRequestDTOBuilder {
+        private @NotEmpty() String number;
+        private @NotEmpty() String road;
+        private @NotEmpty() String district;
+        private @NotEmpty() String city;
+        private @NotEmpty() String state;
 
-        private AddressDTOBuilder() {
+        private AddressRequestDTOBuilder() {
         }
 
-        public static AddressDTOBuilder builder() {
-            return new AddressDTOBuilder();
+        public static AddressRequestDTOBuilder builder() {
+            return new AddressRequestDTOBuilder();
         }
 
-        public AddressDTOBuilder number(String number) {
+        public AddressRequestDTOBuilder number(String number) {
             this.number = number;
             return this;
         }
 
-        public AddressDTOBuilder road(String road) {
+        public AddressRequestDTOBuilder road(String road) {
             this.road = road;
             return this;
         }
 
-        public AddressDTOBuilder district(String district) {
+        public AddressRequestDTOBuilder district(String district) {
             this.district = district;
             return this;
         }
 
-        public AddressDTOBuilder city(String city) {
+        public AddressRequestDTOBuilder city(String city) {
             this.city = city;
             return this;
         }
 
-        public AddressDTOBuilder state(String state) {
+        public AddressRequestDTOBuilder state(String state) {
             this.state = state;
             return this;
         }
 
-        public AddressDTO build() {
-            return new AddressDTO(number, road, district, city, state);
+        public AddressRequestDTO build() {
+            return new AddressRequestDTO(number, road, district, city, state);
         }
     }
 }

@@ -4,14 +4,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class UserDTOTest {
+class UserRequestDTOTest {
 
-    private static UserDTO userDTO;
+    private static UserRequestDTO userRequestDTO;
 
     @BeforeAll
     static void setUserDTO() {
 
-        userDTO = UserDTO.UserDTOBuilder.builder()
+        userRequestDTO = UserRequestDTO.UserDTOBuilder.builder()
                 .name("name")
                 .password("password")
                 .username("username")
@@ -21,21 +21,21 @@ class UserDTOTest {
     @Test
     void getUsername() {
 
-        Assertions.assertThat(userDTO.getUsername())
+        Assertions.assertThat(userRequestDTO.getUsername())
                 .isEqualTo("username");
     }
 
     @Test
     void getPassword() {
 
-        Assertions.assertThat(userDTO.getPassword())
+        Assertions.assertThat(userRequestDTO.getPassword())
                 .isEqualTo("password");
     }
 
     @Test
     void getName() {
 
-        Assertions.assertThat(userDTO.getName())
+        Assertions.assertThat(userRequestDTO.getName())
                 .isEqualTo("name");
     }
 }

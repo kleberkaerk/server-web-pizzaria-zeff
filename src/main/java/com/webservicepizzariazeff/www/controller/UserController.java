@@ -1,6 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.dto.request.UserDTO;
+import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ public class UserController {
 
     @PutMapping(value = "register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> registerNewUser(
-            @RequestBody @Valid UserDTO userDTO,
+            @RequestBody @Valid UserRequestDTO userRequestDTO,
             @RequestHeader(value = "Accept-Language") String acceptLanguage) {
 
-        return new ResponseEntity<>(this.userService.registerUser(userDTO, acceptLanguage), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.userService.registerUser(userRequestDTO, acceptLanguage), HttpStatus.CREATED);
     }
 
 }

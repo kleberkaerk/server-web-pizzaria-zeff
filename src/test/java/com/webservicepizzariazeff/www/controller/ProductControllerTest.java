@@ -43,7 +43,7 @@ class ProductControllerTest {
     private static List<Product> returnFromFindByTypeAndPriceRating;
 
     @BeforeAll
-    static void initializeLists() {
+    static void setObjects() {
 
         returnFromFindAll = new ArrayList<>(List.of(
                 Product.ProductBuilder.builder()

@@ -2,7 +2,8 @@ package com.webservicepizzariazeff.www.util;
 
 import com.webservicepizzariazeff.www.domain.Address;
 import com.webservicepizzariazeff.www.domain.User;
-import com.webservicepizzariazeff.www.dto.request.AddressDTO;
+import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
+import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class Mapper {
@@ -10,14 +11,14 @@ public class Mapper {
     private Mapper() {
     }
 
-    public static Address ofTheAddressDTOForAddress(AddressDTO addressDTO, User user) {
+    public static Address ofTheAddressRequestDTOForAddress(AddressRequestDTO addressRequestDTO, User user) {
 
         return Address.AddressBuilder.builder()
-                .number(addressDTO.getNumber())
-                .road(addressDTO.getRoad())
-                .district(addressDTO.getDistrict())
-                .city(addressDTO.getCity())
-                .state(addressDTO.getState())
+                .number(addressRequestDTO.getNumber())
+                .road(addressRequestDTO.getRoad())
+                .district(addressRequestDTO.getDistrict())
+                .city(addressRequestDTO.getCity())
+                .state(addressRequestDTO.getState())
                 .user(user)
                 .build();
     }
@@ -25,5 +26,17 @@ public class Mapper {
     public static User ofTheUserDetailsForUser(UserDetails userDetails) {
 
         return (User) userDetails;
+    }
+
+    public static AddressResponseDTO ofTheAddressForAddressResponseDTO(Address address) {
+
+        return AddressResponseDTO.AddressResponseDTOBuilder.builder()
+                .id(address.getId())
+                .number(address.getNumber())
+                .road(address.getRoad())
+                .district(address.getDistrict())
+                .city(address.getCity())
+                .state(address.getState())
+                .build();
     }
 }

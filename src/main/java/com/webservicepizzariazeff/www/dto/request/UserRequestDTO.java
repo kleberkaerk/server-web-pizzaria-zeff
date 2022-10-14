@@ -2,7 +2,7 @@ package com.webservicepizzariazeff.www.dto.request;
 
 import javax.validation.constraints.NotEmpty;
 
-public class UserDTO {
+public class UserRequestDTO {
 
     @NotEmpty()
     private final String name;
@@ -13,7 +13,7 @@ public class UserDTO {
     @NotEmpty()
     private final String password;
 
-    private UserDTO(String name, String username, String password) {
+    private UserRequestDTO(String name, String username, String password) {
 
         this.name = name;
         this.username = username;
@@ -59,8 +59,8 @@ public class UserDTO {
             return this;
         }
 
-        public UserDTO build() {
-            return new UserDTO(name, username, password);
+        public UserRequestDTO build() {
+            return new UserRequestDTO(name, username, password);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.webservicepizzariazeff.www.service;
 
 import com.webservicepizzariazeff.www.domain.User;
-import com.webservicepizzariazeff.www.dto.request.UserDTO;
+import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.repository.UserRepository;
 import org.assertj.core.api.Assertions;
@@ -35,6 +35,7 @@ class UserServiceTest {
         BDDMockito.when(this.userRepository.save(ArgumentMatchers.any(User.class)))
                 .thenReturn(User.UserBuilder.builder()
                         .id(2L)
+                        .name("name2")
                         .username("user2")
                         .password("1234")
                         .authorities("ROLE_USER")
@@ -44,9 +45,10 @@ class UserServiceTest {
     @Test
     void registerUser_persistNewUserInDatabase_WhenTheUserIsNotRegisteredInTheDatabase() {
 
-        UserDTO user = UserDTO.UserDTOBuilder.builder()
-                .password("")
+        UserRequestDTO user = UserRequestDTO.UserDTOBuilder.builder()
+                .name("")
                 .username("")
+                .password("")
                 .build();
 
         Assertions.assertThat(this.userService.registerUser(user, "pt-BR"))
@@ -60,15 +62,17 @@ class UserServiceTest {
                 .thenReturn(Optional.of(
                         User.UserBuilder.builder()
                                 .id(1L)
-                                .password("")
+                                .name("")
                                 .username("")
+                                .password("")
                                 .authorities("ROLE_USER")
                                 .build()
                 ));
 
-        UserDTO user = UserDTO.UserDTOBuilder.builder()
-                .password("")
+        UserRequestDTO user = UserRequestDTO.UserDTOBuilder.builder()
+                .name("")
                 .username("")
+                .password("")
                 .build();
 
         Assertions.assertThatExceptionOfType(ExistingUserException.class)
