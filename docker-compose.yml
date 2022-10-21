@@ -3,6 +3,8 @@ version: '2.4'
 services:
   db:
     image: mysql
+    cap_add:
+      - SYS_NICE
     container_name: database-pizzaria-zeff
     environment:
       MYSQL_ROOT_PASSWORD: root

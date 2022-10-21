@@ -1,7 +1,6 @@
 package com.webservicepizzariazeff.www.domain;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,24 +9,22 @@ import java.util.List;
 
 class UserTest {
 
-    private static User user;
+    private User user;
 
     private User sameUser;
+
     private User differentUser;
 
-    @BeforeAll
-    static void setUser() {
-        user = User.UserBuilder.builder()
+    @BeforeEach
+    void setObjects() {
+
+        this.user = User.UserBuilder.builder()
                 .id(1L)
                 .name("name")
                 .password("password")
                 .username("username")
                 .authorities("ROLE_USER,ROLE_ADMIN")
                 .build();
-    }
-
-    @BeforeEach
-    void setObjects() {
 
         this.sameUser = User.UserBuilder.builder()
                 .id(1L)

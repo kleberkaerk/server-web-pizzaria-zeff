@@ -1,17 +1,17 @@
 package com.webservicepizzariazeff.www.dto.response;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class AddressResponseDTOTest {
 
-    private static AddressResponseDTO addressResponseDTO;
+    private AddressResponseDTO addressResponseDTO;
 
-    @BeforeAll
-    static void setAddressResponseDTO(){
+    @BeforeEach
+    void setAddressResponseDTO(){
 
-        addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+        this.addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(1L)
                 .number("1")
                 .road("road")
@@ -24,49 +24,49 @@ class AddressResponseDTOTest {
     @Test
     void getId() {
 
-        Assertions.assertThat(addressResponseDTO.getId())
+        Assertions.assertThat(this.addressResponseDTO.getId())
                 .isEqualTo(1L);
     }
 
     @Test
     void getNumber() {
 
-        Assertions.assertThat(addressResponseDTO.getNumber())
+        Assertions.assertThat(this.addressResponseDTO.getNumber())
                 .isEqualTo("1");
     }
 
     @Test
     void getRoad() {
 
-        Assertions.assertThat(addressResponseDTO.getRoad())
+        Assertions.assertThat(this.addressResponseDTO.getRoad())
                 .isEqualTo("road");
     }
 
     @Test
     void getDistrict() {
 
-        Assertions.assertThat(addressResponseDTO.getDistrict())
+        Assertions.assertThat(this.addressResponseDTO.getDistrict())
                 .isEqualTo("district");
     }
 
     @Test
     void getCity() {
 
-        Assertions.assertThat(addressResponseDTO.getCity())
+        Assertions.assertThat(this.addressResponseDTO.getCity())
                 .isEqualTo("city");
     }
 
     @Test
     void getState() {
 
-        Assertions.assertThat(addressResponseDTO.getState())
+        Assertions.assertThat(this.addressResponseDTO.getState())
                 .isEqualTo("state");
     }
 
     @Test
     void testEquals() {
 
-        Assertions.assertThat(addressResponseDTO)
+        Assertions.assertThat(this.addressResponseDTO)
                 .isEqualTo(AddressResponseDTO.AddressResponseDTOBuilder.builder()
                         .id(1L)
                         .number("1")
@@ -80,7 +80,7 @@ class AddressResponseDTOTest {
     @Test
     void testHashCode() {
 
-        Assertions.assertThat(addressResponseDTO)
+        Assertions.assertThat(this.addressResponseDTO)
                 .hasSameHashCodeAs(AddressResponseDTO.AddressResponseDTOBuilder.builder()
                         .id(1L)
                         .number("1")

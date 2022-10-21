@@ -1,7 +1,6 @@
 package com.webservicepizzariazeff.www.domain;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,16 +8,16 @@ import java.math.BigDecimal;
 
 class ProductTest {
 
-    private static Product product;
+    private Product product;
 
     private Product sameProduct;
 
     private Product differentProduct;
 
-    @BeforeAll
-    static void setProduct() {
+    @BeforeEach
+    void setObjects() {
 
-        product = Product.ProductBuilder.builder()
+        this.product = Product.ProductBuilder.builder()
                 .id(1L)
                 .name("name")
                 .description("description")
@@ -27,10 +26,6 @@ class ProductTest {
                 .priceRating(PriceRating.REGULAR_PRICE)
                 .image("/image.png")
                 .build();
-    }
-
-    @BeforeEach
-    void setObjects() {
 
         this.sameProduct = Product.ProductBuilder.builder()
                 .id(1L)

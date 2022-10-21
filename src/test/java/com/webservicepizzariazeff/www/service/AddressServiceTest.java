@@ -32,6 +32,10 @@ class AddressServiceTest {
 
     private static List<Address> listOfTheAddressForReturn;
 
+    private static User userWhoOwnsTheAddress;
+
+    private static AddressRequestDTO addressToBeSaved;
+
     @BeforeAll
     static void setObjects() {
 
@@ -67,36 +71,8 @@ class AddressServiceTest {
                                 .build())
                         .build()
         );
-    }
 
-    @BeforeEach
-    void definitionOfBehaviorsForMocks() {
-
-        BDDMockito.when(this.addressRepository.findByNumberAndRoadAndDistrictAndCityAndStateAndUser(
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.any(User.class)
-        )).thenReturn(Optional.empty());
-
-        BDDMockito.when(this.addressRepository.save(ArgumentMatchers.any(Address.class)))
-                .thenReturn(listOfTheAddressForReturn.get(0));
-
-        BDDMockito.when(this.addressRepository.findByUser(ArgumentMatchers.any(User.class)))
-                .thenReturn(listOfTheAddressForReturn);
-
-        BDDMockito.when(this.addressRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(listOfTheAddressForReturn.get(0)));
-
-        BDDMockito.doNothing().when(this.addressRepository).deleteById(ArgumentMatchers.any());
-    }
-
-    @Test
-    void registerAddress_registersANewAddressForAUserAndReturnsTheIdOfTheCreatedAddress_whenTheAddressDoesNotExistInTheDatabase() {
-
-        User userWhoOwnsTheAddress = User.UserBuilder.builder()
+        userWhoOwnsTheAddress = User.UserBuilder.builder()
                 .id(1L)
                 .name("name")
                 .username("username")
@@ -104,12 +80,75 @@ class AddressServiceTest {
                 .authorities("ROLE_USER")
                 .build();
 
-        AddressRequestDTO addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
+        addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
+                .number("1")
                 .road("road")
                 .district("district")
                 .state("state")
                 .city("city")
                 .build();
+    }
+
+    @BeforeEach
+    void definitionOfBehaviorsForMocks() {
+
+        BDDMockito.when(this.addressRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(listOfTheAddressForReturn.get(0)));
+
+        BDDMockito.when(this.addressRepository.findByNumberAndRoadAndDistrictAndCityAndStateAndUser(
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.any(User.class)
+                ))
+                .thenReturn(Optional.empty());
+
+        BDDMockito.when(this.addressRepository.save(ArgumentMatchers.any(Address.class)))
+                .thenReturn(listOfTheAddressForReturn.get(0));
+
+        BDDMockito.when(this.addressRepository.findByUser(ArgumentMatchers.any(User.class)))
+                .thenReturn(listOfTheAddressForReturn);
+
+        BDDMockito.doNothing()
+                .when(this.addressRepository).deleteById(ArgumentMatchers.any());
+    }
+
+    @Test
+    void findById_returnsAnAddress_whenTheIdParameterExists() {
+
+        Assertions.assertThat(this.addressService.findById(1L))
+                .isNotNull()
+                .isEqualTo(Address.AddressBuilder.builder()
+                        .id(1L)
+                        .number("1")
+                        .road("road")
+                        .district("district")
+                        .city("city")
+                        .state("state")
+                        .user(User.UserBuilder.builder()
+                                .id(1L)
+                                .name("name")
+                                .username("username")
+                                .password("password")
+                                .authorities("ROLE_USER")
+                                .build())
+                        .build());
+    }
+
+    @Test
+    void findById_throwsResponseStatusException_whenTheIdParameterNotExists() {
+
+        BDDMockito.when(this.addressRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.addressService.findById(1L));
+    }
+
+    @Test
+    void registerAddress_registersANewAddressForAUserAndReturnsTheIdOfTheCreatedAddress_whenTheAddressDoesNotExistInTheDatabase() {
 
         Assertions.assertThat(this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"))
                 .isEqualTo(1L);
@@ -127,39 +166,14 @@ class AddressServiceTest {
                 ArgumentMatchers.any(User.class)
         )).thenReturn(Optional.of(listOfTheAddressForReturn.get(0)));
 
-        User userWhoOwnsTheAddress = User.UserBuilder.builder()
-                .id(1L)
-                .name("name")
-                .username("username")
-                .password("password")
-                .authorities("ROLE_USER")
-                .build();
-
-        AddressRequestDTO addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
-                .number("1")
-                .road("road")
-                .district("district")
-                .state("state")
-                .city("city")
-                .build();
-
         Assertions.assertThatExceptionOfType(ExistingAddressException.class)
                 .isThrownBy(() -> this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"));
-
     }
 
     @Test
     void findByUser_returnsAListOfAddressResponseDTOOfTheUser_wheneverCalled() {
 
-        User user = User.UserBuilder.builder()
-                .id(1L)
-                .name("name")
-                .username("username")
-                .password("password")
-                .authorities("ROLE_USER")
-                .build();
-
-        Assertions.assertThat(this.addressService.findByUser(user))
+        Assertions.assertThat(this.addressService.findByUser(userWhoOwnsTheAddress))
                 .isNotNull()
                 .asList()
                 .contains(AddressResponseDTO.AddressResponseDTOBuilder.builder()

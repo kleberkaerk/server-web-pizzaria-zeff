@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SuppressWarnings("java:S2699")
 class WebServicePizzariaZeffApplicationTests {
 
-//    docker-compose must be running for this test to pass
+    //    docker-compose must be running for this test to pass
     @Test
     void contextLoads() {
 

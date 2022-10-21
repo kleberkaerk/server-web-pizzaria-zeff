@@ -9,5 +9,4 @@ public class WebServicePizzariaZeffApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WebServicePizzariaZeffApplication.class, args);
 	}
-
 }

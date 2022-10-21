@@ -1,16 +1,17 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ExistingAddressExceptionHandlerTest {
 
-    private static ExistingAddressExceptionHandler existingAddressExceptionHandler;
+    private ExistingAddressExceptionHandler existingAddressExceptionHandler;
 
-    @BeforeAll
-    static void setExistingAddressExceptionHandler() {
-        existingAddressExceptionHandler = ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
+    @BeforeEach
+    void setExistingAddressExceptionHandler() {
+
+        this.existingAddressExceptionHandler = ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
                 .message("message")
                 .build();
     }
@@ -18,7 +19,7 @@ class ExistingAddressExceptionHandlerTest {
     @Test
     void getMessage() {
 
-        Assertions.assertThat(existingAddressExceptionHandler.getMessage())
+        Assertions.assertThat(this.existingAddressExceptionHandler.getMessage())
                 .isEqualTo("message");
     }
 }

@@ -1,17 +1,17 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ExistingUserExceptionHandlerTest {
 
-    private static ExistingUserExceptionHandler existingUserExceptionHandler;
+    private ExistingUserExceptionHandler existingUserExceptionHandler;
 
-    @BeforeAll
-    static void setExistingUserExceptionHandler() {
+    @BeforeEach
+    void setExistingUserExceptionHandler() {
 
-        existingUserExceptionHandler = ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
+        this.existingUserExceptionHandler = ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
                 .message("message")
                 .build();
     }
@@ -19,7 +19,7 @@ class ExistingUserExceptionHandlerTest {
     @Test
     void getMessage() {
 
-        Assertions.assertThat(existingUserExceptionHandler.getMessage())
+        Assertions.assertThat(this.existingUserExceptionHandler.getMessage())
                 .isEqualTo("message");
     }
 }

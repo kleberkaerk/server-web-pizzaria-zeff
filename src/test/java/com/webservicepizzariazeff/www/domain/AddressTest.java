@@ -7,24 +7,30 @@ import org.junit.jupiter.api.Test;
 
 class AddressTest {
 
-    private static final User userWhoOwnsTheAddress = User.UserBuilder.builder()
-            .id(1L)
-            .name("name")
-            .username("username")
-            .password("password")
-            .authorities("ROLE_USER")
-            .build();
-
-    private static Address address;
+    private Address address;
 
     private Address sameAddress;
 
     private Address differentAddress;
 
-    @BeforeAll
-    static void setAddress() {
+    private static User userWhoOwnsTheAddress;
 
-        address = Address.AddressBuilder.builder()
+    @BeforeAll
+    static void setUserWhoOwnsTheAddress() {
+
+        userWhoOwnsTheAddress = User.UserBuilder.builder()
+                .id(1L)
+                .name("name")
+                .username("username")
+                .password("password")
+                .authorities("ROLE_USER")
+                .build();
+    }
+
+    @BeforeEach
+    void setObjects() {
+
+        this.address = Address.AddressBuilder.builder()
                 .id(1L)
                 .number("1")
                 .road("road")
@@ -33,10 +39,6 @@ class AddressTest {
                 .state("state")
                 .user(userWhoOwnsTheAddress)
                 .build();
-    }
-
-    @BeforeEach
-    void setObjects() {
 
         this.sameAddress = Address.AddressBuilder.builder()
                 .id(1L)

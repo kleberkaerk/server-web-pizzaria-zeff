@@ -12,7 +12,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 100)
     private String name;
 
     @Column(name = "description")
@@ -29,7 +29,7 @@ public class Product {
     @Column(name = "price_rating", length = 13)
     private PriceRating priceRating;
 
-    @Column(name = "image")
+    @Column(name = "image", length = 100)
     private String image;
 
     protected Product() {

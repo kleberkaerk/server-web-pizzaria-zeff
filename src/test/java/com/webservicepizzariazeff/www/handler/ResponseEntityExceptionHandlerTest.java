@@ -16,78 +16,77 @@ import java.util.Objects;
 
 class ResponseEntityExceptionHandlerTest {
 
-    private static ResponseEntityExceptionHandler responseEntityExceptionHandler;
+    private ResponseEntityExceptionHandler responseEntityExceptionHandler;
 
-    private ResponseEntity<ExistingUserExceptionHandler> existingUserExceptionHandlerResponseEntity;
+    private static ResponseEntity<ExistingUserExceptionHandler> existingUserExceptionHandlerResponseEntity;
 
-    private ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandlerResponseEntity;
+    private static ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandlerResponseEntity;
 
-    private ResponseEntity<ExistingAddressExceptionHandler> existingAddressExceptionHandlerResponseEntity;
+    private static ResponseEntity<ExistingAddressExceptionHandler> existingAddressExceptionHandlerResponseEntity;
 
-    private ExistingUserException existingUserExceptionForArgument;
+    private static ExistingUserException existingUserExceptionForArgument;
 
-    private ExistingAddressException existingAddressExceptionForArgument;
-
+    private static ExistingAddressException existingAddressExceptionForArgument;
 
     @BeforeAll
-    static void setResponseEntityExceptionHandler() {
+    static void setObjects() {
 
-        responseEntityExceptionHandler = new ResponseEntityExceptionHandler();
-    }
-
-    @BeforeEach
-    void setObjects() {
-
-        this.existingUserExceptionHandlerResponseEntity = new ResponseEntity<>(
+        existingUserExceptionHandlerResponseEntity = new ResponseEntity<>(
                 ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
                         .message("message ExistingUserExceptionHandler")
                         .build(), HttpStatus.CONFLICT
         );
 
-        this.methodArgumentNotValidExceptionHandlerResponseEntity = new ResponseEntity<>(
+        methodArgumentNotValidExceptionHandlerResponseEntity = new ResponseEntity<>(
                 MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
                         .message("Invalid value.")
                         .build(), HttpStatus.BAD_REQUEST
         );
 
-        this.existingUserExceptionForArgument = new ExistingUserException("message ExistingUserExceptionHandler");
+        existingUserExceptionForArgument = new ExistingUserException("message ExistingUserExceptionHandler");
 
-        this.existingAddressExceptionHandlerResponseEntity = new ResponseEntity<>(
+        existingAddressExceptionHandlerResponseEntity = new ResponseEntity<>(
                 ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
                         .message("message ExistingAddressExceptionHandler")
                         .build(), HttpStatus.CONFLICT
         );
 
-        this.existingAddressExceptionForArgument = new ExistingAddressException("message ExistingAddressExceptionHandler");
+        existingAddressExceptionForArgument = new ExistingAddressException("message ExistingAddressExceptionHandler");
+    }
+
+    @BeforeEach
+    void setResponseEntityExceptionHandler(){
+
+        this.responseEntityExceptionHandler = new ResponseEntityExceptionHandler();
     }
 
     @Test
     void handlerExistingUserException_returnsAResponseEntityOfTypeExistingUserExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(this.existingUserExceptionForArgument).getStatusCode())
-                .isEqualTo(this.existingUserExceptionHandlerResponseEntity.getStatusCode());
+        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument).getStatusCode())
+                .isEqualTo(existingUserExceptionHandlerResponseEntity.getStatusCode());
 
-        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingUserException(this.existingUserExceptionForArgument).getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(this.existingUserExceptionHandlerResponseEntity.getBody()).getMessage());
+        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument).getBody()).getMessage())
+                .isEqualTo(Objects.requireNonNull(existingUserExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 
     @Test
     void handlerMethodArgumentNotValidException_returnsAResponseEntityOfTypeMethodArgumentNotValidExceptionHandler_wheneverCalled() {
 
         Assertions.assertThat(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
-                .isEqualTo(this.methodArgumentNotValidExceptionHandlerResponseEntity.getStatusCode());
+                .isEqualTo(methodArgumentNotValidExceptionHandlerResponseEntity.getStatusCode());
 
         Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(this.methodArgumentNotValidExceptionHandlerResponseEntity.getBody()).getMessage());
+                .isEqualTo(Objects.requireNonNull(methodArgumentNotValidExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 
     @Test
     void handlerExistingAddressException_returnsAResponseEntityOfTypeExistingAddressExceptionHandler_wheneverCalled() {
 
         Assertions.assertThat(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getStatusCode())
-                .isEqualTo(this.existingAddressExceptionHandlerResponseEntity.getStatusCode());
+                .isEqualTo(existingAddressExceptionHandlerResponseEntity.getStatusCode());
 
         Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(this.existingAddressExceptionHandlerResponseEntity.getBody()).getMessage());
+                .isEqualTo(Objects.requireNonNull(existingAddressExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 }

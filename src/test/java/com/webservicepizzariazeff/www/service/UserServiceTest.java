@@ -5,6 +5,7 @@ import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.repository.UserRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +27,18 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    private static UserRequestDTO user;
+
+    @BeforeAll
+    static void setObjects() {
+
+        user = UserRequestDTO.UserDTOBuilder.builder()
+                .name("name")
+                .username("username")
+                .password("password")
+                .build();
+    }
+
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
@@ -45,12 +58,6 @@ class UserServiceTest {
     @Test
     void registerUser_persistNewUserInDatabase_WhenTheUserIsNotRegisteredInTheDatabase() {
 
-        UserRequestDTO user = UserRequestDTO.UserDTOBuilder.builder()
-                .name("")
-                .username("")
-                .password("")
-                .build();
-
         Assertions.assertThat(this.userService.registerUser(user, "pt-BR"))
                 .isEqualTo(2L);
     }
@@ -68,12 +75,6 @@ class UserServiceTest {
                                 .authorities("ROLE_USER")
                                 .build()
                 ));
-
-        UserRequestDTO user = UserRequestDTO.UserDTOBuilder.builder()
-                .name("")
-                .username("")
-                .password("")
-                .build();
 
         Assertions.assertThatExceptionOfType(ExistingUserException.class)
                 .isThrownBy(() -> this.userService.registerUser(user, "pt-BR"));
@@ -109,7 +110,6 @@ class UserServiceTest {
                 .thenThrow(UsernameNotFoundException.class);
 
         Assertions.assertThatExceptionOfType(UsernameNotFoundException.class)
-                .isThrownBy(()-> this.userService.loadUserByUsername(""));
+                .isThrownBy(() -> this.userService.loadUserByUsername(""));
     }
-
 }

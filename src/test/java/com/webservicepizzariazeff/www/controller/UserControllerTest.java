@@ -4,6 +4,7 @@ import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.service.UserService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,18 @@ class UserControllerTest {
     @Mock
     private UserService userService;
 
+    private static UserRequestDTO userRequestDTO;
+
+    @BeforeAll
+    static void setObjects(){
+
+        userRequestDTO = UserRequestDTO.UserDTOBuilder.builder()
+                .name("name")
+                .username("username")
+                .password("password")
+                .build();
+    }
+
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
@@ -34,12 +47,7 @@ class UserControllerTest {
     @Test
     void registerNewUser_createANewUserAndReturnsTheIdOfThisUser_WhenTheUserIsNotRegisteredInTheDatabase() {
 
-        UserRequestDTO userToBeSaved = UserRequestDTO.UserDTOBuilder.builder()
-                .password("")
-                .username("")
-                .build();
-
-        Assertions.assertThat(this.userController.registerNewUser(userToBeSaved, ""))
+        Assertions.assertThat(this.userController.registerNewUser(userRequestDTO, ""))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));
     }
@@ -47,15 +55,10 @@ class UserControllerTest {
     @Test
     void registerNewUser_throwsExistingUserException_whenTheUserIsAlreadyRegisteredInTheDatabase() {
 
-        UserRequestDTO user = UserRequestDTO.UserDTOBuilder.builder()
-                .password("")
-                .username("")
-                .build();
-
         BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenThrow(ExistingUserException.class);
 
         Assertions.assertThatExceptionOfType(ExistingUserException.class)
-                .isThrownBy(() -> this.userController.registerNewUser(user, ""));
+                .isThrownBy(() -> this.userController.registerNewUser(userRequestDTO, ""));
     }
 }

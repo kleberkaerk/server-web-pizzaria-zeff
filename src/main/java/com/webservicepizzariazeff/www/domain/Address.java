@@ -11,19 +11,19 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number")
+    @Column(name = "number", length = 10)
     private String number;
 
-    @Column(name = "road")
+    @Column(name = "road", length = 150)
     private String road;
 
-    @Column(name = "district")
+    @Column(name = "district", length = 150)
     private String district;
 
-    @Column(name = "city")
+    @Column(name = "city", length = 150)
     private String city;
 
-    @Column(name = "state")
+    @Column(name = "state", length = 150)
     private String state;
 
     @ManyToOne

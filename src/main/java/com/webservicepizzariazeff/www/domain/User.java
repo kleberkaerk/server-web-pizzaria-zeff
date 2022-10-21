@@ -17,16 +17,16 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 100)
     private String name;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", unique = true, length = 150)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", length = 150)
     private String password;
 
-    @Column(name = "authorities")
+    @Column(name = "authorities", length = 20)
     private String authorities;
 
     protected User() {

@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .antMatchers("/addresses/register").authenticated()
                 .antMatchers("/addresses/find-by-user").fullyAuthenticated()
                 .antMatchers("/addresses/**").authenticated()
+                .antMatchers("/sales/sale").authenticated()
                 .anyRequest()
                 .denyAll()
                 .and()

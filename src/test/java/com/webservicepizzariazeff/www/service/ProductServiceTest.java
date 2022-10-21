@@ -109,6 +109,9 @@ class ProductServiceTest {
     @BeforeEach
     void definitionBehaviorsForMocks() {
 
+        BDDMockito.when(this.productRepository.findAll())
+                .thenReturn(returnFromFindAll);
+
         BDDMockito.when(this.productRepository.findAll(ArgumentMatchers.any(Pageable.class)))
                 .thenReturn(new PageImpl<>(returnFromFindAll));
 
@@ -120,6 +123,24 @@ class ProductServiceTest {
 
         BDDMockito.when(this.productRepository.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.any(Type.class), ArgumentMatchers.any(PriceRating.class)))
                 .thenReturn(new PageImpl<>(returnFromFindByTypeAndPriceRating));
+    }
+
+    @Test
+    void findAllNonPageable_returnsAListOfAllProductsInTheDatabase_wheneverCalled(){
+
+        Assertions.assertThat(this.productService.findAllNonPageable())
+                .isNotNull()
+                .asList()
+                .isEqualTo(returnFromFindAll)
+                .contains(Product.ProductBuilder.builder()
+                        .id(4L)
+                        .name("name4")
+                        .description("description4")
+                        .price(new BigDecimal("40"))
+                        .type(Type.SALTY_ESFIHA)
+                        .priceRating(PriceRating.REGULAR_PRICE)
+                        .image("/image4.png")
+                        .build());
     }
 
     @Test

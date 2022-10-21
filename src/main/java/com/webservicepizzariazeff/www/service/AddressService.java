@@ -7,7 +7,6 @@ import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
 import com.webservicepizzariazeff.www.exception.ExistingAddressException;
 import com.webservicepizzariazeff.www.repository.AddressRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +26,12 @@ public class AddressService {
     @Autowired
     protected AddressService(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
+    }
+
+    public Address findById(Long id){
+
+        return this.addressRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     private Optional<Address> searchForExistingAddressInTheDatabase(AddressRequestDTO addressRequestDTO, User user) {

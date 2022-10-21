@@ -1,7 +1,6 @@
 package com.webservicepizzariazeff.www.util;
 
-import com.webservicepizzariazeff.www.domain.Address;
-import com.webservicepizzariazeff.www.domain.User;
+import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +36,14 @@ public class Mapper {
                 .district(address.getDistrict())
                 .city(address.getCity())
                 .state(address.getState())
+                .build();
+    }
+
+    public static PurchasedProduct ofTheProductForPurchasedProduct(Product product, Purchase purchase){
+
+        return PurchasedProduct.PurchasedProductBuilder.builder()
+                .name(product.getName())
+                .purchase(purchase)
                 .build();
     }
 }

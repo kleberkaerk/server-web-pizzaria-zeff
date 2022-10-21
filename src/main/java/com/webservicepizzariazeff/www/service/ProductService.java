@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -18,6 +20,11 @@ public class ProductService {
     @Autowired
     protected ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    public List<Product> findAllNonPageable() {
+
+        return this.productRepository.findAll();
     }
 
     public Page<Product> findAll(Pageable pageable) {
