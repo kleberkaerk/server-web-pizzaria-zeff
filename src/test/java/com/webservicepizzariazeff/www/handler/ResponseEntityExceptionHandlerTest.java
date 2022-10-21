@@ -5,6 +5,7 @@ import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.exception_handler.ExistingAddressExceptionHandler;
 import com.webservicepizzariazeff.www.exception_handler.ExistingUserExceptionHandler;
 import com.webservicepizzariazeff.www.exception_handler.MethodArgumentNotValidExceptionHandler;
+import com.webservicepizzariazeff.www.exception_handler.NullPointerExceptionHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,8 @@ class ResponseEntityExceptionHandlerTest {
     private static ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandlerResponseEntity;
 
     private static ResponseEntity<ExistingAddressExceptionHandler> existingAddressExceptionHandlerResponseEntity;
+
+    private static ResponseEntity<NullPointerExceptionHandler> nullPointerExceptionHandlerResponseEntity;
 
     private static ExistingUserException existingUserExceptionForArgument;
 
@@ -52,10 +55,16 @@ class ResponseEntityExceptionHandlerTest {
         );
 
         existingAddressExceptionForArgument = new ExistingAddressException("message ExistingAddressExceptionHandler");
+
+        nullPointerExceptionHandlerResponseEntity = new ResponseEntity<>(
+                NullPointerExceptionHandler.NullPointerExceptionHandlerBuilder.builder()
+                        .message("Invalid Request.")
+                        .build(), HttpStatus.BAD_REQUEST
+        );
     }
 
     @BeforeEach
-    void setResponseEntityExceptionHandler(){
+    void setResponseEntityExceptionHandler() {
 
         this.responseEntityExceptionHandler = new ResponseEntityExceptionHandler();
     }
@@ -83,10 +92,20 @@ class ResponseEntityExceptionHandlerTest {
     @Test
     void handlerExistingAddressException_returnsAResponseEntityOfTypeExistingAddressExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getStatusCode())
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getStatusCode())
                 .isEqualTo(existingAddressExceptionHandlerResponseEntity.getStatusCode());
 
         Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getBody()).getMessage())
                 .isEqualTo(Objects.requireNonNull(existingAddressExceptionHandlerResponseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void handlerNullPointerException_returnsAResponseEntityOfTypeNullPointerExceptionHandler_wheneverCalled() {
+
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerNullPointerException().getStatusCode())
+                .isEqualTo(nullPointerExceptionHandlerResponseEntity.getStatusCode());
+
+        Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerNullPointerException().getBody()).getMessage())
+                .isEqualTo(Objects.requireNonNull(nullPointerExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 }
