@@ -1,9 +1,9 @@
 package com.webservicepizzariazeff.www.controller;
 
 import com.webservicepizzariazeff.www.domain.User;
-import com.webservicepizzariazeff.www.dto.request.CardDTO;
+import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
 import com.webservicepizzariazeff.www.dto.request.FormOfPayment;
-import com.webservicepizzariazeff.www.dto.request.SaleDTO;
+import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.service.SaleService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +32,7 @@ class SaleControllerTest {
 
     private static User user;
 
-    private static SaleDTO saleDTO;
+    private static SaleRequestDTO saleRequestDTO;
 
     @BeforeAll
     static void setObjects() {
@@ -45,7 +45,7 @@ class SaleControllerTest {
                 .authorities("ROLE_USER")
                 .build();
 
-        CardDTO cardDTO = CardDTO.CardDTOBuilder.builder()
+        CardRequestDTO cardRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("nameOfCardHolder")
                 .cardNumber("1234567890123456")
                 .dueDate("12/34")
@@ -53,10 +53,10 @@ class SaleControllerTest {
                 .formOfPayment(FormOfPayment.DEBIT)
                 .build();
 
-        saleDTO = SaleDTO.SaleDTOBuilder.builder()
+        saleRequestDTO = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
                 .addressId(1L)
-                .cardDTO(cardDTO)
+                .cardRequestDTO(cardRequestDTO)
                 .build();
     }
 
@@ -65,30 +65,30 @@ class SaleControllerTest {
 
         BDDMockito.when(this.saleService.sale(
                         ArgumentMatchers.any(UserDetails.class),
-                        ArgumentMatchers.any(SaleDTO.class),
+                        ArgumentMatchers.any(SaleRequestDTO.class),
                         ArgumentMatchers.anyString()
                 ))
                 .thenReturn(1L);
     }
 
     @Test
-    void sale_saveANewPurchaseAndReturnThePurchaseId_whenTheValuesOfSaleDTOAreCorrect() {
+    void sale_saveANewPurchaseAndReturnThePurchaseId_whenTheValuesOfSaleRequestDTOAreCorrect() {
 
-        Assertions.assertThat(this.saleController.sale(user, saleDTO, "pt-BR"))
+        Assertions.assertThat(this.saleController.sale(user, saleRequestDTO, "pt-BR"))
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));
     }
 
     @Test
-    void sale_throwsAExceptionOfTypeRuntimeException_whenSomeValueOfSaleDTOIsIncorrect() {
+    void sale_throwsAExceptionOfTypeRuntimeException_whenSomeValueOfSaleRequestDTOIsIncorrect() {
 
         BDDMockito.when(this.saleService.sale(
                         ArgumentMatchers.any(UserDetails.class),
-                        ArgumentMatchers.any(SaleDTO.class),
+                        ArgumentMatchers.any(SaleRequestDTO.class),
                         ArgumentMatchers.anyString()
                 ))
                         .thenThrow(RuntimeException.class);
 
         Assertions.assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> this.saleController.sale(user, saleDTO, "pt-BR"));
+                .isThrownBy(() -> this.saleController.sale(user, saleRequestDTO, "pt-BR"));
     }
 }

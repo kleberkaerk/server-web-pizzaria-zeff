@@ -63,6 +63,18 @@ public class AddressResponseDTO {
         return Objects.hash(id, number, road, district, city, state);
     }
 
+    @Override
+    public String toString() {
+        return "AddressResponseDTO{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", road='" + road + '\'' +
+                ", district='" + district + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                '}';
+    }
+
     public static final class AddressResponseDTOBuilder {
         private Long id;
         private String number;

@@ -120,7 +120,15 @@ class AddressTest {
     void testToString() {
 
         Assertions.assertThat(address)
-                .hasToString("Address{id=1, number='1', road='road', district='district', city='city', state='state', user=User{id=1, name='name', username='username', password='password', authorities='ROLE_USER'}}");
+                .hasToString("Address{" +
+                        "id=" + this.address.getId() +
+                        ", number='" + this.address.getNumber() + '\'' +
+                        ", road='" + this.address.getRoad() + '\'' +
+                        ", district='" + this.address.getDistrict() + '\'' +
+                        ", city='" + this.address.getCity() + '\'' +
+                        ", state='" + this.address.getState() + '\'' +
+                        ", user=" + this.address.getUser() +
+                        '}');
     }
 
     @Test

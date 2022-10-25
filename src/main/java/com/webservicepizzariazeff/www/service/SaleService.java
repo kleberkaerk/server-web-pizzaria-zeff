@@ -1,7 +1,7 @@
 package com.webservicepizzariazeff.www.service;
 
 import com.webservicepizzariazeff.www.domain.*;
-import com.webservicepizzariazeff.www.dto.request.SaleDTO;
+import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.repository.PaymentSimulationRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,36 +45,36 @@ public class SaleService {
     }
 
     @Transactional
-    public Long sale(UserDetails userDetails, SaleDTO saleDTO, String acceptLanguage) {
+    public Long sale(UserDetails userDetails, SaleRequestDTO saleRequestDTO, String acceptLanguage) {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        List<Product> filteredProducts = this.filterProductsById(this.productService.findAllNonPageable(), saleDTO.getProductsId());
+        List<Product> filteredProducts = this.filterProductsById(this.productService.findAllNonPageable(), saleRequestDTO.getProductsId());
 
         BigDecimal amount = this.calculateTotalAmount(filteredProducts);
 
         User user = Mapper.ofTheUserDetailsForUser(userDetails);
 
-        Address userAddress = this.addressService.findById(saleDTO.getAddressId());
+        Address userAddress = this.addressService.findById(saleRequestDTO.getAddressId());
 
-        Purchase savedPurchase = this.purchaseService.save(this.createPurchase(amount, saleDTO, user, userAddress));
+        Purchase savedPurchase = this.purchaseService.save(this.createPurchase(amount, saleRequestDTO, user, userAddress));
 
         this.mapAndSavePurchasedProducts(filteredProducts, savedPurchase);
 
-        if (saleDTO.isPaymentThroughTheWebsite()) {
+        if (saleRequestDTO.isPaymentThroughTheWebsite()) {
 
-            this.paymentSimulationRepository.payment(saleDTO.getCardDTO(), amount, languageAndCountry[0], languageAndCountry[1]);
+            this.paymentSimulationRepository.payment(saleRequestDTO.getCardRequestDTO(), amount, languageAndCountry[0], languageAndCountry[1]);
         }
 
         return savedPurchase.getId();
     }
 
-    private Purchase createPurchase(BigDecimal amount, SaleDTO saleDTO, User user, Address address) {
+    private Purchase createPurchase(BigDecimal amount, SaleRequestDTO saleRequestDTO, User user, Address address) {
 
         return Purchase.PurchaseBuilder.builder()
                 .amount(amount)
-                .cardName(saleDTO.isPaymentThroughTheWebsite() ? saleDTO.getCardDTO().getNameOfCardHolder() : null)
-                .isPaymentThroughTheWebsite(saleDTO.isPaymentThroughTheWebsite())
+                .cardName(saleRequestDTO.isPaymentThroughTheWebsite() ? saleRequestDTO.getCardRequestDTO().getNameOfCardHolder() : null)
+                .isPaymentThroughTheWebsite(saleRequestDTO.isPaymentThroughTheWebsite())
                 .user(user)
                 .address(address)
                 .build();

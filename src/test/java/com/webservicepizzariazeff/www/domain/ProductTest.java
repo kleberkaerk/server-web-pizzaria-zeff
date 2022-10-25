@@ -117,7 +117,15 @@ class ProductTest {
     @Test
     void testToString() {
 
-        Assertions.assertThat(product)
-                .hasToString("Product{id=1, name='name', description='description', price=10, type=SALTY_PIZZA, priceRating=REGULAR_PRICE, image='/image.png'}");
+        Assertions.assertThat(this.product)
+                .hasToString("Product{" +
+                        "id=" + this.product.getId() +
+                        ", name='" + this.product.getName() + '\'' +
+                        ", description='" + this.product.getDescription() + '\'' +
+                        ", price=" + this.product.getPrice() +
+                        ", type=" + this.product.getType() +
+                        ", priceRating=" + this.product.getPriceRating() +
+                        ", image='" + this.product.getImage() + '\'' +
+                        '}');
     }
 }

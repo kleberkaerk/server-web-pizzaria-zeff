@@ -4,11 +4,14 @@ package com.webservicepizzariazeff.www.util;
 import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
+import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 class MapperTest {
 
@@ -21,6 +24,8 @@ class MapperTest {
     private static Product product;
 
     private static Purchase purchase;
+
+    private static PurchaseResponseDTOForUser purchaseResponseDTOForUser;
 
     @BeforeAll
     static void setObjects() {
@@ -67,8 +72,64 @@ class MapperTest {
                 .priceRating(PriceRating.REGULAR_PRICE)
                 .build();
 
+        List<PurchasedProduct> purchasedProductList = List.of(
+                PurchasedProduct.PurchasedProductBuilder.builder()
+                        .id(1L)
+                        .name("name1")
+                        .build(),
+                PurchasedProduct.PurchasedProductBuilder.builder()
+                        .id(2L)
+                        .name("name2")
+                        .build(),
+                PurchasedProduct.PurchasedProductBuilder.builder()
+                        .id(3L)
+                        .name("name3")
+                        .build()
+        );
+
         purchase = Purchase.PurchaseBuilder.builder()
-                .id(1L).build();
+                .id(1L)
+                .amount(new BigDecimal("10.00"))
+                .dateAndTime("12/34/5678T90:12")
+                .cardName("cardName")
+                .isActive(true)
+                .isFinished(true)
+                .isDelivered(true)
+                .isPaymentThroughTheWebsite(true)
+                .purchasedProducts(purchasedProductList)
+                .user(user)
+                .address(address)
+                .build();
+
+        purchaseResponseDTOForUser = PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                .id(purchase.getId())
+                .amount(purchase.getAmount())
+                .dateAndTime(purchase.getDateAndTime())
+                .cardName(purchase.getCardName())
+                .isActive(purchase.isActive())
+                .isFinished(purchase.isFinished())
+                .isDelivered(purchase.isDelivered())
+                .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
+                .purchasedProductResponseDTOS(List.of(
+                        PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                                .name(purchasedProductList.get(0).getName())
+                                .build(),
+                        PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                                .name(purchasedProductList.get(1).getName())
+                                .build(),
+                        PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                                .name(purchasedProductList.get(2).getName())
+                                .build()
+                ))
+                .addressResponseDTO(AddressResponseDTO.AddressResponseDTOBuilder.builder()
+                        .id(address.getId())
+                        .number(address.getNumber())
+                        .road(address.getRoad())
+                        .district(address.getDistrict())
+                        .city(address.getCity())
+                        .state(address.getState())
+                        .build()
+                ).build();
     }
 
     @Test
@@ -126,5 +187,12 @@ class MapperTest {
 
         Assertions.assertThat(Mapper.ofTheProductForPurchasedProduct(product, purchase).getName())
                 .isEqualTo(product.getName());
+    }
+
+    @Test
+    void ofThePurchaseForPurchaseResponseDTOForUser_mapsFromPurchaseToPurchaseResponseDTOForUser_wheneverCalled() {
+
+        Assertions.assertThat(Mapper.ofThePurchaseForPurchaseResponseDTOForUser(purchase).toString())
+                .hasToString(purchaseResponseDTOForUser.toString());
     }
 }

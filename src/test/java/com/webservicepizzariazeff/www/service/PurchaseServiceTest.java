@@ -4,7 +4,11 @@ import com.webservicepizzariazeff.www.domain.Address;
 import com.webservicepizzariazeff.www.domain.Purchase;
 import com.webservicepizzariazeff.www.domain.PurchasedProduct;
 import com.webservicepizzariazeff.www.domain.User;
+import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
+import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
 import com.webservicepizzariazeff.www.repository.PurchaseRepository;
+import com.webservicepizzariazeff.www.util.Mapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +21,9 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 class PurchaseServiceTest {
@@ -35,6 +41,11 @@ class PurchaseServiceTest {
     private static Address address;
 
     private static Purchase purchase;
+
+    private static List<Purchase> purchases;
+
+    private static Map<Boolean, List<PurchaseResponseDTOForUser>> mapPurchasedProductResponseDTOForResponse;
+
 
     @BeforeAll
     static void setObjects() {
@@ -72,6 +83,107 @@ class PurchaseServiceTest {
         purchase = Purchase.PurchaseBuilder.builder()
                 .id(1L)
                 .build();
+
+        purchases = List.of(
+                Purchase.PurchaseBuilder.builder()
+                        .id(1L)
+                        .amount(new BigDecimal("10.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName")
+                        .isActive(true)
+                        .isFinished(false)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(2L)
+                        .amount(new BigDecimal("20.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName")
+                        .isActive(true)
+                        .isFinished(false)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(3L)
+                        .amount(new BigDecimal("30.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName")
+                        .isActive(true)
+                        .isFinished(false)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build()
+        );
+
+        List<PurchasedProductResponseDTO> purchasedProductResponseDTOS = purchasedProducts.stream().map(purchasedProduct -> {
+            return PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                    .name(purchasedProduct.getName()).build();
+        }).toList();
+
+        AddressResponseDTO addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+                .id(address.getId())
+                .number(address.getNumber())
+                .road(address.getRoad())
+                .district(address.getDistrict())
+                .city(address.getCity())
+                .state(address.getState())
+                .build();
+
+        mapPurchasedProductResponseDTOForResponse = new HashMap<>(
+                Map.of(
+                        false, List.of(
+                                PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                                        .id(2L)
+                                        .amount(new BigDecimal("20.00"))
+                                        .dateAndTime("12/34/5678T90:12")
+                                        .cardName("cardName")
+                                        .isActive(true)
+                                        .isFinished(false)
+                                        .isDelivered(false)
+                                        .isPaymentThroughTheWebsite(false)
+                                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                        .addressResponseDTO(addressResponseDTO)
+                                        .build(),
+                                PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                                        .id(1L)
+                                        .amount(new BigDecimal("10.00"))
+                                        .dateAndTime("12/34/5678T90:12")
+                                        .cardName("cardName")
+                                        .isActive(true)
+                                        .isFinished(false)
+                                        .isDelivered(false)
+                                        .isPaymentThroughTheWebsite(false)
+                                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                        .addressResponseDTO(addressResponseDTO)
+                                        .build()
+                        ),
+                        true, List.of(
+                                PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                                        .id(3L)
+                                        .amount(new BigDecimal("30.00"))
+                                        .dateAndTime("12/34/5678T90:12")
+                                        .cardName("cardName")
+                                        .isActive(true)
+                                        .isFinished(false)
+                                        .isDelivered(true)
+                                        .isPaymentThroughTheWebsite(false)
+                                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                        .addressResponseDTO(addressResponseDTO)
+                                        .build()
+                        )
+                )
+        );
     }
 
     @BeforeEach
@@ -91,6 +203,9 @@ class PurchaseServiceTest {
                         .user(user)
                         .address(address)
                         .build());
+
+        BDDMockito.when(this.purchaseRepository.findByUserAndIsActive(ArgumentMatchers.any(User.class), ArgumentMatchers.anyBoolean()))
+                .thenReturn(purchases);
     }
 
     @Test
@@ -136,5 +251,13 @@ class PurchaseServiceTest {
         Assertions.assertThat(this.purchaseService.save(purchase).getAddress())
                 .isNotNull()
                 .isEqualTo(address);
+    }
+
+    @Test
+    void findByAllPurchasesOfTheAnUser_returnsAMapOfTheAllActivePurchaseResponseDTOForUserOfTheAUser_wheneverCalled() {
+
+        Assertions.assertThat(this.purchaseService.findByAllPurchasesOfTheAnUser(user))
+                .isNotNull()
+                .hasToString(mapPurchasedProductResponseDTOForResponse.toString());
     }
 }

@@ -1,6 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.dto.request.SaleDTO;
+import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,11 +26,10 @@ public class SaleController {
     @PostMapping("sale")
     public ResponseEntity<Long> sale(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody @Valid SaleDTO saleDTO,
+            @RequestBody @Valid SaleRequestDTO saleRequestDTO,
             @RequestHeader(value = "Accept-Language") String acceptLanguage
     ) {
 
-        return new ResponseEntity<>(this.saleService.sale(userDetails, saleDTO, acceptLanguage), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.saleService.sale(userDetails, saleRequestDTO, acceptLanguage), HttpStatus.CREATED);
     }
-
 }

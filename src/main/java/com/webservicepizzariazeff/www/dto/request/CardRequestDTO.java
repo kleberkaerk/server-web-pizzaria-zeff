@@ -2,7 +2,7 @@ package com.webservicepizzariazeff.www.dto.request;
 
 import javax.validation.constraints.NotEmpty;
 
-public class CardDTO {
+public class CardRequestDTO {
 
     @NotEmpty
     private final String nameOfCardHolder;
@@ -18,7 +18,7 @@ public class CardDTO {
 
     private final FormOfPayment formOfPayment;
 
-    private CardDTO(String nameOfCardHolder, String cardNumber, String dueDate, String securityCode, FormOfPayment formOfPayment) {
+    private CardRequestDTO(String nameOfCardHolder, String cardNumber, String dueDate, String securityCode, FormOfPayment formOfPayment) {
 
         this.nameOfCardHolder = nameOfCardHolder;
         this.cardNumber = cardNumber;
@@ -47,47 +47,58 @@ public class CardDTO {
         return formOfPayment;
     }
 
-    public static final class CardDTOBuilder {
+    @Override
+    public String toString() {
+        return "CardRequestDTO{" +
+                "nameOfCardHolder='" + nameOfCardHolder + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", dueDate='" + dueDate + '\'' +
+                ", securityCode='" + securityCode + '\'' +
+                ", formOfPayment=" + formOfPayment +
+                '}';
+    }
+
+    public static final class CardRequestDTOBuilder {
         private @NotEmpty String nameOfCardHolder;
         private @NotEmpty String cardNumber;
         private @NotEmpty String dueDate;
         private @NotEmpty String securityCode;
         private FormOfPayment formOfPayment;
 
-        private CardDTOBuilder() {
+        private CardRequestDTOBuilder() {
         }
 
-        public static CardDTOBuilder builder() {
-            return new CardDTOBuilder();
+        public static CardRequestDTOBuilder builder() {
+            return new CardRequestDTOBuilder();
         }
 
-        public CardDTOBuilder nameOfCardHolder(String nameOfCardHolder) {
+        public CardRequestDTOBuilder nameOfCardHolder(String nameOfCardHolder) {
             this.nameOfCardHolder = nameOfCardHolder;
             return this;
         }
 
-        public CardDTOBuilder cardNumber(String cardNumber) {
+        public CardRequestDTOBuilder cardNumber(String cardNumber) {
             this.cardNumber = cardNumber;
             return this;
         }
 
-        public CardDTOBuilder dueDate(String dueDate) {
+        public CardRequestDTOBuilder dueDate(String dueDate) {
             this.dueDate = dueDate;
             return this;
         }
 
-        public CardDTOBuilder securityCode(String securityCode) {
+        public CardRequestDTOBuilder securityCode(String securityCode) {
             this.securityCode = securityCode;
             return this;
         }
 
-        public CardDTOBuilder formOfPayment(FormOfPayment formOfPayment) {
+        public CardRequestDTOBuilder formOfPayment(FormOfPayment formOfPayment) {
             this.formOfPayment = formOfPayment;
             return this;
         }
 
-        public CardDTO build() {
-            return new CardDTO(nameOfCardHolder, cardNumber, dueDate, securityCode, formOfPayment);
+        public CardRequestDTO build() {
+            return new CardRequestDTO(nameOfCardHolder, cardNumber, dueDate, securityCode, formOfPayment);
         }
     }
 }

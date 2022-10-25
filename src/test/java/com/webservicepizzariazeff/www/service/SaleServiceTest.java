@@ -1,9 +1,9 @@
 package com.webservicepizzariazeff.www.service;
 
 import com.webservicepizzariazeff.www.domain.*;
-import com.webservicepizzariazeff.www.dto.request.CardDTO;
+import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
 import com.webservicepizzariazeff.www.dto.request.FormOfPayment;
-import com.webservicepizzariazeff.www.dto.request.SaleDTO;
+import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.exception.InvalidCardException;
 import com.webservicepizzariazeff.www.repository.PaymentSimulationRepository;
 import org.assertj.core.api.Assertions;
@@ -44,7 +44,7 @@ class SaleServiceTest {
 
     private static User userForArgument;
 
-    private static SaleDTO saleDTOForArgument;
+    private static SaleRequestDTO saleRequestDTOForArgument;
 
     private static List<Product> productsForReturn;
 
@@ -63,7 +63,7 @@ class SaleServiceTest {
                 .authorities("ROLE_USER")
                 .build();
 
-        CardDTO cardDTOForSaleDTO = CardDTO.CardDTOBuilder.builder()
+        CardRequestDTO cardRequestDTOForSaleRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("nameOfCardHolder")
                 .cardNumber("1234567890123456")
                 .dueDate("12/34")
@@ -71,10 +71,10 @@ class SaleServiceTest {
                 .formOfPayment(FormOfPayment.CREDIT)
                 .build();
 
-        saleDTOForArgument = SaleDTO.SaleDTOBuilder.builder()
+        saleRequestDTOForArgument = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
                 .addressId(1L)
-                .cardDTO(cardDTOForSaleDTO)
+                .cardRequestDTO(cardRequestDTOForSaleRequestDTO)
                 .isPaymentThroughTheWebsite(true)
                 .build();
 
@@ -162,7 +162,7 @@ class SaleServiceTest {
     void definitionBehaviorsForMockPurchaseService() {
 
         BDDMockito.doNothing().when(this.paymentSimulationRepository).payment(
-                ArgumentMatchers.any(CardDTO.class),
+                ArgumentMatchers.any(CardRequestDTO.class),
                 ArgumentMatchers.any(BigDecimal.class),
                 ArgumentMatchers.anyString(),
                 ArgumentMatchers.anyString()
@@ -172,7 +172,7 @@ class SaleServiceTest {
     @Test
     void sale_makesTheSaleOfProductsAndReturnsThePurchaseId_whenTheArgumentsAreCorrect() {
 
-        Assertions.assertThat(this.saleService.sale(userForArgument, saleDTOForArgument, "pt-BR"))
+        Assertions.assertThat(this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"))
                 .isEqualTo(1L);
     }
 
@@ -187,7 +187,7 @@ class SaleServiceTest {
                 ));
 
         Assertions.assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> this.saleService.sale(userForArgument, saleDTOForArgument, "pt-BR"));
+                .isThrownBy(() -> this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"));
     }
 
     @Test
@@ -197,13 +197,13 @@ class SaleServiceTest {
                 .thenThrow(ResponseStatusException.class);
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.saleService.sale(userForArgument, saleDTOForArgument, "pt-BR"));
+                .isThrownBy(() -> this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"));
     }
 
     @Test
-    void sale_throwsNullPointerException_whenSaleDTOHasANullCardDTO() {
+    void sale_throwsNullPointerException_whenSaleRequestDTOHasANullCardRequestDTO() {
 
-        SaleDTO saleThatThrowsNullPointerException = SaleDTO.SaleDTOBuilder.builder()
+        SaleRequestDTO saleThatThrowsNullPointerException = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
                 .addressId(1L)
                 .isPaymentThroughTheWebsite(true)
@@ -214,20 +214,20 @@ class SaleServiceTest {
     }
 
     @Test
-    void sale_throwsInvalidCardException_whenSaleDTOHasACardDTOWithInvalidFields() {
+    void sale_throwsInvalidCardException_whenSaleRequestDTOHasACardRequestDTOWithInvalidFields() {
 
         BDDMockito.doThrow(InvalidCardException.class).when(this.paymentSimulationRepository).payment(
-                ArgumentMatchers.any(CardDTO.class),
+                ArgumentMatchers.any(CardRequestDTO.class),
                 ArgumentMatchers.any(BigDecimal.class),
                 ArgumentMatchers.anyString(),
                 ArgumentMatchers.anyString()
         );
 
-        SaleDTO saleThatThrowsInvalidCardException = SaleDTO.SaleDTOBuilder.builder()
+        SaleRequestDTO saleThatThrowsInvalidCardException = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
                 .addressId(1L)
                 .isPaymentThroughTheWebsite(true)
-                .cardDTO(CardDTO.CardDTOBuilder.builder()
+                .cardRequestDTO(CardRequestDTO.CardRequestDTOBuilder.builder()
                         .nameOfCardHolder("1234")
                         .cardNumber("abcd")
                         .dueDate("12/345")

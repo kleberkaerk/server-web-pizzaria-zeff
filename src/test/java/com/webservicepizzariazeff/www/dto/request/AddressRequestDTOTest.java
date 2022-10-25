@@ -58,7 +58,13 @@ class AddressRequestDTOTest {
     @Test
     void testToString() {
 
-        Assertions.assertThat(addressRequestDTO)
-                .hasToString("AddressDTO{number='1', road='road', district='district', city='city', state='state'}");
+        Assertions.assertThat(this.addressRequestDTO)
+                .hasToString("AddressDTO{" +
+                        "number='" + this.addressRequestDTO.getNumber() + '\'' +
+                        ", road='" + this.addressRequestDTO.getRoad() + '\'' +
+                        ", district='" + this.addressRequestDTO.getDistrict() + '\'' +
+                        ", city='" + this.addressRequestDTO.getCity() + '\'' +
+                        ", state='" + this.addressRequestDTO.getState() + '\'' +
+                        '}');
     }
 }

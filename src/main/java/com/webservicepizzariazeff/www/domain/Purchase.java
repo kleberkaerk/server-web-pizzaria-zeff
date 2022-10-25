@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-
 @Entity
 @Table(name = "purchases")
 @SuppressWarnings("java:S107")
@@ -128,6 +127,23 @@ public class Purchase {
         this.isFinished = false;
         this.isDelivered = false;
         this.dateAndTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm"));
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", dateAndTime='" + dateAndTime + '\'' +
+                ", cardName='" + cardName + '\'' +
+                ", isActive=" + isActive +
+                ", isFinished=" + isFinished +
+                ", isDelivered=" + isDelivered +
+                ", isPaymentThroughTheWebsite=" + isPaymentThroughTheWebsite +
+                ", purchasedProducts=" + purchasedProducts +
+                ", user=" + user +
+                ", address=" + address +
+                '}';
     }
 
     public static final class PurchaseBuilder {

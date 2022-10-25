@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
+import java.util.function.BinaryOperator;
 
 class UserTest {
 
@@ -105,8 +106,14 @@ class UserTest {
     @Test
     void testToString() {
 
-        Assertions.assertThat(user)
-                .hasToString("User{id=1, name='name', username='username', password='password', authorities='ROLE_USER,ROLE_ADMIN'}");
+        Assertions.assertThat(this.user)
+                .hasToString("User{" +
+                        "id=" + this.user.getId() +
+                        ", name='" + this.user.getName() + '\'' +
+                        ", username='" + this.user.getUsername() + '\'' +
+                        ", password='" + this.user.getPassword() + '\'' +
+                        ", authorities='" + "ROLE_USER,ROLE_ADMIN" + '\'' +
+                        '}');
     }
 
     @Test

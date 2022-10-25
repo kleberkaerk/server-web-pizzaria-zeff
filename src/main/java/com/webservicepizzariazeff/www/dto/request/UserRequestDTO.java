@@ -32,6 +32,15 @@ public class UserRequestDTO {
         return password;
     }
 
+    @Override
+    public String toString() {
+        return "UserRequestDTO{" +
+                "name='" + name + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
+
     public static final class UserDTOBuilder {
         private @NotEmpty() String name;
         private @NotEmpty() String username;

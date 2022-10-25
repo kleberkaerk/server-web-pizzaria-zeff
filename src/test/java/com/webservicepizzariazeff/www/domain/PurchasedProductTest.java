@@ -33,4 +33,14 @@ class PurchasedProductTest {
         Assertions.assertThat(this.purchasedProduct.getId())
                 .isEqualTo(1L);
     }
+
+    @Test
+    void testToString() {
+
+        Assertions.assertThat(this.purchasedProduct)
+                .hasToString("PurchasedProduct{" +
+                        "id=" + this.purchasedProduct.getId() +
+                        ", name='" + this.purchasedProduct.getName() + '\'' +
+                        '}');
+    }
 }

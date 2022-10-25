@@ -1,6 +1,6 @@
 package com.webservicepizzariazeff.www.repository;
 
-import com.webservicepizzariazeff.www.dto.request.CardDTO;
+import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
 import com.webservicepizzariazeff.www.dto.request.FormOfPayment;
 import com.webservicepizzariazeff.www.exception.InvalidCardException;
 import org.assertj.core.api.Assertions;
@@ -14,18 +14,18 @@ class PaymentSimulationRepositoryTest {
 
     private PaymentSimulationRepository paymentSimulationRepository;
 
-    private static CardDTO cardDTOWithNameOfCardHolderInvalid;
+    private static CardRequestDTO cardRequestDTOWithNameOfCardHolderInvalidRequest;
 
-    private static CardDTO cardDTOWithCardNumberInvalid;
+    private static CardRequestDTO cardRequestDTOWithCardNumberInvalidRequest;
 
-    private static CardDTO cardDTOWithSecurityCodeInvalid;
+    private static CardRequestDTO cardRequestDTOWithSecurityCodeInvalid;
 
-    private static CardDTO cardDTOWithDueDateInvalid;
+    private static CardRequestDTO cardRequestDTOWithDueDateInvalid;
 
     @BeforeAll
     static void setObjects() {
 
-        cardDTOWithNameOfCardHolderInvalid = CardDTO.CardDTOBuilder.builder()
+        cardRequestDTOWithNameOfCardHolderInvalidRequest = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD 123")
                 .cardNumber("1234567890123456")
                 .dueDate("01/23")
@@ -33,7 +33,7 @@ class PaymentSimulationRepositoryTest {
                 .formOfPayment(FormOfPayment.DEBIT)
                 .build();
 
-        cardDTOWithCardNumberInvalid = CardDTO.CardDTOBuilder.builder()
+        cardRequestDTOWithCardNumberInvalidRequest = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
                 .cardNumber("123ABC7890123456")
                 .dueDate("01/23")
@@ -41,7 +41,7 @@ class PaymentSimulationRepositoryTest {
                 .formOfPayment(FormOfPayment.DEBIT)
                 .build();
 
-        cardDTOWithDueDateInvalid = CardDTO.CardDTOBuilder.builder()
+        cardRequestDTOWithDueDateInvalid = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
                 .cardNumber("1234567890123456")
                 .dueDate("01/234")
@@ -49,7 +49,7 @@ class PaymentSimulationRepositoryTest {
                 .formOfPayment(FormOfPayment.DEBIT)
                 .build();
 
-        cardDTOWithSecurityCodeInvalid = CardDTO.CardDTOBuilder.builder()
+        cardRequestDTOWithSecurityCodeInvalid = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
                 .cardNumber("1234567890123456")
                 .dueDate("01/23")
@@ -67,7 +67,7 @@ class PaymentSimulationRepositoryTest {
     @Test
     void payment_makesAPaymentSimulationAndDoesNotThrowAnyExceptions_whenThenArgumentsAreRight() {
 
-        CardDTO cardDTO = CardDTO.CardDTOBuilder.builder()
+        CardRequestDTO cardRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
                 .cardNumber("1234567890123456")
                 .dueDate("01/23")
@@ -75,29 +75,29 @@ class PaymentSimulationRepositoryTest {
                 .formOfPayment(FormOfPayment.DEBIT)
                 .build();
 
-        Assertions.assertThatCode(() -> this.paymentSimulationRepository.payment(cardDTO, new BigDecimal("10.00"), "pt", "BR"))
+        Assertions.assertThatCode(() -> this.paymentSimulationRepository.payment(cardRequestDTO, new BigDecimal("10.00"), "pt", "BR"))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void payment_throwsInvalidCardException_whenSomeCardDTOValueIsIncorrect() {
+    void payment_throwsInvalidCardException_whenSomeCardRequestDTOValueIsIncorrect() {
 
         BigDecimal value = new BigDecimal("10.00");
 
         Assertions.assertThatExceptionOfType(InvalidCardException.class)
-                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardDTOWithNameOfCardHolderInvalid, value, "pt", "BR"))
+                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardRequestDTOWithNameOfCardHolderInvalidRequest, value, "pt", "BR"))
                 .withMessage("Cartão inválido.");
 
         Assertions.assertThatExceptionOfType(InvalidCardException.class)
-                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardDTOWithCardNumberInvalid, value, "pt", "BR"))
+                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardRequestDTOWithCardNumberInvalidRequest, value, "pt", "BR"))
                 .withMessage("Cartão inválido.");
 
         Assertions.assertThatExceptionOfType(InvalidCardException.class)
-                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardDTOWithDueDateInvalid, value, "pt", "BR"))
+                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardRequestDTOWithDueDateInvalid, value, "pt", "BR"))
                 .withMessage("Cartão inválido.");
 
         Assertions.assertThatExceptionOfType(InvalidCardException.class)
-                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardDTOWithSecurityCodeInvalid, value, "pt", "BR"))
+                .isThrownBy(() -> this.paymentSimulationRepository.payment(cardRequestDTOWithSecurityCodeInvalid, value, "pt", "BR"))
                 .withMessage("Cartão inválido.");
     }
 }

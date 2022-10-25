@@ -34,6 +34,14 @@ public class PurchasedProduct {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return "PurchasedProduct{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public static final class PurchasedProductBuilder {
         private Long id;
         private String name;

@@ -38,4 +38,15 @@ class UserRequestDTOTest {
         Assertions.assertThat(this.userRequestDTO.getName())
                 .isEqualTo("name");
     }
+
+    @Test
+    void testToString(){
+
+        Assertions.assertThat(this.userRequestDTO)
+                .hasToString("UserRequestDTO{" +
+                        "name='" + this.userRequestDTO.getName() + '\'' +
+                        ", username='" + this.userRequestDTO.getUsername() + '\'' +
+                        ", password='" + this.userRequestDTO.getPassword() + '\'' +
+                        '}');
+    }
 }

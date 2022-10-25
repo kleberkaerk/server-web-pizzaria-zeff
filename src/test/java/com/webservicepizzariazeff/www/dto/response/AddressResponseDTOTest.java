@@ -9,7 +9,7 @@ class AddressResponseDTOTest {
     private AddressResponseDTO addressResponseDTO;
 
     @BeforeEach
-    void setAddressResponseDTO(){
+    void setAddressResponseDTO() {
 
         this.addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(1L)
@@ -89,5 +89,19 @@ class AddressResponseDTOTest {
                         .city("city")
                         .state("state")
                         .build());
+    }
+
+    @Test
+    void testToString() {
+
+        Assertions.assertThat(this.addressResponseDTO)
+                .hasToString("AddressResponseDTO{" +
+                        "id=" + this.addressResponseDTO.getId() +
+                        ", number='" + this.addressResponseDTO.getNumber() + '\'' +
+                        ", road='" + this.addressResponseDTO.getRoad() + '\'' +
+                        ", district='" + this.addressResponseDTO.getDistrict() + '\'' +
+                        ", city='" + this.addressResponseDTO.getCity() + '\'' +
+                        ", state='" + this.addressResponseDTO.getState() + '\'' +
+                        '}');
     }
 }

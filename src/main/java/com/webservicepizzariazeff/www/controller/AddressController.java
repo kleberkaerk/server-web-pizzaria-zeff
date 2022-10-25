@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "addresses")
+@RequestMapping("addresses")
 public class AddressController {
 
     private final AddressService addressService;
@@ -45,7 +45,7 @@ public class AddressController {
         return new ResponseEntity<>(this.addressService.findByUser(userDetails), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "{id}")
     public ResponseEntity<Void> deleteAAddress(@PathVariable Long id) {
 
         this.addressService.deleteAAddress(id);

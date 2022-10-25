@@ -1,5 +1,6 @@
 package com.webservicepizzariazeff.www.domain;
 
+import org.apache.logging.log4j.LogManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -173,5 +174,27 @@ class PurchaseTest {
 
         Assertions.assertThat(purchase2.getDateAndTime())
                 .isEqualTo(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm")));
+    }
+
+    @Test
+    void testToString(){
+
+        LogManager.getLogger(PurchaseTest.class)
+                        .info(this.purchase);
+
+        Assertions.assertThat(this.purchase)
+                .hasToString("Purchase{" +
+                        "id=" + this.purchase.getId() +
+                        ", amount=" + this.purchase.getAmount() +
+                        ", dateAndTime='" + this.purchase.getDateAndTime() + '\'' +
+                        ", cardName='" + this.purchase.getCardName() + '\'' +
+                        ", isActive=" + this.purchase.isActive() +
+                        ", isFinished=" + this.purchase.isFinished() +
+                        ", isDelivered=" + this.purchase.isDelivered() +
+                        ", isPaymentThroughTheWebsite=" + this.purchase.isPaymentThroughTheWebsite() +
+                        ", purchasedProducts=" + this.purchase.getPurchasedProducts() +
+                        ", user=" + this.purchase.getUser() +
+                        ", address=" + this.purchase.getAddress() +
+                        '}');
     }
 }
