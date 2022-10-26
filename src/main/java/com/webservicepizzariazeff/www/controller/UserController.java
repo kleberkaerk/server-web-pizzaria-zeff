@@ -28,5 +28,4 @@ public class UserController {
 
         return new ResponseEntity<>(this.userService.registerUser(userRequestDTO, acceptLanguage), HttpStatus.CREATED);
     }
-
 }

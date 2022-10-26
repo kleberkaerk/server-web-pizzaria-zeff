@@ -75,6 +75,7 @@ class SaleControllerTest {
     void sale_saveANewPurchaseAndReturnThePurchaseId_whenTheValuesOfSaleRequestDTOAreCorrect() {
 
         Assertions.assertThat(this.saleController.sale(user, saleRequestDTO, "pt-BR"))
+                .isNotNull()
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));
     }
 

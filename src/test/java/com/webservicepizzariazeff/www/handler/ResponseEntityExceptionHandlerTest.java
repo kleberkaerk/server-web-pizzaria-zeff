@@ -2,10 +2,8 @@ package com.webservicepizzariazeff.www.handler;
 
 import com.webservicepizzariazeff.www.exception.ExistingAddressException;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
-import com.webservicepizzariazeff.www.exception_handler.ExistingAddressExceptionHandler;
-import com.webservicepizzariazeff.www.exception_handler.ExistingUserExceptionHandler;
-import com.webservicepizzariazeff.www.exception_handler.MethodArgumentNotValidExceptionHandler;
-import com.webservicepizzariazeff.www.exception_handler.NullPointerExceptionHandler;
+import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
+import com.webservicepizzariazeff.www.exception_handler.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,9 +25,13 @@ class ResponseEntityExceptionHandlerTest {
 
     private static ResponseEntity<NullPointerExceptionHandler> nullPointerExceptionHandlerResponseEntity;
 
+    private static ResponseEntity<PurchaseFinishedExceptionHandler> purchaseFinishedExceptionHandlerResponseEntity;
+
     private static ExistingUserException existingUserExceptionForArgument;
 
     private static ExistingAddressException existingAddressExceptionForArgument;
+
+    private static PurchaseFinishedException purchaseFinishedException;
 
     @BeforeAll
     static void setObjects() {
@@ -61,6 +63,13 @@ class ResponseEntityExceptionHandlerTest {
                         .message("Invalid Request.")
                         .build(), HttpStatus.BAD_REQUEST
         );
+
+        purchaseFinishedException = new PurchaseFinishedException("message PurchaseFinishedException");
+
+        purchaseFinishedExceptionHandlerResponseEntity = new ResponseEntity<>(
+                PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
+                        .message("message PurchaseFinishedException")
+                        .build(), HttpStatus.CONFLICT);
     }
 
     @BeforeEach
@@ -107,5 +116,15 @@ class ResponseEntityExceptionHandlerTest {
 
         Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerNullPointerException().getBody()).getMessage())
                 .isEqualTo(Objects.requireNonNull(nullPointerExceptionHandlerResponseEntity.getBody()).getMessage());
+    }
+
+    @Test
+    void handlerPurchaseFinishedException__() {
+
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException).getStatusCode())
+                .isEqualTo(purchaseFinishedExceptionHandlerResponseEntity.getStatusCode());
+
+        Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException).getBody()).getMessage())
+                .isEqualTo(Objects.requireNonNull(purchaseFinishedExceptionHandlerResponseEntity.getBody()).getMessage());
     }
 }

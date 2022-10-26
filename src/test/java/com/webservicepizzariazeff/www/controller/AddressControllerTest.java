@@ -167,6 +167,7 @@ class AddressControllerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.addressController.deleteAAddress(1L))
+                .isNotNull()
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 

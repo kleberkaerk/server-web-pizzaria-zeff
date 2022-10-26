@@ -4,6 +4,7 @@ import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,10 @@ public class SaleController {
         this.saleService = saleService;
     }
 
-    @PostMapping("sale")
+    @PostMapping(
+            value = "sale",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Long> sale(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody @Valid SaleRequestDTO saleRequestDTO,

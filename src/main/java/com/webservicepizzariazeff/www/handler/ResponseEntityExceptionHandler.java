@@ -2,10 +2,8 @@ package com.webservicepizzariazeff.www.handler;
 
 import com.webservicepizzariazeff.www.exception.ExistingAddressException;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
-import com.webservicepizzariazeff.www.exception_handler.ExistingAddressExceptionHandler;
-import com.webservicepizzariazeff.www.exception_handler.ExistingUserExceptionHandler;
-import com.webservicepizzariazeff.www.exception_handler.MethodArgumentNotValidExceptionHandler;
-import com.webservicepizzariazeff.www.exception_handler.NullPointerExceptionHandler;
+import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
+import com.webservicepizzariazeff.www.exception_handler.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,10 +44,18 @@ public class ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<NullPointerExceptionHandler> handlerNullPointerException(){
+    public ResponseEntity<NullPointerExceptionHandler> handlerNullPointerException() {
 
         return new ResponseEntity<>(NullPointerExceptionHandler.NullPointerExceptionHandlerBuilder.builder()
                 .message(message.getString("invalid.request"))
                 .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PurchaseFinishedException.class)
+    public ResponseEntity<PurchaseFinishedExceptionHandler> handlerPurchaseFinishedException(PurchaseFinishedException exception) {
+
+        return new ResponseEntity<>(PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
+                .message(exception.getMessage())
+                .build(), HttpStatus.CONFLICT);
     }
 }

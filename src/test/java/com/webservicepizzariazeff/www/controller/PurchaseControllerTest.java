@@ -4,6 +4,7 @@ import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
 import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
+import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.service.PurchaseService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,9 +15,11 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -116,12 +119,44 @@ class PurchaseControllerTest {
 
         BDDMockito.when(this.purchaseService.findByAllPurchasesOfTheAnUser(ArgumentMatchers.any(UserDetails.class)))
                 .thenReturn(mapPurchasedProductResponseDTOForResponse);
+
+        BDDMockito.doNothing()
+                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
     }
 
     @Test
     void findPurchasesByUser_returnsAMapOfTheAllActivePurchaseResponseDTOForUserOfTheAUser_wheneverCalled() {
 
         Assertions.assertThat(this.purchaseController.findPurchasesByUser(user))
+                .isNotNull()
                 .isEqualTo(ResponseEntity.ok(mapPurchasedProductResponseDTOForResponse));
+    }
+
+    @Test
+    void cancelPurchase_returnsANoContent_whenTheIdPassedIsValid() {
+
+        Assertions.assertThat(this.purchaseController.cancelPurchase(1L, "pt-BR"))
+                .isNotNull()
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void cancelPurchase_throwsResponseStatusException_whenTheIdPassedIsNotExists() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseController.cancelPurchase(0L, "pt-Br"));
+    }
+
+    @Test
+    void cancelPurchase_throwsPurchaseFinishedException_whenTheIdPassedIsNotValid() {
+
+        BDDMockito.doThrow(PurchaseFinishedException.class)
+                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        Assertions.assertThatExceptionOfType(PurchaseFinishedException.class)
+                .isThrownBy(() -> this.purchaseController.cancelPurchase(1L, "pt-Br"));
     }
 }
