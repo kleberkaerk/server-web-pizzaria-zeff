@@ -2,7 +2,7 @@ package com.webservicepizzariazeff.www.controller;
 
 import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
-import com.webservicepizzariazeff.www.dto.request.FormOfPayment;
+import com.webservicepizzariazeff.www.dto.request.FormOfPaymentDTO;
 import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.service.SaleService;
 import org.assertj.core.api.Assertions;
@@ -50,7 +50,7 @@ class SaleControllerTest {
                 .cardNumber("1234567890123456")
                 .dueDate("12/34")
                 .securityCode("123")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
 
         saleRequestDTO = SaleRequestDTO.SaleRequestDTOBuilder.builder()

@@ -2,7 +2,7 @@ package com.webservicepizzariazeff.www.service;
 
 import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
-import com.webservicepizzariazeff.www.dto.request.FormOfPayment;
+import com.webservicepizzariazeff.www.dto.request.FormOfPaymentDTO;
 import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.exception.InvalidCardException;
 import com.webservicepizzariazeff.www.repository.PaymentSimulationRepository;
@@ -68,7 +68,7 @@ class SaleServiceTest {
                 .cardNumber("1234567890123456")
                 .dueDate("12/34")
                 .securityCode("123")
-                .formOfPayment(FormOfPayment.CREDIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.CREDIT)
                 .build();
 
         saleRequestDTOForArgument = SaleRequestDTO.SaleRequestDTOBuilder.builder()
@@ -232,7 +232,7 @@ class SaleServiceTest {
                         .cardNumber("abcd")
                         .dueDate("12/345")
                         .securityCode("123456")
-                        .formOfPayment(FormOfPayment.FOOD_VOUCHER)
+                        .formOfPaymentDTO(FormOfPaymentDTO.FOOD_VOUCHER)
                         .build())
                 .build();
 

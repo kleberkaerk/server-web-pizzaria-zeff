@@ -1,7 +1,9 @@
 package com.webservicepizzariazeff.www.service;
 
 import com.webservicepizzariazeff.www.domain.Purchase;
-import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
+import com.webservicepizzariazeff.www.domain.User;
+import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.repository.PurchaseRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
@@ -30,17 +32,16 @@ public class PurchaseService {
         return this.purchaseRepository.save(purchase);
     }
 
-    public Map<Boolean, List<PurchaseResponseDTOForUser>> findByAllPurchasesOfTheAnUser(UserDetails userDetails) {
+    public Map<Boolean, List<PurchaseUserResponseDTO>> findByAllPurchasesOfTheAnUser(UserDetails userDetails) {
 
-        return this.filterAndGroup(this.purchaseRepository.findByUserAndIsActive(Mapper.ofTheUserDetailsForUser(userDetails), true));
-    }
+        User user = Mapper.ofTheUserDetailsForUser(userDetails);
 
-    private Map<Boolean, List<PurchaseResponseDTOForUser>> filterAndGroup(List<Purchase> purchases) {
+        List<Purchase> userActivePurchases = this.purchaseRepository.findByUserAndIsActive(user, true);
 
-        return purchases.stream()
-                .map(Mapper::ofThePurchaseForPurchaseResponseDTOForUser)
-                .sorted(Comparator.comparing(PurchaseResponseDTOForUser::getId).reversed())
-                .collect(Collectors.groupingBy(PurchaseResponseDTOForUser::isDelivered));
+        return userActivePurchases.stream()
+                .map(Mapper::ofThePurchaseForPurchaseUserResponseDTO)
+                .sorted(Comparator.comparing(PurchaseUserResponseDTO::getId).reversed())
+                .collect(Collectors.groupingBy(PurchaseUserResponseDTO::isDelivered));
     }
 
     public void cancelPurchaseOfTheUser(Long id, String acceptLanguage) {
@@ -57,5 +58,15 @@ public class PurchaseService {
         }
 
         this.purchaseRepository.updateIsActiveById(false, id);
+    }
+
+    public Map<Boolean, List<PurchaseRestaurantResponseDTO>> findByAllUsersPurchases() {
+
+        List<Purchase> purchasesIsNotDelivered = this.purchaseRepository.findByIsDelivered(false);
+
+        return purchasesIsNotDelivered.stream()
+                .map(Mapper::ofThePurchaseForPurchaseRestaurantResponseDTO)
+                .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
+                .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
 }

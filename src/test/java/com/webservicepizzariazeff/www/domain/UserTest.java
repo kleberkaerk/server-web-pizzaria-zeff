@@ -106,13 +106,15 @@ class UserTest {
     @Test
     void testToString() {
 
+        String authorities = this.user.getAuthorities().toString().substring(1, 22).replaceFirst(" ", "");
+
         Assertions.assertThat(this.user)
                 .hasToString("User{" +
                         "id=" + this.user.getId() +
                         ", name='" + this.user.getName() + '\'' +
                         ", username='" + this.user.getUsername() + '\'' +
                         ", password='" + this.user.getPassword() + '\'' +
-                        ", authorities='" + "ROLE_USER,ROLE_ADMIN" + '\'' +
+                        ", authorities='" + authorities + '\'' +
                         '}');
     }
 

@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .antMatchers("/addresses/**").authenticated()
                 .antMatchers("/sales/sale").authenticated()
                 .antMatchers("/purchases/user").fullyAuthenticated()
+                .antMatchers("/purchases/admin/**").hasRole("ADMIN")
                 .antMatchers("/purchases/**").authenticated()
                 .anyRequest()
                 .denyAll()

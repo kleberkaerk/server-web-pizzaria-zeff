@@ -5,7 +5,8 @@ import com.webservicepizzariazeff.www.domain.Purchase;
 import com.webservicepizzariazeff.www.domain.PurchasedProduct;
 import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
+import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
 import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.repository.PurchaseRepository;
@@ -38,16 +39,44 @@ class PurchaseServiceTest {
 
     private static User user;
 
-    private static Purchase purchase;
+    private static Address address;
 
-    private static List<Purchase> purchases;
+    private static Purchase purchaseToCompare;
 
-    private static Map<Boolean, List<PurchaseResponseDTOForUser>> mapPurchasedProductResponseDTOForResponse;
+    private static List<PurchasedProduct> purchasedProducts;
 
-    @BeforeAll
-    static void setObjects() {
+    private static List<Purchase> userPurchases;
 
-        List<PurchasedProduct> purchasedProducts = List.of(
+    private static Map<Boolean, List<PurchaseUserResponseDTO>> mapPurchaseUserResponseDTOToCompare;
+
+    private static List<Purchase> restaurantPurchases;
+
+    private static Map<Boolean, List<PurchaseRestaurantResponseDTO>> mapPurchaseRestaurantResponseDTOToCompare;
+
+    static void setUser() {
+
+        user = User.UserBuilder.builder().id(1L)
+                .name("name")
+                .username("username")
+                .password("password")
+                .authorities("ROLE_USER")
+                .build();
+    }
+
+    static void setAddress() {
+
+        address = Address.AddressBuilder.builder()
+                .number("1")
+                .road("road")
+                .district("district")
+                .city("city")
+                .state("state")
+                .build();
+    }
+
+    static void setPurchasedProducts() {
+
+        purchasedProducts = List.of(
                 PurchasedProduct.PurchasedProductBuilder.builder()
                         .id(1L)
                         .name("name1")
@@ -61,23 +90,11 @@ class PurchaseServiceTest {
                         .name("name3")
                         .build()
         );
+    }
 
-        user = User.UserBuilder.builder().id(1L)
-                .name("name")
-                .username("username")
-                .password("password")
-                .authorities("ROLE_USER")
-                .build();
+    static void setPurchaseToCompare() {
 
-        Address address = Address.AddressBuilder.builder()
-                .number("1")
-                .road("road")
-                .district("district")
-                .city("city")
-                .state("state")
-                .build();
-
-        purchase = Purchase.PurchaseBuilder.builder()
+        purchaseToCompare = Purchase.PurchaseBuilder.builder()
                 .id(1L)
                 .amount(new BigDecimal("10.00"))
                 .dateAndTime("12/34/5678T90:12")
@@ -90,8 +107,11 @@ class PurchaseServiceTest {
                 .address(address)
                 .purchasedProducts(purchasedProducts)
                 .build();
+    }
 
-        purchases = List.of(
+    static void setUserPurchases() {
+
+        userPurchases = List.of(
                 Purchase.PurchaseBuilder.builder()
                         .id(1L)
                         .amount(new BigDecimal("10.00"))
@@ -132,6 +152,9 @@ class PurchaseServiceTest {
                         .purchasedProducts(purchasedProducts)
                         .build()
         );
+    }
+
+    static void setMapPurchaseUserResponseDTOToCompare() {
 
         List<PurchasedProductResponseDTO> purchasedProductResponseDTOS = purchasedProducts.stream()
                 .map(purchasedProduct -> PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
@@ -148,44 +171,44 @@ class PurchaseServiceTest {
                 .state(address.getState())
                 .build();
 
-        mapPurchasedProductResponseDTOForResponse = new HashMap<>(
+        mapPurchaseUserResponseDTOToCompare = new HashMap<>(
                 Map.of(
                         false, List.of(
-                                PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
-                                        .id(purchases.get(1).getId())
-                                        .amount(purchases.get(1).getAmount())
-                                        .dateAndTime(purchases.get(1).getDateAndTime())
-                                        .cardName(purchases.get(1).getCardName())
-                                        .isActive(purchases.get(1).isActive())
-                                        .isFinished(purchases.get(1).isFinished())
-                                        .isDelivered(purchases.get(1).isDelivered())
-                                        .isPaymentThroughTheWebsite(purchases.get(1).isPaymentThroughTheWebsite())
+                                PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+                                        .id(userPurchases.get(1).getId())
+                                        .amount(userPurchases.get(1).getAmount())
+                                        .dateAndTime(userPurchases.get(1).getDateAndTime())
+                                        .cardName(userPurchases.get(1).getCardName())
+                                        .isActive(userPurchases.get(1).isActive())
+                                        .isFinished(userPurchases.get(1).isFinished())
+                                        .isDelivered(userPurchases.get(1).isDelivered())
+                                        .isPaymentThroughTheWebsite(userPurchases.get(1).isPaymentThroughTheWebsite())
                                         .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
                                         .addressResponseDTO(addressResponseDTO)
                                         .build(),
-                                PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
-                                        .id(purchases.get(0).getId())
-                                        .amount(purchases.get(0).getAmount())
-                                        .dateAndTime(purchases.get(0).getDateAndTime())
-                                        .cardName(purchases.get(0).getCardName())
-                                        .isActive(purchases.get(0).isActive())
-                                        .isFinished(purchases.get(0).isFinished())
-                                        .isDelivered(purchases.get(0).isDelivered())
-                                        .isPaymentThroughTheWebsite(purchases.get(0).isPaymentThroughTheWebsite())
+                                PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+                                        .id(userPurchases.get(0).getId())
+                                        .amount(userPurchases.get(0).getAmount())
+                                        .dateAndTime(userPurchases.get(0).getDateAndTime())
+                                        .cardName(userPurchases.get(0).getCardName())
+                                        .isActive(userPurchases.get(0).isActive())
+                                        .isFinished(userPurchases.get(0).isFinished())
+                                        .isDelivered(userPurchases.get(0).isDelivered())
+                                        .isPaymentThroughTheWebsite(userPurchases.get(0).isPaymentThroughTheWebsite())
                                         .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
                                         .addressResponseDTO(addressResponseDTO)
                                         .build()
                         ),
                         true, List.of(
-                                PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
-                                        .id(purchases.get(2).getId())
-                                        .amount(purchases.get(2).getAmount())
-                                        .dateAndTime(purchases.get(2).getDateAndTime())
-                                        .cardName(purchases.get(2).getCardName())
-                                        .isActive(purchases.get(2).isActive())
-                                        .isFinished(purchases.get(2).isFinished())
-                                        .isDelivered(purchases.get(2).isDelivered())
-                                        .isPaymentThroughTheWebsite(purchases.get(2).isPaymentThroughTheWebsite())
+                                PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+                                        .id(userPurchases.get(2).getId())
+                                        .amount(userPurchases.get(2).getAmount())
+                                        .dateAndTime(userPurchases.get(2).getDateAndTime())
+                                        .cardName(userPurchases.get(2).getCardName())
+                                        .isActive(userPurchases.get(2).isActive())
+                                        .isFinished(userPurchases.get(2).isFinished())
+                                        .isDelivered(userPurchases.get(2).isDelivered())
+                                        .isPaymentThroughTheWebsite(userPurchases.get(2).isPaymentThroughTheWebsite())
                                         .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
                                         .addressResponseDTO(addressResponseDTO)
                                         .build()
@@ -194,28 +217,198 @@ class PurchaseServiceTest {
         );
     }
 
+    static void setRestaurantPurchases() {
+
+        restaurantPurchases = List.of(
+                Purchase.PurchaseBuilder.builder()
+                        .id(1L)
+                        .amount(new BigDecimal("10.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName1")
+                        .isActive(true)
+                        .isFinished(false)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(false)
+                        .purchasedProducts(purchasedProducts)
+                        .user(user)
+                        .address(address)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(2L)
+                        .amount(new BigDecimal("20.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName2")
+                        .isActive(false)
+                        .isFinished(false)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(false)
+                        .purchasedProducts(purchasedProducts)
+                        .user(user)
+                        .address(address)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(3L)
+                        .amount(new BigDecimal("30.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName3")
+                        .isActive(false)
+                        .isFinished(false)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(true)
+                        .purchasedProducts(purchasedProducts)
+                        .user(user)
+                        .address(address)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(4L)
+                        .amount(new BigDecimal("40.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName4")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(true)
+                        .purchasedProducts(purchasedProducts)
+                        .user(user)
+                        .address(address)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(5L)
+                        .amount(new BigDecimal("50.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName5")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(false)
+                        .purchasedProducts(purchasedProducts)
+                        .user(user)
+                        .address(address)
+                        .build()
+        );
+    }
+
+    static void setMapPurchaseRestaurantResponseDTOToCompare() {
+
+        List<PurchasedProductResponseDTO> purchasedProductResponseDTOS = List.of(
+                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                        .name(purchasedProducts.get(0).getName())
+                        .build(),
+                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                        .name(purchasedProducts.get(1).getName())
+                        .build(),
+                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                        .name(purchasedProducts.get(2).getName())
+                        .build()
+        );
+
+        AddressResponseDTO addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+                .id(address.getId())
+                .number(address.getNumber())
+                .road(address.getRoad())
+                .district(address.getDistrict())
+                .city(address.getCity())
+                .state(address.getState())
+                .build();
+
+        mapPurchaseRestaurantResponseDTOToCompare = new HashMap<>(Map.of(
+                true, List.of(
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(restaurantPurchases.get(0).getId())
+                                .clientName(restaurantPurchases.get(0).getUser().getName())
+                                .isActive(restaurantPurchases.get(0).isActive())
+                                .isFinished(restaurantPurchases.get(0).isFinished())
+                                .isDelivered(restaurantPurchases.get(0).isDelivered())
+                                .isPaymentThroughTheWebsite(restaurantPurchases.get(0).isPaymentThroughTheWebsite())
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build(),
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(restaurantPurchases.get(3).getId())
+                                .clientName(restaurantPurchases.get(3).getUser().getName())
+                                .isActive(restaurantPurchases.get(3).isActive())
+                                .isFinished(restaurantPurchases.get(3).isFinished())
+                                .isDelivered(restaurantPurchases.get(3).isDelivered())
+                                .isPaymentThroughTheWebsite(restaurantPurchases.get(3).isPaymentThroughTheWebsite())
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build(),
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(restaurantPurchases.get(4).getId())
+                                .clientName(restaurantPurchases.get(4).getUser().getName())
+                                .isActive(restaurantPurchases.get(4).isActive())
+                                .isFinished(restaurantPurchases.get(4).isFinished())
+                                .isDelivered(restaurantPurchases.get(4).isDelivered())
+                                .isPaymentThroughTheWebsite(restaurantPurchases.get(4).isPaymentThroughTheWebsite())
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build()
+                ),
+                false, List.of(
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+
+                                .id(restaurantPurchases.get(1).getId())
+                                .clientName(restaurantPurchases.get(1).getUser().getName())
+                                .isActive(restaurantPurchases.get(1).isActive())
+                                .isFinished(restaurantPurchases.get(1).isFinished())
+                                .isDelivered(restaurantPurchases.get(1).isDelivered())
+                                .isPaymentThroughTheWebsite(restaurantPurchases.get(1).isPaymentThroughTheWebsite())
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build(),
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+
+                                .id(restaurantPurchases.get(2).getId())
+                                .clientName(restaurantPurchases.get(2).getUser().getName())
+                                .isActive(restaurantPurchases.get(2).isActive())
+                                .isFinished(restaurantPurchases.get(2).isFinished())
+                                .isDelivered(restaurantPurchases.get(2).isDelivered())
+                                .isPaymentThroughTheWebsite(restaurantPurchases.get(2).isPaymentThroughTheWebsite())
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build()
+                )
+        ));
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setUser();
+        setAddress();
+        setPurchasedProducts();
+        setPurchaseToCompare();
+        setUserPurchases();
+        setMapPurchaseUserResponseDTOToCompare();
+        setRestaurantPurchases();
+        setMapPurchaseRestaurantResponseDTOToCompare();
+    }
+
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
         BDDMockito.when(this.purchaseRepository.save(ArgumentMatchers.any(Purchase.class)))
-                .thenReturn(purchases.get(0));
+                .thenReturn(userPurchases.get(0));
 
         BDDMockito.when(this.purchaseRepository.findByUserAndIsActive(ArgumentMatchers.any(User.class), ArgumentMatchers.anyBoolean()))
-                .thenReturn(purchases);
+                .thenReturn(userPurchases);
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(purchases.get(0)));
+                .thenReturn(Optional.of(userPurchases.get(0)));
 
         BDDMockito.doNothing()
                 .when(this.purchaseRepository).updateIsActiveById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
+
+        BDDMockito.when(this.purchaseRepository.findByIsDelivered(ArgumentMatchers.anyBoolean()))
+                .thenReturn(restaurantPurchases);
     }
 
     @Test
     void save_persistAndReturnsANewPurchaseInTheDatabase_wheneverCalled() {
 
-        Assertions.assertThat(this.purchaseService.save(purchase))
+        Assertions.assertThat(this.purchaseService.save(purchaseToCompare))
                 .isNotNull()
-                .hasToString(purchase.toString());
+                .hasToString(purchaseToCompare.toString());
     }
 
     @Test
@@ -223,7 +416,7 @@ class PurchaseServiceTest {
 
         Assertions.assertThat(this.purchaseService.findByAllPurchasesOfTheAnUser(user))
                 .isNotNull()
-                .hasToString(mapPurchasedProductResponseDTOForResponse.toString());
+                .hasToString(mapPurchaseUserResponseDTOToCompare.toString());
     }
 
     @Test
@@ -255,5 +448,13 @@ class PurchaseServiceTest {
 
         Assertions.assertThatExceptionOfType(PurchaseFinishedException.class)
                 .isThrownBy(() -> this.purchaseService.cancelPurchaseOfTheUser(1L, "pt-BR"));
+    }
+
+    @Test
+    void findByAllUsersPurchases__wheneverCalled() {
+
+        Assertions.assertThat(this.purchaseService.findByAllUsersPurchases())
+                .isNotNull()
+                .hasToString(mapPurchaseRestaurantResponseDTOToCompare.toString());
     }
 }

@@ -16,15 +16,15 @@ public class CardRequestDTO {
     @NotEmpty
     private final String securityCode;
 
-    private final FormOfPayment formOfPayment;
+    private final FormOfPaymentDTO formOfPaymentDTO;
 
-    private CardRequestDTO(String nameOfCardHolder, String cardNumber, String dueDate, String securityCode, FormOfPayment formOfPayment) {
+    private CardRequestDTO(String nameOfCardHolder, String cardNumber, String dueDate, String securityCode, FormOfPaymentDTO formOfPaymentDTO) {
 
         this.nameOfCardHolder = nameOfCardHolder;
         this.cardNumber = cardNumber;
         this.dueDate = dueDate;
         this.securityCode = securityCode;
-        this.formOfPayment = formOfPayment;
+        this.formOfPaymentDTO = formOfPaymentDTO;
     }
 
     public String getNameOfCardHolder() {
@@ -43,8 +43,8 @@ public class CardRequestDTO {
         return securityCode;
     }
 
-    public FormOfPayment getFormOfPayment() {
-        return formOfPayment;
+    public FormOfPaymentDTO getFormOfPayment() {
+        return formOfPaymentDTO;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CardRequestDTO {
                 ", cardNumber='" + cardNumber + '\'' +
                 ", dueDate='" + dueDate + '\'' +
                 ", securityCode='" + securityCode + '\'' +
-                ", formOfPayment=" + formOfPayment +
+                ", formOfPayment=" + formOfPaymentDTO +
                 '}';
     }
 
@@ -63,7 +63,7 @@ public class CardRequestDTO {
         private @NotEmpty String cardNumber;
         private @NotEmpty String dueDate;
         private @NotEmpty String securityCode;
-        private FormOfPayment formOfPayment;
+        private FormOfPaymentDTO formOfPaymentDTO;
 
         private CardRequestDTOBuilder() {
         }
@@ -92,13 +92,13 @@ public class CardRequestDTO {
             return this;
         }
 
-        public CardRequestDTOBuilder formOfPayment(FormOfPayment formOfPayment) {
-            this.formOfPayment = formOfPayment;
+        public CardRequestDTOBuilder formOfPaymentDTO(FormOfPaymentDTO formOfPaymentDTO) {
+            this.formOfPaymentDTO = formOfPaymentDTO;
             return this;
         }
 
         public CardRequestDTO build() {
-            return new CardRequestDTO(nameOfCardHolder, cardNumber, dueDate, securityCode, formOfPayment);
+            return new CardRequestDTO(nameOfCardHolder, cardNumber, dueDate, securityCode, formOfPaymentDTO);
         }
     }
 }

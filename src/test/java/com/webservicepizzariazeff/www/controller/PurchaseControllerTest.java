@@ -2,7 +2,8 @@ package com.webservicepizzariazeff.www.controller;
 
 import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
+import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
 import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.service.PurchaseService;
@@ -36,10 +37,16 @@ class PurchaseControllerTest {
 
     private static User user;
 
-    private static Map<Boolean, List<PurchaseResponseDTOForUser>> mapPurchasedProductResponseDTOForResponse;
+    private static List<PurchasedProductResponseDTO> purchasedProductResponseDTOList;
+
+    private static AddressResponseDTO addressResponseDTO;
+
+    private static Map<Boolean, List<PurchaseUserResponseDTO>> mapPurchaseUserResponseDTOForResponse;
+
+    private static Map<Boolean, List<PurchaseRestaurantResponseDTO>> mapPurchaseRestaurantResponseDTOForResponse;
 
     @BeforeAll
-    static void setObjects() {
+    static void setUser() {
 
         user = User.UserBuilder.builder()
                 .id(1L)
@@ -48,8 +55,12 @@ class PurchaseControllerTest {
                 .password("password")
                 .authorities("ROLE_USER")
                 .build();
+    }
 
-        List<PurchasedProductResponseDTO> purchasedProductResponseDTOList = List.of(
+    @BeforeAll
+    static void setPurchasedProductResponseDTOList() {
+
+        purchasedProductResponseDTOList = List.of(
                 PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
                         .name("calabresa")
                         .build(),
@@ -60,8 +71,12 @@ class PurchaseControllerTest {
                         .name("bauru")
                         .build()
         );
+    }
 
-        AddressResponseDTO addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+    @BeforeAll
+    static void setAddressResponseDTO() {
+
+        addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(1L)
                 .number("1")
                 .road("road")
@@ -69,10 +84,14 @@ class PurchaseControllerTest {
                 .city("city")
                 .state("state")
                 .build();
+    }
 
-        mapPurchasedProductResponseDTOForResponse = Map.of(
+    @BeforeAll
+    static void setMapPurchaseUserResponseDTOForResponse() {
+
+        mapPurchaseUserResponseDTOForResponse = Map.of(
                 false, List.of(
-                        PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                        PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                                 .id(3L)
                                 .amount(new BigDecimal("30.00"))
                                 .dateAndTime("12/34/5678T90:12")
@@ -84,7 +103,7 @@ class PurchaseControllerTest {
                                 .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
                                 .addressResponseDTO(addressResponseDTO)
                                 .build(),
-                        PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                        PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                                 .id(2L)
                                 .amount(new BigDecimal("20.00"))
                                 .dateAndTime("12/34/5678T90:12")
@@ -98,7 +117,7 @@ class PurchaseControllerTest {
                                 .build()
                 ),
                 true, List.of(
-                        PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+                        PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                                 .id(1L)
                                 .amount(new BigDecimal("10.00"))
                                 .dateAndTime("12/34/5678T90:12")
@@ -114,22 +133,76 @@ class PurchaseControllerTest {
         );
     }
 
+    @BeforeAll
+    static void setMapPurchaseRestaurantResponseDTOForResponse() {
+
+        mapPurchaseRestaurantResponseDTOForResponse = Map.of(
+                false, List.of(
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(3L)
+                                .clientName("clientName3")
+                                .isActive(false)
+                                .isFinished(false)
+                                .isDelivered(false)
+                                .isPaymentThroughTheWebsite(false)
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build()
+                ),
+                true, List.of(
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(1L)
+                                .clientName("clientName1")
+                                .isActive(true)
+                                .isFinished(false)
+                                .isDelivered(false)
+                                .isPaymentThroughTheWebsite(false)
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build(),
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(2L)
+                                .clientName("clientName2")
+                                .isActive(true)
+                                .isFinished(true)
+                                .isDelivered(false)
+                                .isPaymentThroughTheWebsite(true)
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build(),
+                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                                .id(4L)
+                                .clientName("clientName4")
+                                .isActive(true)
+                                .isFinished(false)
+                                .isDelivered(false)
+                                .isPaymentThroughTheWebsite(false)
+                                .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
+                                .addressResponseDTO(addressResponseDTO)
+                                .build()
+                )
+        );
+    }
+
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
         BDDMockito.when(this.purchaseService.findByAllPurchasesOfTheAnUser(ArgumentMatchers.any(UserDetails.class)))
-                .thenReturn(mapPurchasedProductResponseDTOForResponse);
+                .thenReturn(mapPurchaseUserResponseDTOForResponse);
 
         BDDMockito.doNothing()
                 .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        BDDMockito.when(this.purchaseService.findByAllUsersPurchases())
+                .thenReturn(mapPurchaseRestaurantResponseDTOForResponse);
     }
 
     @Test
-    void findPurchasesByUser_returnsAMapOfTheAllActivePurchaseResponseDTOForUserOfTheAUser_wheneverCalled() {
+    void findPurchasesByUser_returnsAMapOfTheAllActivePurchaseUserResponseDTOOfTheAUser_wheneverCalled() {
 
-        Assertions.assertThat(this.purchaseController.findPurchasesByUser(user))
+        Assertions.assertThat(this.purchaseController.findPurchasesOfTheUser(user))
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(mapPurchasedProductResponseDTOForResponse));
+                .isEqualTo(ResponseEntity.ok(mapPurchaseUserResponseDTOForResponse));
     }
 
     @Test
@@ -158,5 +231,13 @@ class PurchaseControllerTest {
 
         Assertions.assertThatExceptionOfType(PurchaseFinishedException.class)
                 .isThrownBy(() -> this.purchaseController.cancelPurchase(1L, "pt-Br"));
+    }
+
+    @Test
+    void findUsersPurchases_returnsAMapOfTheAllPurchaseRestaurantResponseDTONoDelivered_wheneverCalled() {
+
+        Assertions.assertThat(this.purchaseController.findUsersPurchases())
+                .isNotNull()
+                .isEqualTo(ResponseEntity.ok(mapPurchaseRestaurantResponseDTOForResponse));
     }
 }

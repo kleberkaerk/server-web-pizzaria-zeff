@@ -1,7 +1,7 @@
 package com.webservicepizzariazeff.www.repository;
 
 import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
-import com.webservicepizzariazeff.www.dto.request.FormOfPayment;
+import com.webservicepizzariazeff.www.dto.request.FormOfPaymentDTO;
 import com.webservicepizzariazeff.www.exception.InvalidCardException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +30,7 @@ class PaymentSimulationRepositoryTest {
                 .cardNumber("1234567890123456")
                 .dueDate("01/23")
                 .securityCode("1234")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
 
         cardRequestDTOWithCardNumberInvalidRequest = CardRequestDTO.CardRequestDTOBuilder.builder()
@@ -38,7 +38,7 @@ class PaymentSimulationRepositoryTest {
                 .cardNumber("123ABC7890123456")
                 .dueDate("01/23")
                 .securityCode("1234")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
 
         cardRequestDTOWithDueDateInvalid = CardRequestDTO.CardRequestDTOBuilder.builder()
@@ -46,7 +46,7 @@ class PaymentSimulationRepositoryTest {
                 .cardNumber("1234567890123456")
                 .dueDate("01/234")
                 .securityCode("1234")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
 
         cardRequestDTOWithSecurityCodeInvalid = CardRequestDTO.CardRequestDTOBuilder.builder()
@@ -54,7 +54,7 @@ class PaymentSimulationRepositoryTest {
                 .cardNumber("1234567890123456")
                 .dueDate("01/23")
                 .securityCode("12345")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
     }
 
@@ -72,7 +72,7 @@ class PaymentSimulationRepositoryTest {
                 .cardNumber("1234567890123456")
                 .dueDate("01/23")
                 .securityCode("1234")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
 
         Assertions.assertThatCode(() -> this.paymentSimulationRepository.payment(cardRequestDTO, new BigDecimal("10.00"), "pt", "BR"))

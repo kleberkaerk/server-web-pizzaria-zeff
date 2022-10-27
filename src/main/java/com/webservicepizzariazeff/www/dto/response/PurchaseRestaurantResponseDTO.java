@@ -1,15 +1,12 @@
 package com.webservicepizzariazeff.www.dto.response;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @SuppressWarnings("java:S107")
-public class PurchaseResponseDTOForUser {
+public class PurchaseRestaurantResponseDTO {
 
     private final Long id;
-    private final BigDecimal amount;
-    private final String dateAndTime;
-    private final String cardName;
+    private final String clientName;
     private final boolean isActive;
     private final boolean isFinished;
     private final boolean isDelivered;
@@ -17,11 +14,9 @@ public class PurchaseResponseDTOForUser {
     private final List<PurchasedProductResponseDTO> purchasedProductResponseDTOS;
     private final AddressResponseDTO addressResponseDTO;
 
-    private PurchaseResponseDTOForUser(
+    private PurchaseRestaurantResponseDTO(
             Long id,
-            BigDecimal amount,
-            String dateAndTime,
-            String cardName,
+            String clientName,
             boolean isActive,
             boolean isFinished,
             boolean isDelivered,
@@ -29,10 +24,9 @@ public class PurchaseResponseDTOForUser {
             List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
             AddressResponseDTO addressResponseDTO
     ) {
+
         this.id = id;
-        this.amount = amount;
-        this.dateAndTime = dateAndTime;
-        this.cardName = cardName;
+        this.clientName = clientName;
         this.isActive = isActive;
         this.isFinished = isFinished;
         this.isDelivered = isDelivered;
@@ -45,16 +39,8 @@ public class PurchaseResponseDTOForUser {
         return id;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public String getDateAndTime() {
-        return dateAndTime;
-    }
-
-    public String getCardName() {
-        return cardName;
+    public String getClientName() {
+        return clientName;
     }
 
     public boolean isActive() {
@@ -83,11 +69,9 @@ public class PurchaseResponseDTOForUser {
 
     @Override
     public String toString() {
-        return "PurchaseResponseDTOForUser{" +
+        return "PurchaseResponseDTOForRestaurant{" +
                 "id=" + id +
-                ", amount=" + amount +
-                ", dateAndTime='" + dateAndTime + '\'' +
-                ", cardName='" + cardName + '\'' +
+                ", clientName='" + clientName + '\'' +
                 ", isActive=" + isActive +
                 ", isFinished=" + isFinished +
                 ", isDelivered=" + isDelivered +
@@ -97,11 +81,9 @@ public class PurchaseResponseDTOForUser {
                 '}';
     }
 
-    public static final class PurchaseResponseDTOForUserBuilder {
+    public static final class PurchaseRestaurantResponseDTOBuilder {
         private Long id;
-        private BigDecimal amount;
-        private String dateAndTime;
-        private String cardName;
+        private String clientName;
         private boolean isActive;
         private boolean isFinished;
         private boolean isDelivered;
@@ -109,65 +91,64 @@ public class PurchaseResponseDTOForUser {
         private List<PurchasedProductResponseDTO> purchasedProductResponseDTOS;
         private AddressResponseDTO addressResponseDTO;
 
-        private PurchaseResponseDTOForUserBuilder() {
+        private PurchaseRestaurantResponseDTOBuilder() {
         }
 
-        public static PurchaseResponseDTOForUserBuilder builder() {
-            return new PurchaseResponseDTOForUserBuilder();
+        public static PurchaseRestaurantResponseDTOBuilder builder() {
+            return new PurchaseRestaurantResponseDTOBuilder();
         }
 
-        public PurchaseResponseDTOForUserBuilder id(Long id) {
+        public PurchaseRestaurantResponseDTOBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder amount(BigDecimal amount) {
-            this.amount = amount;
+        public PurchaseRestaurantResponseDTOBuilder clientName(String clientName) {
+            this.clientName = clientName;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder dateAndTime(String dateAndTime) {
-            this.dateAndTime = dateAndTime;
-            return this;
-        }
-
-        public PurchaseResponseDTOForUserBuilder cardName(String cardName) {
-            this.cardName = cardName;
-            return this;
-        }
-
-        public PurchaseResponseDTOForUserBuilder isActive(boolean isActive) {
+        public PurchaseRestaurantResponseDTOBuilder isActive(boolean isActive) {
             this.isActive = isActive;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder isFinished(boolean isFinished) {
+        public PurchaseRestaurantResponseDTOBuilder isFinished(boolean isFinished) {
             this.isFinished = isFinished;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder isDelivered(boolean isDelivered) {
+        public PurchaseRestaurantResponseDTOBuilder isDelivered(boolean isDelivered) {
             this.isDelivered = isDelivered;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder isPaymentThroughTheWebsite(boolean isPaymentThroughTheWebsite) {
+        public PurchaseRestaurantResponseDTOBuilder isPaymentThroughTheWebsite(boolean isPaymentThroughTheWebsite) {
             this.isPaymentThroughTheWebsite = isPaymentThroughTheWebsite;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder purchasedProductResponseDTOS(List<PurchasedProductResponseDTO> purchasedProductResponseDTOS) {
+        public PurchaseRestaurantResponseDTOBuilder purchasedProductResponseDTOS(List<PurchasedProductResponseDTO> purchasedProductResponseDTOS) {
             this.purchasedProductResponseDTOS = purchasedProductResponseDTOS;
             return this;
         }
 
-        public PurchaseResponseDTOForUserBuilder addressResponseDTO(AddressResponseDTO addressResponseDTO) {
+        public PurchaseRestaurantResponseDTOBuilder addressResponseDTO(AddressResponseDTO addressResponseDTO) {
             this.addressResponseDTO = addressResponseDTO;
             return this;
         }
 
-        public PurchaseResponseDTOForUser build() {
-            return new PurchaseResponseDTOForUser(id, amount, dateAndTime, cardName, isActive, isFinished, isDelivered, isPaymentThroughTheWebsite, purchasedProductResponseDTOS, addressResponseDTO);
+        public PurchaseRestaurantResponseDTO build() {
+            return new PurchaseRestaurantResponseDTO(
+                    id,
+                    clientName,
+                    isActive,
+                    isFinished,
+                    isDelivered,
+                    isPaymentThroughTheWebsite,
+                    purchasedProductResponseDTOS,
+                    addressResponseDTO
+            );
         }
     }
 }

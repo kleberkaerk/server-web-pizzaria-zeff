@@ -25,4 +25,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     @Modifying
     @Query("update Purchase p set p.isActive = :isActive where p.id = :id")
     void updateIsActiveById(@Param("isActive") boolean isActive, @Param("id") Long id);
+
+    @Query("select DISTINCT p from Purchase p LEFT JOIN FETCH p.purchasedProducts where p.isDelivered = :isDelivered")
+    List<Purchase> findByIsDelivered(@Param("isDelivered") boolean isDelivered);
 }

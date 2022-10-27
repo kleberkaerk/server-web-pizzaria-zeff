@@ -16,7 +16,7 @@ class CardRequestDTOTest {
                 .cardNumber("1234567890123456")
                 .dueDate("12/34")
                 .securityCode("123")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
     }
 
@@ -52,7 +52,7 @@ class CardRequestDTOTest {
     void getFormOfPayment() {
 
         Assertions.assertThat(this.cardRequestDTO.getFormOfPayment())
-                .isEqualTo(FormOfPayment.DEBIT);
+                .isEqualTo(FormOfPaymentDTO.DEBIT);
     }
 
     @Test

@@ -25,7 +25,7 @@ class SaleRequestDTOTest {
                 .cardNumber("cardNumber")
                 .dueDate("dueDate")
                 .securityCode("securityCode")
-                .formOfPayment(FormOfPayment.DEBIT)
+                .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
     }
 

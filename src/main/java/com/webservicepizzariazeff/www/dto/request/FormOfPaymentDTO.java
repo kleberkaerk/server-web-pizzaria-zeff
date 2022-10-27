@@ -1,6 +1,6 @@
 package com.webservicepizzariazeff.www.dto.request;
 
-public enum FormOfPayment {
+public enum FormOfPaymentDTO {
 
     DEBIT,
     CREDIT,

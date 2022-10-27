@@ -3,7 +3,8 @@ package com.webservicepizzariazeff.www.util;
 import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseResponseDTOForUser;
+import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -51,21 +52,19 @@ public class Mapper {
                 .build();
     }
 
-    private static PurchasedProductResponseDTO ofThePurchasedProductForPurchasedProductResponseDTO(PurchasedProduct purchasedProduct) {
+    private static List<PurchasedProductResponseDTO> ofThePurchasedProductListForPurchasedProductResponseDTOList(List<PurchasedProduct> purchasedProducts) {
 
-        return PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                .name(purchasedProduct.getName())
-                .build();
+        return purchasedProducts.stream()
+                .map(purchasedProduct -> PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder
+                        .builder()
+                        .name(purchasedProduct.getName())
+                        .build())
+                .toList();
     }
 
-    public static PurchaseResponseDTOForUser ofThePurchaseForPurchaseResponseDTOForUser(Purchase purchase) {
+    public static PurchaseUserResponseDTO ofThePurchaseForPurchaseUserResponseDTO(Purchase purchase) {
 
-        List<PurchasedProductResponseDTO> purchasedProductResponseDTOS = purchase.getPurchasedProducts()
-                .stream()
-                .map(Mapper::ofThePurchasedProductForPurchasedProductResponseDTO)
-                .toList();
-
-        return PurchaseResponseDTOForUser.PurchaseResponseDTOForUserBuilder.builder()
+        return PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                 .id(purchase.getId())
                 .amount(purchase.getAmount())
                 .dateAndTime(purchase.getDateAndTime())
@@ -74,7 +73,25 @@ public class Mapper {
                 .isFinished(purchase.isFinished())
                 .isDelivered(purchase.isDelivered())
                 .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
-                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                .purchasedProductResponseDTOS(
+                        Mapper.ofThePurchasedProductListForPurchasedProductResponseDTOList(purchase.getPurchasedProducts())
+                )
+                .addressResponseDTO(Mapper.ofTheAddressForAddressResponseDTO(purchase.getAddress()))
+                .build();
+    }
+
+    public static PurchaseRestaurantResponseDTO ofThePurchaseForPurchaseRestaurantResponseDTO(Purchase purchase) {
+
+        return PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                .id(purchase.getId())
+                .clientName(purchase.getUser().getName())
+                .isActive(purchase.isActive())
+                .isFinished(purchase.isFinished())
+                .isDelivered(purchase.isDelivered())
+                .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
+                .purchasedProductResponseDTOS(
+                        Mapper.ofThePurchasedProductListForPurchasedProductResponseDTOList(purchase.getPurchasedProducts())
+                )
                 .addressResponseDTO(Mapper.ofTheAddressForAddressResponseDTO(purchase.getAddress()))
                 .build();
     }
