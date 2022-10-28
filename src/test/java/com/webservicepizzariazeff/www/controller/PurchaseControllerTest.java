@@ -196,7 +196,7 @@ class PurchaseControllerTest {
                 .thenReturn(mapPurchaseUserResponseDTOForResponse);
 
         BDDMockito.doNothing()
-                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(UserDetails.class), ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
 
         BDDMockito.when(this.purchaseService.findByAllUsersPurchases())
                 .thenReturn(mapPurchaseRestaurantResponseDTOForResponse);
@@ -222,10 +222,10 @@ class PurchaseControllerTest {
     @Test
     void cancelPurchase_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
 
-        Assertions.assertThatCode(() -> this.purchaseController.cancelPurchase(1L, "pt-BR"))
+        Assertions.assertThatCode(() -> this.purchaseController.cancelPurchase(user, 1L, "pt-BR"))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.purchaseController.cancelPurchase(1L, "pt-BR"))
+        Assertions.assertThat(this.purchaseController.cancelPurchase(user, 1L, "pt-BR"))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
@@ -234,20 +234,20 @@ class PurchaseControllerTest {
     void cancelPurchase_throwsResponseStatusException_whenTheIdPassedIsNotExists() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
-                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(UserDetails.class), ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.purchaseController.cancelPurchase(0L, "pt-Br"));
+                .isThrownBy(() -> this.purchaseController.cancelPurchase(user, 0L, "pt-Br"));
     }
 
     @Test
     void cancelPurchase_throwsPurchaseFinishedException_whenTheIdPassedIsInvalid() {
 
         BDDMockito.doThrow(PurchaseFinishedException.class)
-                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+                .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(UserDetails.class), ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
 
         Assertions.assertThatExceptionOfType(PurchaseFinishedException.class)
-                .isThrownBy(() -> this.purchaseController.cancelPurchase(1L, "pt-Br"));
+                .isThrownBy(() -> this.purchaseController.cancelPurchase(user, 1L, "pt-Br"));
     }
 
     @Test

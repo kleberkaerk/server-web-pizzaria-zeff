@@ -36,11 +36,12 @@ public class PurchaseController {
 
     @PutMapping("{id}")
     public ResponseEntity<Void> cancelPurchase(
+            @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id,
             @RequestHeader("Accept-Language") String acceptLanguage
     ) {
 
-        this.purchaseService.cancelPurchaseOfTheUser(id, acceptLanguage);
+        this.purchaseService.cancelPurchaseOfTheUser(userDetails, id, acceptLanguage);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -72,4 +73,7 @@ public class PurchaseController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+//    @DeleteMapping("")
+//    public ResponseEntity<Void> deletePurchase(){}
 }

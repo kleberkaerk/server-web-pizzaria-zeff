@@ -18,6 +18,9 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     @Query("SELECT DISTINCT p FROM Purchase p JOIN p.user u ON u = :user LEFT JOIN FETCH p.purchasedProducts JOIN FETCH p.user JOIN FETCH p.address where p.isActive = :isActive")
     List<Purchase> findByUserAndIsActive(@Param("user") User user, boolean isActive);
 
+    @Query("select distinct p from Purchase p left join fetch p.purchasedProducts where p.id = :id and p.user = :user")
+    Optional<Purchase> findByIdAndUser(@Param("id") Long id, @Param("user") User user);
+
     @Query("SELECT DISTINCT p FROM Purchase p LEFT JOIN FETCH p.purchasedProducts WHERE p.id = :id")
     Optional<Purchase> findById(@Param("id") Long id);
 

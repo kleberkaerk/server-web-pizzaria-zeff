@@ -49,13 +49,15 @@ public class PurchaseService {
                 .collect(Collectors.groupingBy(PurchaseUserResponseDTO::isDelivered));
     }
 
-    public void cancelPurchaseOfTheUser(Long id, String acceptLanguage) {
+    public void cancelPurchaseOfTheUser(UserDetails userDetails, Long id, String acceptLanguage) {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
         messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
-        Purchase purchaseToBeCanceled = this.purchaseRepository.findById(id)
+        User user = Mapper.ofTheUserDetailsForUser(userDetails);
+
+        Purchase purchaseToBeCanceled = this.purchaseRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
         if (purchaseToBeCanceled.isFinished() || purchaseToBeCanceled.isDelivered()) {

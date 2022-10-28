@@ -396,6 +396,12 @@ class PurchaseServiceTest {
                 ))
                 .thenReturn(userPurchases);
 
+        BDDMockito.when(this.purchaseRepository.findByIdAndUser(
+                        ArgumentMatchers.any(Long.class),
+                        ArgumentMatchers.any(User.class)
+                ))
+                .thenReturn(Optional.of(userPurchases.get(0)));
+
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(userPurchases.get(0)));
 
@@ -423,6 +429,9 @@ class PurchaseServiceTest {
     @Test
     void save_persistAndReturnsANewPurchaseInTheDatabase_wheneverCalled() {
 
+        Assertions.assertThatCode(()-> this.purchaseService.save(purchaseToCompare))
+                        .doesNotThrowAnyException();
+
         Assertions.assertThat(this.purchaseService.save(purchaseToCompare))
                 .isNotNull()
                 .hasToString(purchaseToCompare.toString());
@@ -430,6 +439,9 @@ class PurchaseServiceTest {
 
     @Test
     void findByAllPurchasesOfTheAnUser_returnsAMapOfTheAllActivePurchaseResponseDTOForUserOfTheAUser_wheneverCalled() {
+
+        Assertions.assertThatCode(()-> this.purchaseService.findByAllPurchasesOfTheAnUser(user))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseService.findByAllPurchasesOfTheAnUser(user))
                 .isNotNull()
@@ -439,24 +451,30 @@ class PurchaseServiceTest {
     @Test
     void cancelPurchaseOfTheUser_updateTheFieldIsActiveToFalseFromAPurchase_whenThePassedIdIsNotNullAndIsAnIdOfAPurchaseThatIsNotFinishedOrDelivered() {
 
-        Assertions.assertThatCode(() -> this.purchaseService.cancelPurchaseOfTheUser(1L, "pt-BR"))
+        Assertions.assertThatCode(() -> this.purchaseService.cancelPurchaseOfTheUser(user, 1L, "pt-BR"))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void cancelPurchaseOfTheUser_throwsResponseStatusException_whenThePassedIdNotExists() {
 
-        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+        BDDMockito.when(this.purchaseRepository.findByIdAndUser(
+                        ArgumentMatchers.any(Long.class),
+                        ArgumentMatchers.any(User.class)
+                ))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.purchaseService.cancelPurchaseOfTheUser(0L, "pt-BR"));
+                .isThrownBy(() -> this.purchaseService.cancelPurchaseOfTheUser(user, 0L, "pt-BR"));
     }
 
     @Test
     void cancelPurchaseOfTheUser_throwsPurchaseFinishedException_whenThePassedIdIsAnIdOfAPurchaseThatIsFinishedOrDelivered() {
 
-        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+        BDDMockito.when(this.purchaseRepository.findByIdAndUser(
+                        ArgumentMatchers.any(Long.class),
+                        ArgumentMatchers.any(User.class)
+                ))
                 .thenReturn(Optional.of(Purchase.PurchaseBuilder.builder()
                         .id(1L)
                         .isFinished(true)
@@ -464,11 +482,14 @@ class PurchaseServiceTest {
                         .build()));
 
         Assertions.assertThatExceptionOfType(PurchaseFinishedException.class)
-                .isThrownBy(() -> this.purchaseService.cancelPurchaseOfTheUser(1L, "pt-BR"));
+                .isThrownBy(() -> this.purchaseService.cancelPurchaseOfTheUser(user, 1L, "pt-BR"));
     }
 
     @Test
     void findByAllUsersPurchases_returnsAllPurchaseUserResponseDTOOfTheAUser_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.purchaseService.findByAllUsersPurchases())
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseService.findByAllUsersPurchases())
                 .isNotNull()
@@ -520,24 +541,24 @@ class PurchaseServiceTest {
                         .purchasedProducts(purchasedProducts)
                         .build()));
 
-        Assertions.assertThatCode(()-> this.purchaseService.deliverPurchase(1L, "pt-BR"))
+        Assertions.assertThatCode(() -> this.purchaseService.deliverPurchase(1L, "pt-BR"))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void deliverPurchase_throwsResponseStatusException_whenThePassedIdNotExist(){
+    void deliverPurchase_throwsResponseStatusException_whenThePassedIdNotExist() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.purchaseService.deliverPurchase(1L, "pt-BR"));
+                .isThrownBy(() -> this.purchaseService.deliverPurchase(1L, "pt-BR"));
     }
 
     @Test
-    void deliverPurchase_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+    void deliverPurchase_throwsResponseStatusException_whenThePassedIdIsInvalid() {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.purchaseService.deliverPurchase(1L, "pt-BR"));
+                .isThrownBy(() -> this.purchaseService.deliverPurchase(1L, "pt-BR"));
     }
 }
