@@ -21,8 +21,7 @@ class PurchaseTest {
 
     private static List<PurchasedProduct> purchasedProducts;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setUser() {
 
         user = User.UserBuilder.builder()
                 .id(1L)
@@ -31,6 +30,9 @@ class PurchaseTest {
                 .password("password")
                 .authorities("ROLE_USER")
                 .build();
+    }
+
+    static void setAddress() {
 
         address = Address.AddressBuilder.builder()
                 .id(1L)
@@ -41,6 +43,9 @@ class PurchaseTest {
                 .city("city")
                 .state("state")
                 .build();
+    }
+
+    static void setPurchasedProducts() {
 
         purchasedProducts = List.of(
                 PurchasedProduct.PurchasedProductBuilder.builder()
@@ -59,6 +64,14 @@ class PurchaseTest {
                         .purchase(Purchase.PurchaseBuilder.builder().id(1L).build())
                         .build()
         );
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setUser();
+        setAddress();
+        setPurchasedProducts();
     }
 
     @BeforeEach
@@ -177,10 +190,10 @@ class PurchaseTest {
     }
 
     @Test
-    void testToString(){
+    void testToString() {
 
         LogManager.getLogger(PurchaseTest.class)
-                        .info(this.purchase);
+                .info(this.purchase);
 
         Assertions.assertThat(this.purchase)
                 .hasToString("Purchase{" +

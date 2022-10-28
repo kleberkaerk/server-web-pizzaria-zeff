@@ -16,8 +16,7 @@ class PurchaseUserResponseDTOTest {
 
     private static AddressResponseDTO addressResponseDTO;
 
-    @BeforeAll
-    static void setObjects(){
+    static void setPurchasedProductResponseDTOList(){
 
         purchasedProductResponseDTOList = List.of(
                 PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
@@ -30,6 +29,9 @@ class PurchaseUserResponseDTOTest {
                         .name("name3")
                         .build()
         );
+    }
+
+    static void setAddressResponseDTO(){
 
         addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(1L)
@@ -39,6 +41,13 @@ class PurchaseUserResponseDTOTest {
                 .city("city")
                 .state("state")
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects(){
+
+        setPurchasedProductResponseDTOList();
+        setAddressResponseDTO();
     }
 
     @BeforeEach

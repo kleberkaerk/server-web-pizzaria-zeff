@@ -15,7 +15,6 @@ class PurchaseRestaurantResponseDTOTest {
 
     private static AddressResponseDTO addressResponseDTO;
 
-    @BeforeAll
     static void setPurchasedProductResponseDTOS() {
 
         purchasedProductResponseDTOS = List.of(
@@ -34,7 +33,6 @@ class PurchaseRestaurantResponseDTOTest {
         );
     }
 
-    @BeforeAll
     static void setAddressResponseDTO() {
 
         addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
@@ -45,6 +43,13 @@ class PurchaseRestaurantResponseDTOTest {
                 .city("city")
                 .state("state")
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects(){
+
+        setPurchasedProductResponseDTOS();
+        setAddressResponseDTO();
     }
 
     @BeforeEach

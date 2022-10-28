@@ -30,7 +30,7 @@ class UserServiceTest {
     private static UserRequestDTO user;
 
     @BeforeAll
-    static void setObjects() {
+    static void setUser() {
 
         user = UserRequestDTO.UserDTOBuilder.builder()
                 .name("name")

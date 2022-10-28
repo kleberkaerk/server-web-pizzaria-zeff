@@ -28,7 +28,7 @@ class UserControllerTest {
     private static UserRequestDTO userRequestDTO;
 
     @BeforeAll
-    static void setObjects(){
+    static void setUserRequestDTO(){
 
         userRequestDTO = UserRequestDTO.UserDTOBuilder.builder()
                 .name("name")

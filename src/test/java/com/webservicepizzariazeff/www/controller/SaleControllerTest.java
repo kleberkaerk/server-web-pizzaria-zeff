@@ -34,8 +34,7 @@ class SaleControllerTest {
 
     private static SaleRequestDTO saleRequestDTO;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setUser() {
 
         user = User.UserBuilder.builder()
                 .id(1L)
@@ -44,6 +43,9 @@ class SaleControllerTest {
                 .password("password")
                 .authorities("ROLE_USER")
                 .build();
+    }
+
+    static void setSaleRequestDTO() {
 
         CardRequestDTO cardRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("nameOfCardHolder")
@@ -58,6 +60,13 @@ class SaleControllerTest {
                 .addressId(1L)
                 .cardRequestDTO(cardRequestDTO)
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setUser();
+        setSaleRequestDTO();
     }
 
     @BeforeEach
@@ -87,7 +96,7 @@ class SaleControllerTest {
                         ArgumentMatchers.any(SaleRequestDTO.class),
                         ArgumentMatchers.anyString()
                 ))
-                        .thenThrow(RuntimeException.class);
+                .thenThrow(RuntimeException.class);
 
         Assertions.assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> this.saleController.sale(user, saleRequestDTO, "pt-BR"));

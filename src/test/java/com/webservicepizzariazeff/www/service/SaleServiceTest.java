@@ -52,8 +52,7 @@ class SaleServiceTest {
 
     private static Purchase purchaseForReturn;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setUserForArgument() {
 
         userForArgument = User.UserBuilder.builder()
                 .id(1L)
@@ -62,6 +61,9 @@ class SaleServiceTest {
                 .password("password")
                 .authorities("ROLE_USER")
                 .build();
+    }
+
+    static void setSaleRequestDTOForArgument() {
 
         CardRequestDTO cardRequestDTOForSaleRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("nameOfCardHolder")
@@ -77,6 +79,9 @@ class SaleServiceTest {
                 .cardRequestDTO(cardRequestDTOForSaleRequestDTO)
                 .isPaymentThroughTheWebsite(true)
                 .build();
+    }
+
+    static void setProductsForReturn() {
 
         productsForReturn = List.of(
                 Product.ProductBuilder.builder()
@@ -107,6 +112,9 @@ class SaleServiceTest {
                         .image("/image3")
                         .build()
         );
+    }
+
+    static void setAddressForReturn() {
 
         addressForReturn = Address.AddressBuilder.builder()
                 .id(1L)
@@ -116,6 +124,9 @@ class SaleServiceTest {
                 .city("city")
                 .state("state")
                 .build();
+    }
+
+    static void setPurchaseForReturn() {
 
         purchaseForReturn = Purchase.PurchaseBuilder.builder()
                 .id(1L)
@@ -129,6 +140,16 @@ class SaleServiceTest {
                 .user(userForArgument)
                 .address(addressForReturn)
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setUserForArgument();
+        setSaleRequestDTOForArgument();
+        setProductsForReturn();
+        setAddressForReturn();
+        setPurchaseForReturn();
     }
 
     @BeforeEach

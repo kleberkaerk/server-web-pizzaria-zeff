@@ -26,7 +26,7 @@ class PurchasedProductServiceTest {
     private static PurchasedProduct purchasedProduct;
 
     @BeforeAll
-    static void setObjects(){
+    static void setPurchasedProduct() {
 
         purchasedProduct = PurchasedProduct.PurchasedProductBuilder.builder()
                 .id(1L)

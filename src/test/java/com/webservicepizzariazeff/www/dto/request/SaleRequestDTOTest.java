@@ -15,10 +15,12 @@ class SaleRequestDTOTest {
 
     private static CardRequestDTO cardRequestDTO;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setProductsId() {
 
         productsId = List.of(1L, 2L, 3L);
+    }
+
+    static void setCardRequestDTO() {
 
         cardRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("nameOfCardHolder")
@@ -27,6 +29,13 @@ class SaleRequestDTOTest {
                 .securityCode("securityCode")
                 .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setProductsId();
+        setCardRequestDTO();
     }
 
     @BeforeEach
@@ -72,7 +81,7 @@ class SaleRequestDTOTest {
     }
 
     @Test
-    void testToString(){
+    void testToString() {
 
         Assertions.assertThat(this.saleRequestDTO)
                 .hasToString("SaleRequestDTO{" +

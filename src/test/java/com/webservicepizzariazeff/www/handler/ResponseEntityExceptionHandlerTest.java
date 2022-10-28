@@ -33,43 +33,76 @@ class ResponseEntityExceptionHandlerTest {
 
     private static PurchaseFinishedException purchaseFinishedException;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setExistingUserExceptionHandlerResponseEntity() {
 
         existingUserExceptionHandlerResponseEntity = new ResponseEntity<>(
                 ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
                         .message("message ExistingUserExceptionHandler")
                         .build(), HttpStatus.CONFLICT
         );
+    }
+
+    static void setMethodArgumentNotValidExceptionHandlerResponseEntity() {
 
         methodArgumentNotValidExceptionHandlerResponseEntity = new ResponseEntity<>(
                 MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
                         .message("Invalid value.")
                         .build(), HttpStatus.BAD_REQUEST
         );
+    }
+
+    static void setExistingUserExceptionForArgument() {
 
         existingUserExceptionForArgument = new ExistingUserException("message ExistingUserExceptionHandler");
+    }
+
+    static void setExistingAddressExceptionHandlerResponseEntity() {
 
         existingAddressExceptionHandlerResponseEntity = new ResponseEntity<>(
                 ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
                         .message("message ExistingAddressExceptionHandler")
                         .build(), HttpStatus.CONFLICT
         );
+    }
+
+    static void setExistingAddressExceptionForArgument() {
 
         existingAddressExceptionForArgument = new ExistingAddressException("message ExistingAddressExceptionHandler");
+    }
+
+    static void setNullPointerExceptionHandlerResponseEntity() {
 
         nullPointerExceptionHandlerResponseEntity = new ResponseEntity<>(
                 NullPointerExceptionHandler.NullPointerExceptionHandlerBuilder.builder()
                         .message("Invalid Request.")
                         .build(), HttpStatus.BAD_REQUEST
         );
+    }
+
+    static void setPurchaseFinishedException() {
 
         purchaseFinishedException = new PurchaseFinishedException("message PurchaseFinishedException");
+    }
+
+    static void setPurchaseFinishedExceptionHandlerResponseEntity() {
 
         purchaseFinishedExceptionHandlerResponseEntity = new ResponseEntity<>(
                 PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
                         .message("message PurchaseFinishedException")
                         .build(), HttpStatus.CONFLICT);
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setExistingUserExceptionHandlerResponseEntity();
+        setMethodArgumentNotValidExceptionHandlerResponseEntity();
+        setExistingUserExceptionForArgument();
+        setExistingAddressExceptionHandlerResponseEntity();
+        setExistingAddressExceptionForArgument();
+        setNullPointerExceptionHandlerResponseEntity();
+        setPurchaseFinishedException();
+        setPurchaseFinishedExceptionHandlerResponseEntity();
     }
 
     @BeforeEach
@@ -119,7 +152,7 @@ class ResponseEntityExceptionHandlerTest {
     }
 
     @Test
-    void handlerPurchaseFinishedException__() {
+    void handlerPurchaseFinishedException_returnsAResponseEntityOfTypePurchaseFinishedExceptionHandler_wheneverCalled() {
 
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException).getStatusCode())
                 .isEqualTo(purchaseFinishedExceptionHandlerResponseEntity.getStatusCode());

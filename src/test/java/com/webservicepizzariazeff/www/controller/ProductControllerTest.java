@@ -42,8 +42,7 @@ class ProductControllerTest {
 
     private static List<Product> returnFromFindByTypeAndPriceRating;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setReturnFromFindAll() {
 
         returnFromFindAll = new ArrayList<>(List.of(
                 Product.ProductBuilder.builder()
@@ -92,19 +91,37 @@ class ProductControllerTest {
                         .image("/image5.png")
                         .build()
         ));
+    }
+
+    static void setReturnFromFindByType() {
 
         returnFromFindByType = returnFromFindAll.stream()
                 .filter(product -> product.getType().name().equals(Type.SWEET_PIZZA.name()))
                 .toList();
+    }
+
+    static void setReturnFromFindByPriceRating() {
 
         returnFromFindByPriceRating = returnFromFindAll.stream()
                 .filter(product -> product.getPriceRating().name().equals(PriceRating.REGULAR_PRICE.name()))
                 .toList();
+    }
+
+    static void setReturnFromFindByTypeAndPriceRating() {
 
         returnFromFindByTypeAndPriceRating = returnFromFindAll.stream()
                 .filter(product -> product.getType().name().equals(Type.SALTY_PIZZA.name()))
                 .filter(product -> product.getPriceRating().name().equals(PriceRating.PROMOTION.name()))
                 .toList();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setReturnFromFindAll();
+        setReturnFromFindByType();
+        setReturnFromFindByPriceRating();
+        setReturnFromFindByTypeAndPriceRating();
     }
 
     @BeforeEach
@@ -207,7 +224,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByPriceRating_returnsAResponseEntityOfThePageWithNoProducts_whenThePriceRatingParameterIsNotEqualToTheNameOfOneOfThePriceRatingEnumerations(){
+    void findByPriceRating_returnsAResponseEntityOfThePageWithNoProducts_whenThePriceRatingParameterIsNotEqualToTheNameOfOneOfThePriceRatingEnumerations() {
 
         BDDMockito.when(this.productService.findByPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
@@ -244,7 +261,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByTypeAndPriceRating_returnsAResponseEntityOfThePageWithNoProducts_whenTheTypeParameterOrPriceRatingParameterAreNotEqualToTheNamesOfOneTypeEnumerationOrPriceRatingEnumeration(){
+    void findByTypeAndPriceRating_returnsAResponseEntityOfThePageWithNoProducts_whenTheTypeParameterOrPriceRatingParameterAreNotEqualToTheNamesOfOneTypeEnumerationOrPriceRatingEnumeration() {
 
         BDDMockito.when(this.productService.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());

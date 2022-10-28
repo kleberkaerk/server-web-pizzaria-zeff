@@ -45,7 +45,6 @@ class PurchaseControllerTest {
 
     private static Map<Boolean, List<PurchaseRestaurantResponseDTO>> mapPurchaseRestaurantResponseDTOForResponse;
 
-    @BeforeAll
     static void setUser() {
 
         user = User.UserBuilder.builder()
@@ -57,7 +56,6 @@ class PurchaseControllerTest {
                 .build();
     }
 
-    @BeforeAll
     static void setPurchasedProductResponseDTOList() {
 
         purchasedProductResponseDTOList = List.of(
@@ -73,7 +71,6 @@ class PurchaseControllerTest {
         );
     }
 
-    @BeforeAll
     static void setAddressResponseDTO() {
 
         addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
@@ -86,7 +83,6 @@ class PurchaseControllerTest {
                 .build();
     }
 
-    @BeforeAll
     static void setMapPurchaseUserResponseDTOForResponse() {
 
         mapPurchaseUserResponseDTOForResponse = Map.of(
@@ -133,7 +129,6 @@ class PurchaseControllerTest {
         );
     }
 
-    @BeforeAll
     static void setMapPurchaseRestaurantResponseDTOForResponse() {
 
         mapPurchaseRestaurantResponseDTOForResponse = Map.of(
@@ -182,6 +177,16 @@ class PurchaseControllerTest {
                                 .build()
                 )
         );
+    }
+
+    @BeforeAll
+    static void initializeObjects(){
+
+        setUser();
+        setPurchasedProductResponseDTOList();
+        setAddressResponseDTO();
+        setMapPurchaseUserResponseDTOForResponse();
+        setMapPurchaseRestaurantResponseDTOForResponse();
     }
 
     @BeforeEach

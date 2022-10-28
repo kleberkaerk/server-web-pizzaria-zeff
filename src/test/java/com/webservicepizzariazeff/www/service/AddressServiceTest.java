@@ -36,8 +36,7 @@ class AddressServiceTest {
 
     private static AddressRequestDTO addressToBeSaved;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setListOfTheAddressForReturn() {
 
         listOfTheAddressForReturn = List.of(
                 Address.AddressBuilder.builder()
@@ -71,6 +70,9 @@ class AddressServiceTest {
                                 .build())
                         .build()
         );
+    }
+
+    static void setUserWhoOwnsTheAddress() {
 
         userWhoOwnsTheAddress = User.UserBuilder.builder()
                 .id(1L)
@@ -79,6 +81,9 @@ class AddressServiceTest {
                 .password("password")
                 .authorities("ROLE_USER")
                 .build();
+    }
+
+    static void setAddressToBeSaved() {
 
         addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
                 .number("1")
@@ -87,6 +92,14 @@ class AddressServiceTest {
                 .state("state")
                 .city("city")
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setListOfTheAddressForReturn();
+        setUserWhoOwnsTheAddress();
+        setAddressToBeSaved();
     }
 
     @BeforeEach
@@ -127,13 +140,7 @@ class AddressServiceTest {
                         .district("district")
                         .city("city")
                         .state("state")
-                        .user(User.UserBuilder.builder()
-                                .id(1L)
-                                .name("name")
-                                .username("username")
-                                .password("password")
-                                .authorities("ROLE_USER")
-                                .build())
+                        .user(userWhoOwnsTheAddress)
                         .build());
     }
 

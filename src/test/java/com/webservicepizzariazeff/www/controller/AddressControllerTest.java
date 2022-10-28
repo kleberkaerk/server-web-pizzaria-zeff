@@ -31,12 +31,12 @@ class AddressControllerTest {
     @Mock
     private AddressService addressService;
 
-    private static List<AddressResponseDTO> addressResponseDTOForFindByUser;
+    private static List<AddressResponseDTO> addressResponseDTO;
 
     @BeforeAll
-    static void setObjects() {
+    static void setAddressResponseDTOForFindByUser() {
 
-        addressResponseDTOForFindByUser = List.of(
+        addressResponseDTO = List.of(
                 AddressResponseDTO.AddressResponseDTOBuilder.builder()
                         .id(1L)
                         .number("1")
@@ -82,7 +82,7 @@ class AddressControllerTest {
                 .thenReturn(1L);
 
         BDDMockito.when(this.addressService.findByUser(ArgumentMatchers.any(UserDetails.class)))
-                .thenReturn(addressResponseDTOForFindByUser);
+                .thenReturn(addressResponseDTO);
 
         BDDMockito.doNothing()
                 .when(this.addressService).deleteAAddress(ArgumentMatchers.any(Long.class));
@@ -143,7 +143,7 @@ class AddressControllerTest {
 
         Assertions.assertThat(this.addressController.findAddressesByUser(user))
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(addressResponseDTOForFindByUser));
+                .isEqualTo(ResponseEntity.ok(addressResponseDTO));
 
         Assertions.assertThat(this.addressController.findAddressesByUser(user).getBody())
                 .hasSize(4);

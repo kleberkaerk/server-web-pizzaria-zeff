@@ -41,8 +41,7 @@ class ProductServiceTest {
 
     private static List<Product> returnFromFindByTypeAndPriceRating;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setReturnFromFindAll() {
 
         returnFromFindAll = new ArrayList<>(List.of(
                 Product.ProductBuilder.builder()
@@ -91,19 +90,37 @@ class ProductServiceTest {
                         .image("/image5.png")
                         .build()
         ));
+    }
+
+    static void setReturnFromFindByType() {
 
         returnFromFindByType = returnFromFindAll.stream()
                 .filter(product -> product.getType().name().equals(Type.SWEET_PIZZA.name()))
                 .toList();
+    }
+
+    static void setReturnFromFindByPriceRating() {
 
         returnFromFindByPriceRating = returnFromFindAll.stream()
                 .filter(product -> product.getPriceRating().name().equals(PriceRating.REGULAR_PRICE.name()))
                 .toList();
+    }
+
+    static void setReturnFromFindByTypeAndPriceRating() {
 
         returnFromFindByTypeAndPriceRating = returnFromFindAll.stream()
                 .filter(product -> product.getType().name().equals(Type.SALTY_PIZZA.name()))
                 .filter(product -> product.getPriceRating().name().equals(PriceRating.PROMOTION.name()))
                 .toList();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setReturnFromFindAll();
+        setReturnFromFindByType();
+        setReturnFromFindByPriceRating();
+        setReturnFromFindByTypeAndPriceRating();
     }
 
     @BeforeEach
@@ -126,7 +143,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void findAllNonPageable_returnsAListOfAllProductsInTheDatabase_wheneverCalled(){
+    void findAllNonPageable_returnsAListOfAllProductsInTheDatabase_wheneverCalled() {
 
         Assertions.assertThat(this.productService.findAllNonPageable())
                 .isNotNull()

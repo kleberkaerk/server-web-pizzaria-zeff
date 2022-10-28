@@ -22,8 +22,7 @@ class PaymentSimulationRepositoryTest {
 
     private static CardRequestDTO cardRequestDTOWithDueDateInvalid;
 
-    @BeforeAll
-    static void setObjects() {
+    static void setCardRequestDTOWithNameOfCardHolderInvalidRequest() {
 
         cardRequestDTOWithNameOfCardHolderInvalidRequest = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD 123")
@@ -32,6 +31,9 @@ class PaymentSimulationRepositoryTest {
                 .securityCode("1234")
                 .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
+    }
+
+    static void setCardRequestDTOWithCardNumberInvalidRequest() {
 
         cardRequestDTOWithCardNumberInvalidRequest = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
@@ -40,6 +42,9 @@ class PaymentSimulationRepositoryTest {
                 .securityCode("1234")
                 .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
+    }
+
+    static void setCardRequestDTOWithDueDateInvalid() {
 
         cardRequestDTOWithDueDateInvalid = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
@@ -48,6 +53,9 @@ class PaymentSimulationRepositoryTest {
                 .securityCode("1234")
                 .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
+    }
+
+    static void setCardRequestDTOWithSecurityCodeInvalid() {
 
         cardRequestDTOWithSecurityCodeInvalid = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("ABCD E. FGHI")
@@ -56,6 +64,15 @@ class PaymentSimulationRepositoryTest {
                 .securityCode("12345")
                 .formOfPaymentDTO(FormOfPaymentDTO.DEBIT)
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setCardRequestDTOWithNameOfCardHolderInvalidRequest();
+        setCardRequestDTOWithCardNumberInvalidRequest();
+        setCardRequestDTOWithDueDateInvalid();
+        setCardRequestDTOWithSecurityCodeInvalid();
     }
 
     @BeforeEach
