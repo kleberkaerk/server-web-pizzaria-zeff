@@ -124,6 +124,9 @@ class AddressControllerTest {
     @Test
     void registerNewAddress_returnsTheIdOfTheAddressThatWasSavedAndAStatusCodeCreated_WhenTheAddressIsNotRegisteredInTheDatabase() {
 
+        Assertions.assertThatCode(() -> this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));
@@ -144,6 +147,9 @@ class AddressControllerTest {
 
     @Test
     void findAddressByUser_returnsAListOfAddressResponseDTOOfTheUserAndAStatusCodeOk_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.addressController.findAddressesByUser(user))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.addressController.findAddressesByUser(user))
                 .isNotNull()

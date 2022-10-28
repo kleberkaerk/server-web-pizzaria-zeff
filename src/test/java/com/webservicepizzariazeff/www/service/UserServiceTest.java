@@ -58,6 +58,9 @@ class UserServiceTest {
     @Test
     void registerUser_persistNewUserInDatabase_WhenTheUserIsNotRegisteredInTheDatabase() {
 
+        Assertions.assertThatCode(() -> this.userService.registerUser(user, "pt-BR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.userService.registerUser(user, "pt-BR"))
                 .isEqualTo(2L);
     }
@@ -91,6 +94,9 @@ class UserServiceTest {
                         .password("password")
                         .authorities("ROLE_USER")
                         .build()));
+
+        Assertions.assertThatCode(() -> this.userService.loadUserByUsername("username"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.userService.loadUserByUsername("username"))
                 .isNotNull()

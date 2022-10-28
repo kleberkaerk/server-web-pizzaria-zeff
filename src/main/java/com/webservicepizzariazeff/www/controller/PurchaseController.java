@@ -62,6 +62,14 @@ public class PurchaseController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @PutMapping("admin/delivered/{id}")
-//    public ResponseEntity<Void>
+    @PutMapping("admin/deliver/{id}")
+    public ResponseEntity<Void> purchaseDelivery(
+            @PathVariable("id") Long id,
+            @RequestHeader("Accept-Language") String acceptLanguage
+    ){
+
+        this.purchaseService.deliverPurchase(id, acceptLanguage);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

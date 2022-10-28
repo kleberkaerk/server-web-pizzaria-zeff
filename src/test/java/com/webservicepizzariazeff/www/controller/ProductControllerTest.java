@@ -143,6 +143,9 @@ class ProductControllerTest {
     @Test
     void findAll_returnsAPageOfTheAllProductsAndAStatusCodeOk_ever() {
 
+        Assertions.assertThatCode(() -> this.productController.findAll(Page.empty().getPageable()))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.productController.findAll(Page.empty().getPageable()))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindAll)));
@@ -165,6 +168,9 @@ class ProductControllerTest {
 
     @Test
     void findByType_returnsAPageOfProductsOfAGivenTypeAndAStatusCodeOk_whenTheTypeParameterIsEqualToTheNameOfOneOfTheTypeEnumerations() {
+
+        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
                 .isNotNull()
@@ -192,6 +198,9 @@ class ProductControllerTest {
         BDDMockito.when(this.productService.findByType(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
 
+        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "SWEET"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET"))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
@@ -202,6 +211,9 @@ class ProductControllerTest {
 
     @Test
     void findByPriceRating_returnsAPageOfProductsOfAGivenPriceRatingAndAStatusCodeOk_whenThePriceRatingParameterIsEqualToTheNameOfOneOfThePriceRatingEnumerations() {
+
+        Assertions.assertThatCode(() -> this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
                 .isNotNull()
@@ -229,6 +241,9 @@ class ProductControllerTest {
         BDDMockito.when(this.productService.findByPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
 
+        Assertions.assertThatCode(() -> this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR"))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
@@ -239,6 +254,9 @@ class ProductControllerTest {
 
     @Test
     void findByTypeAndPriceRating_returnsAPageOfProductsOfAGivenTypeAndPriceRatingAndAStatusCodeOk_whenTheTypeParameterAndPriceRatingParameterAreEqualToTheNamesOfOneTypeEnumerationAndPriceRatingEnumeration() {
+
+        Assertions.assertThatCode(() -> this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
                 .isNotNull()
@@ -265,6 +283,9 @@ class ProductControllerTest {
 
         BDDMockito.when(this.productService.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
+
+        Assertions.assertThatCode(() -> this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
                 .isNotNull()

@@ -33,4 +33,9 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     @Modifying
     @Query("update Purchase p set p.isFinished = :isFinished where p.id = :id")
     void updateIsFinishedById(@Param("isFinished") boolean isFinished, @Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update Purchase p set p.isDelivered = :isDelivered where p.id = :id")
+    void updateIsDeliveredById(@Param("isDelivered") boolean isDelivered, @Param("id") Long id);
 }

@@ -145,6 +145,9 @@ class ProductServiceTest {
     @Test
     void findAllNonPageable_returnsAListOfAllProductsInTheDatabase_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> this.productService.findAllNonPageable())
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.productService.findAllNonPageable())
                 .isNotNull()
                 .asList()
@@ -162,6 +165,9 @@ class ProductServiceTest {
 
     @Test
     void findAll_returnsAListOfAllProductsInTheDatabase_ever() {
+
+        Assertions.assertThatCode(() -> this.productService.findAll(Page.empty().getPageable()))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findAll(Page.empty().getPageable()))
                 .isNotNull()
@@ -185,6 +191,9 @@ class ProductServiceTest {
 
     @Test
     void findByType_returnsAPageOfProductsOfAGivenTypeFromTheDatabase_whenTheTypeParameterIsEqualToTheNameOfOneOfTheTypeEnumerations() {
+
+        Assertions.assertThatCode(() -> this.productService.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
                 .isNotNull()
@@ -212,6 +221,9 @@ class ProductServiceTest {
         BDDMockito.when(this.productRepository.findByType(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.any(Type.class)))
                 .thenReturn(Page.empty());
 
+        Assertions.assertThatCode(() -> this.productService.findByType(Page.empty().getPageable(), "SWEET"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.productService.findByType(Page.empty().getPageable(), "SWEET"))
                 .isNotNull()
                 .isEqualTo(new PageImpl<>(Collections.emptyList()));
@@ -222,6 +234,9 @@ class ProductServiceTest {
 
     @Test
     void findByPriceRating_returnsAPageOfProductsOfAGivenPriceRatingFromDatabase_whenThePriceRatingParameterIsEqualToTheNameOfOneOfThePriceRatingEnumerations() {
+
+        Assertions.assertThatCode(() -> this.productService.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
                 .isNotNull()
@@ -249,6 +264,9 @@ class ProductServiceTest {
         BDDMockito.when(this.productRepository.findByPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.any(PriceRating.class)))
                 .thenReturn(Page.empty());
 
+        Assertions.assertThatCode(() -> this.productService.findByPriceRating(Page.empty().getPageable(), "REGULAR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.productService.findByPriceRating(Page.empty().getPageable(), "REGULAR"))
                 .isNotNull()
                 .isEqualTo(new PageImpl<>(Collections.emptyList()));
@@ -259,6 +277,9 @@ class ProductServiceTest {
 
     @Test
     void findByTypeAndPriceRating_returnsAPageOfProductsOfAGivenTypeAndPriceRatingFromDatabase_whenTheTypeParameterAndPriceRatingParameterAreEqualToTheNamesOfOneTypeEnumerationAndPriceRatingEnumeration() {
+
+        Assertions.assertThatCode(() -> this.productService.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
                 .isNotNull()
@@ -285,6 +306,9 @@ class ProductServiceTest {
 
         BDDMockito.when(this.productRepository.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.any(Type.class), ArgumentMatchers.any(PriceRating.class)))
                 .thenReturn(Page.empty());
+
+        Assertions.assertThatCode(() -> this.productService.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
                 .isNotNull()

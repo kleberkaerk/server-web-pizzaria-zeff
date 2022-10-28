@@ -131,6 +131,9 @@ class AddressServiceTest {
     @Test
     void findById_returnsAnAddress_whenTheIdParameterExists() {
 
+        Assertions.assertThatCode(() -> this.addressService.findById(1L))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.addressService.findById(1L))
                 .isNotNull()
                 .isEqualTo(Address.AddressBuilder.builder()
@@ -157,6 +160,9 @@ class AddressServiceTest {
     @Test
     void registerAddress_registersANewAddressForAUserAndReturnsTheIdOfTheCreatedAddress_whenTheAddressDoesNotExistInTheDatabase() {
 
+        Assertions.assertThatCode(() -> this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"))
                 .isEqualTo(1L);
     }
@@ -179,6 +185,9 @@ class AddressServiceTest {
 
     @Test
     void findByUser_returnsAListOfAddressResponseDTOOfTheUser_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.addressService.findByUser(userWhoOwnsTheAddress))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.addressService.findByUser(userWhoOwnsTheAddress))
                 .isNotNull()

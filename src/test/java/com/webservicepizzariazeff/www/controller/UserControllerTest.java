@@ -47,6 +47,9 @@ class UserControllerTest {
     @Test
     void registerNewUser_returnsTheIdOfTheUserThatWasSavedAndAStatusCodeCreated_WhenTheUserIsNotRegisteredInTheDatabase() {
 
+        Assertions.assertThatCode(() -> this.userController.registerNewUser(userRequestDTO, ""))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.userController.registerNewUser(userRequestDTO, ""))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));

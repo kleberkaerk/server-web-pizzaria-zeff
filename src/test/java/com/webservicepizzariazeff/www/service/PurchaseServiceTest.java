@@ -412,6 +412,12 @@ class PurchaseServiceTest {
                 ArgumentMatchers.anyBoolean(),
                 ArgumentMatchers.any(Long.class)
         );
+
+        BDDMockito.doNothing()
+                .when(this.purchaseRepository).updateIsDeliveredById(
+                        ArgumentMatchers.anyBoolean(),
+                        ArgumentMatchers.any(Long.class)
+                );
     }
 
     @Test
@@ -477,7 +483,7 @@ class PurchaseServiceTest {
     }
 
     @Test
-    void preparePurchase_throwsResponseStatusException_whenThePassedIdNotExistOrIsInvalid() {
+    void preparePurchase_throwsResponseStatusException_whenThePassedIdNotExist() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
@@ -494,5 +500,44 @@ class PurchaseServiceTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseService.preparePurchase(1L, "pt-BR"));
+    }
+
+    @Test
+    void deliverPurchase_updatesTheIsDeliveredOfAPurchaseToTrue_whenTheIdIsValid() {
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(Purchase.PurchaseBuilder.builder()
+                        .id(1L)
+                        .amount(new BigDecimal("10.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(false)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build()));
+
+        Assertions.assertThatCode(()-> this.purchaseService.deliverPurchase(1L, "pt-BR"))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void deliverPurchase_throwsResponseStatusException_whenThePassedIdNotExist(){
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.purchaseService.deliverPurchase(1L, "pt-BR"));
+    }
+
+    @Test
+    void deliverPurchase_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.purchaseService.deliverPurchase(1L, "pt-BR"));
     }
 }

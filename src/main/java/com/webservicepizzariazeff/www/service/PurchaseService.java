@@ -17,9 +17,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("java:S115")
 public class PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
+
+    private ResourceBundle messages;
+
+    private static final String resourceBundleName = "messages";
 
     @Autowired
     protected PurchaseService(PurchaseRepository purchaseRepository) {
@@ -48,7 +53,7 @@ public class PurchaseService {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
+        messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
         Purchase purchaseToBeCanceled = this.purchaseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -70,14 +75,19 @@ public class PurchaseService {
                 .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
 
+    private Purchase findById(Long id, String reason) {
+
+        return this.purchaseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, reason));
+    }
+
     public void preparePurchase(Long id, String acceptLanguage) {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
+        messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
-        Purchase purchaseToBePrepared = this.purchaseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, messages.getString("invalid.id")));
+        Purchase purchaseToBePrepared = this.findById(id, messages.getString("invalid.id"));
 
         if (!purchaseToBePrepared.isActive() || purchaseToBePrepared.isDelivered()) {
 
@@ -85,5 +95,21 @@ public class PurchaseService {
         }
 
         this.purchaseRepository.updateIsFinishedById(true, id);
+    }
+
+    public void deliverPurchase(Long id, String acceptLanguage) {
+
+        String[] languageAndCountry = acceptLanguage.split("-");
+
+        messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
+
+        Purchase purchaseToBeDelivered = this.findById(id, messages.getString("invalid.id"));
+
+        if (!purchaseToBeDelivered.isActive() || !purchaseToBeDelivered.isFinished()) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, messages.getString("invalid.operation"));
+        }
+
+        this.purchaseRepository.updateIsDeliveredById(true, id);
     }
 }

@@ -194,6 +194,9 @@ class MapperTest {
     @Test
     void ofTheAddressDTOForAddress_mapsFromAAddressRequestDTOToAnAddress_WheneverCalled() {
 
+        Assertions.assertThatCode(() -> Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getNumber())
                 .isEqualTo("1");
 
@@ -216,6 +219,9 @@ class MapperTest {
     @Test
     void ofTheUserDetailsForUser_mapsFromAUserDetailsToAnUser_WheneverCalled() {
 
+        Assertions.assertThatCode(() -> Mapper.ofTheUserDetailsForUser(user))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(Mapper.ofTheUserDetailsForUser(user))
                 .isEqualTo(User.UserBuilder.builder()
                         .id(1L)
@@ -229,12 +235,18 @@ class MapperTest {
     @Test
     void ofTheAddressForAddressResponseDTO_mapsFromAddressToAnAddressResponseDTO_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> Mapper.ofTheAddressForAddressResponseDTO(address))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(Mapper.ofTheAddressForAddressResponseDTO(address))
                 .isEqualTo(addressResponseDTO);
     }
 
     @Test
     void ofTheProductForPurchasedProduct_mapsFromProductToPurchasedProduct_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofTheProductForPurchasedProduct(product, purchase))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(Mapper.ofTheProductForPurchasedProduct(product, purchase))
                 .hasToString(PurchasedProduct.PurchasedProductBuilder.builder()
@@ -246,12 +258,18 @@ class MapperTest {
     @Test
     void ofThePurchaseForPurchaseResponseDTOForUser_mapsFromPurchaseToPurchaseUserResponseDTO_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> Mapper.ofThePurchaseForPurchaseUserResponseDTO(purchase))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(Mapper.ofThePurchaseForPurchaseUserResponseDTO(purchase).toString())
                 .hasToString(purchaseUserResponseDTO.toString());
     }
 
     @Test
     void ofThePurchaseForPurchaseResponseDTOForRestaurant_mapsFromPurchaseToPurchaseRestaurantResponseDTO_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofThePurchaseForPurchaseRestaurantResponseDTO(purchase))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(Mapper.ofThePurchaseForPurchaseRestaurantResponseDTO(purchase))
                 .isNotNull()

@@ -83,6 +83,9 @@ class SaleControllerTest {
     @Test
     void sale_returnsTheIdOfThePurchaseThatWasSavedAndAStatusCodeCreated_whenTheValuesOfSaleRequestDTOAreCorrect() {
 
+        Assertions.assertThatCode(() -> this.saleController.sale(user, saleRequestDTO, "pt-BR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.saleController.sale(user, saleRequestDTO, "pt-BR"))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));

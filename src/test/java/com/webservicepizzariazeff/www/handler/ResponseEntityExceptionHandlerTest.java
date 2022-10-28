@@ -114,6 +114,9 @@ class ResponseEntityExceptionHandlerTest {
     @Test
     void handlerExistingUserException_returnsAResponseEntityOfTypeExistingUserExceptionHandler_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument).getStatusCode())
                 .isEqualTo(existingUserExceptionHandlerResponseEntity.getStatusCode());
 
@@ -123,6 +126,9 @@ class ResponseEntityExceptionHandlerTest {
 
     @Test
     void handlerMethodArgumentNotValidException_returnsAResponseEntityOfTypeMethodArgumentNotValidExceptionHandler_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
                 .isEqualTo(methodArgumentNotValidExceptionHandlerResponseEntity.getStatusCode());
@@ -134,6 +140,9 @@ class ResponseEntityExceptionHandlerTest {
     @Test
     void handlerExistingAddressException_returnsAResponseEntityOfTypeExistingAddressExceptionHandler_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getStatusCode())
                 .isEqualTo(existingAddressExceptionHandlerResponseEntity.getStatusCode());
 
@@ -144,6 +153,9 @@ class ResponseEntityExceptionHandlerTest {
     @Test
     void handlerNullPointerException_returnsAResponseEntityOfTypeNullPointerExceptionHandler_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerNullPointerException())
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerNullPointerException().getStatusCode())
                 .isEqualTo(nullPointerExceptionHandlerResponseEntity.getStatusCode());
 
@@ -153,6 +165,9 @@ class ResponseEntityExceptionHandlerTest {
 
     @Test
     void handlerPurchaseFinishedException_returnsAResponseEntityOfTypePurchaseFinishedExceptionHandler_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException).getStatusCode())
                 .isEqualTo(purchaseFinishedExceptionHandlerResponseEntity.getStatusCode());

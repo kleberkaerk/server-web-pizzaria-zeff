@@ -203,10 +203,16 @@ class PurchaseControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.purchaseService).preparePurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        BDDMockito.doNothing()
+                .when(this.purchaseService).deliverPurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
     }
 
     @Test
     void findPurchasesByUser_returnsAMapOfTheAllActivePurchaseUserResponseDTOOfTheAUserAndAStatusCodeOk_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.purchaseController.findPurchasesOfTheUser(user))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseController.findPurchasesOfTheUser(user))
                 .isNotNull()
@@ -215,6 +221,9 @@ class PurchaseControllerTest {
 
     @Test
     void cancelPurchase_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
+
+        Assertions.assertThatCode(() -> this.purchaseController.cancelPurchase(1L, "pt-BR"))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseController.cancelPurchase(1L, "pt-BR"))
                 .isNotNull()
@@ -232,7 +241,7 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void cancelPurchase_throwsPurchaseFinishedException_whenTheIdPassedIsNotValid() {
+    void cancelPurchase_throwsPurchaseFinishedException_whenTheIdPassedIsInvalid() {
 
         BDDMockito.doThrow(PurchaseFinishedException.class)
                 .when(this.purchaseService).cancelPurchaseOfTheUser(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
@@ -244,6 +253,9 @@ class PurchaseControllerTest {
     @Test
     void findUsersPurchases_returnsAMapOfTheAllPurchaseRestaurantResponseDTONoDeliveredAndAStatusCodeOk_wheneverCalled() {
 
+        Assertions.assertThatCode(() -> this.purchaseController.findUsersPurchases())
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.purchaseController.findUsersPurchases())
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(mapPurchaseRestaurantResponseDTOForResponse));
@@ -252,17 +264,40 @@ class PurchaseControllerTest {
     @Test
     void purchasePreparation_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
 
+        Assertions.assertThatCode(() -> this.purchaseController.purchasePreparation(1L, "pt-BR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.purchaseController.purchasePreparation(1L, "pt-BR"))
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @Test
-    void purchasePreparation_throwsResponseStatusException_whenTheIdPassedIsNotExistsOrGoInvalid() {
+    void purchasePreparation_throwsResponseStatusException_whenTheIdPassedIsNotExistsOrIsInvalid() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
                 .when(this.purchaseService).preparePurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.purchaseController.purchasePreparation(1L, "pt-BR"));
+                .isThrownBy(() -> this.purchaseController.purchasePreparation(1L, "pt-BR"));
+    }
+
+    @Test
+    void purchaseDelivery_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
+
+        Assertions.assertThatCode(() -> this.purchaseController.purchaseDelivery(1L, "pt-BR"))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.purchaseController.purchaseDelivery(1L, "pt-BR"))
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void purchaseDelivery_throwsResponseStatusException_whenTheIdPassedIsNotExistsOrIsInvalid() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.purchaseService).deliverPurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseController.purchaseDelivery(1L, "pt-BR"));
     }
 }

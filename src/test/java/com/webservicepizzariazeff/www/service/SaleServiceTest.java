@@ -193,6 +193,9 @@ class SaleServiceTest {
     @Test
     void sale_makesTheSaleOfProductsAndReturnsThePurchaseId_whenTheArgumentsAreCorrect() {
 
+        Assertions.assertThatCode(() -> this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"))
+                .doesNotThrowAnyException();
+
         Assertions.assertThat(this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"))
                 .isEqualTo(1L);
     }
