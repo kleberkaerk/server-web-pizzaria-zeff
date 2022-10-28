@@ -141,7 +141,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findAll_returnsAResponseEntityOfThePageOfTheAllProductsFromTheDatabase_ever() {
+    void findAll_returnsAPageOfTheAllProductsAndAStatusCodeOk_ever() {
 
         Assertions.assertThat(this.productController.findAll(Page.empty().getPageable()))
                 .isNotNull()
@@ -164,7 +164,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByType_returnsAResponseEntityOfThePageOfProductsOfAGivenTypeFromTheDatabase_whenTheTypeParameterIsEqualToTheNameOfOneOfTheTypeEnumerations() {
+    void findByType_returnsAPageOfProductsOfAGivenTypeAndAStatusCodeOk_whenTheTypeParameterIsEqualToTheNameOfOneOfTheTypeEnumerations() {
 
         Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
                 .isNotNull()
@@ -187,7 +187,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByType_returnsAResponseEntityOfThePageWithNoProducts_whenTheTypeParameterIsNotEqualToTheNameOfOneOfTheTypeEnumerations() {
+    void findByType_returnsAPageWithNoProductsAndAStatusCodeOk_whenTheTypeParameterIsNotEqualToTheNameOfOneOfTheTypeEnumerations() {
 
         BDDMockito.when(this.productService.findByType(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
@@ -201,7 +201,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByPriceRating_returnsAResponseEntityOfThePageOfProductsOfAGivenPriceRatingFromDatabase_whenThePriceRatingParameterIsEqualToTheNameOfOneOfThePriceRatingEnumerations() {
+    void findByPriceRating_returnsAPageOfProductsOfAGivenPriceRatingAndAStatusCodeOk_whenThePriceRatingParameterIsEqualToTheNameOfOneOfThePriceRatingEnumerations() {
 
         Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
                 .isNotNull()
@@ -224,7 +224,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByPriceRating_returnsAResponseEntityOfThePageWithNoProducts_whenThePriceRatingParameterIsNotEqualToTheNameOfOneOfThePriceRatingEnumerations() {
+    void findByPriceRating_returnsAPageWithNoProductsAndAStatusCodeOk_whenThePriceRatingParameterIsNotEqualToTheNameOfOneOfThePriceRatingEnumerations() {
 
         BDDMockito.when(this.productService.findByPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
@@ -238,7 +238,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByTypeAndPriceRating_returnsAResponseEntityOfThePageOfProductsOfAGivenTypeAndPriceRatingFromDatabase_whenTheTypeParameterAndPriceRatingParameterAreEqualToTheNamesOfOneTypeEnumerationAndPriceRatingEnumeration() {
+    void findByTypeAndPriceRating_returnsAPageOfProductsOfAGivenTypeAndPriceRatingAndAStatusCodeOk_whenTheTypeParameterAndPriceRatingParameterAreEqualToTheNamesOfOneTypeEnumerationAndPriceRatingEnumeration() {
 
         Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
                 .isNotNull()
@@ -261,7 +261,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByTypeAndPriceRating_returnsAResponseEntityOfThePageWithNoProducts_whenTheTypeParameterOrPriceRatingParameterAreNotEqualToTheNamesOfOneTypeEnumerationOrPriceRatingEnumeration() {
+    void findByTypeAndPriceRating_returnsAPageWithNoProductsAndAStatusCodeOk_whenTheTypeParameterOrPriceRatingParameterAreNotEqualToTheNamesOfOneTypeEnumerationOrPriceRatingEnumeration() {
 
         BDDMockito.when(this.productService.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());

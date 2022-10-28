@@ -35,7 +35,10 @@ public class PurchaseController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> cancelPurchase(@PathVariable Long id, @RequestHeader("Accept-Language") String acceptLanguage) {
+    public ResponseEntity<Void> cancelPurchase(
+            @PathVariable Long id,
+            @RequestHeader("Accept-Language") String acceptLanguage
+    ) {
 
         this.purchaseService.cancelPurchaseOfTheUser(id, acceptLanguage);
 
@@ -43,8 +46,22 @@ public class PurchaseController {
     }
 
     @GetMapping(value = "admin/find-all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Boolean, List<PurchaseRestaurantResponseDTO>>> findUsersPurchases(){
+    public ResponseEntity<Map<Boolean, List<PurchaseRestaurantResponseDTO>>> findUsersPurchases() {
 
         return new ResponseEntity<>(this.purchaseService.findByAllUsersPurchases(), HttpStatus.OK);
     }
+
+    @PutMapping("admin/finish/{id}")
+    public ResponseEntity<Void> purchasePreparation(
+            @PathVariable Long id,
+            @RequestHeader("Accept-Language") String acceptLanguage
+    ) {
+
+        this.purchaseService.preparePurchase(id, acceptLanguage);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+//    @PutMapping("admin/delivered/{id}")
+//    public ResponseEntity<Void>
 }

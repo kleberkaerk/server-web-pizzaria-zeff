@@ -390,17 +390,28 @@ class PurchaseServiceTest {
         BDDMockito.when(this.purchaseRepository.save(ArgumentMatchers.any(Purchase.class)))
                 .thenReturn(userPurchases.get(0));
 
-        BDDMockito.when(this.purchaseRepository.findByUserAndIsActive(ArgumentMatchers.any(User.class), ArgumentMatchers.anyBoolean()))
+        BDDMockito.when(this.purchaseRepository.findByUserAndIsActive(
+                        ArgumentMatchers.any(User.class),
+                        ArgumentMatchers.anyBoolean()
+                ))
                 .thenReturn(userPurchases);
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(userPurchases.get(0)));
 
         BDDMockito.doNothing()
-                .when(this.purchaseRepository).updateIsActiveById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
+                .when(this.purchaseRepository).updateIsActiveById(
+                        ArgumentMatchers.anyBoolean(),
+                        ArgumentMatchers.any(Long.class)
+                );
 
         BDDMockito.when(this.purchaseRepository.findByIsDelivered(ArgumentMatchers.anyBoolean()))
                 .thenReturn(restaurantPurchases);
+
+        BDDMockito.doNothing().when(this.purchaseRepository).updateIsFinishedById(
+                ArgumentMatchers.anyBoolean(),
+                ArgumentMatchers.any(Long.class)
+        );
     }
 
     @Test
@@ -451,10 +462,37 @@ class PurchaseServiceTest {
     }
 
     @Test
-    void findByAllUsersPurchases__wheneverCalled() {
+    void findByAllUsersPurchases_returnsAllPurchaseUserResponseDTOOfTheAUser_wheneverCalled() {
 
         Assertions.assertThat(this.purchaseService.findByAllUsersPurchases())
                 .isNotNull()
                 .hasToString(mapPurchaseRestaurantResponseDTOToCompare.toString());
+    }
+
+    @Test
+    void preparePurchase_updatesTheIsFinishedOfAPurchaseToTrue_whenTheIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.purchaseService.preparePurchase(1L, "pt-BR"))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void preparePurchase_throwsResponseStatusException_whenThePassedIdNotExistOrIsInvalid() {
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.preparePurchase(1L, "pt-BR"));
+    }
+
+    @Test
+    void preparePurchase_throwsResponseStatusException_whenThePassedIdIsInvalid() {
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(userPurchases.get(2)));
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.preparePurchase(1L, "pt-BR"));
     }
 }

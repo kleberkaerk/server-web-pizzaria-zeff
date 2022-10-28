@@ -180,7 +180,7 @@ class PurchaseControllerTest {
     }
 
     @BeforeAll
-    static void initializeObjects(){
+    static void initializeObjects() {
 
         setUser();
         setPurchasedProductResponseDTOList();
@@ -200,10 +200,13 @@ class PurchaseControllerTest {
 
         BDDMockito.when(this.purchaseService.findByAllUsersPurchases())
                 .thenReturn(mapPurchaseRestaurantResponseDTOForResponse);
+
+        BDDMockito.doNothing()
+                .when(this.purchaseService).preparePurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
     }
 
     @Test
-    void findPurchasesByUser_returnsAMapOfTheAllActivePurchaseUserResponseDTOOfTheAUser_wheneverCalled() {
+    void findPurchasesByUser_returnsAMapOfTheAllActivePurchaseUserResponseDTOOfTheAUserAndAStatusCodeOk_wheneverCalled() {
 
         Assertions.assertThat(this.purchaseController.findPurchasesOfTheUser(user))
                 .isNotNull()
@@ -211,7 +214,7 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void cancelPurchase_returnsANoContent_whenTheIdPassedIsValid() {
+    void cancelPurchase_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
 
         Assertions.assertThat(this.purchaseController.cancelPurchase(1L, "pt-BR"))
                 .isNotNull()
@@ -239,10 +242,27 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void findUsersPurchases_returnsAMapOfTheAllPurchaseRestaurantResponseDTONoDelivered_wheneverCalled() {
+    void findUsersPurchases_returnsAMapOfTheAllPurchaseRestaurantResponseDTONoDeliveredAndAStatusCodeOk_wheneverCalled() {
 
         Assertions.assertThat(this.purchaseController.findUsersPurchases())
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(mapPurchaseRestaurantResponseDTOForResponse));
+    }
+
+    @Test
+    void purchasePreparation_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
+
+        Assertions.assertThat(this.purchaseController.purchasePreparation(1L, "pt-BR"))
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void purchasePreparation_throwsResponseStatusException_whenTheIdPassedIsNotExistsOrGoInvalid() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.purchaseService).preparePurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.purchaseController.purchasePreparation(1L, "pt-BR"));
     }
 }

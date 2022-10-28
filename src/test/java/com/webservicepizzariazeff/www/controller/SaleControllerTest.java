@@ -81,7 +81,7 @@ class SaleControllerTest {
     }
 
     @Test
-    void sale_saveANewPurchaseAndReturnThePurchaseId_whenTheValuesOfSaleRequestDTOAreCorrect() {
+    void sale_returnsTheIdOfThePurchaseThatWasSavedAndAStatusCodeCreated_whenTheValuesOfSaleRequestDTOAreCorrect() {
 
         Assertions.assertThat(this.saleController.sale(user, saleRequestDTO, "pt-BR"))
                 .isNotNull()

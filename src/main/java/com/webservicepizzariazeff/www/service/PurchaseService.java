@@ -69,4 +69,21 @@ public class PurchaseService {
                 .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
                 .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
+
+    public void preparePurchase(Long id, String acceptLanguage) {
+
+        String[] languageAndCountry = acceptLanguage.split("-");
+
+        ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
+
+        Purchase purchaseToBePrepared = this.purchaseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, messages.getString("invalid.id")));
+
+        if (!purchaseToBePrepared.isActive() || purchaseToBePrepared.isDelivered()) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, messages.getString("invalid.operation"));
+        }
+
+        this.purchaseRepository.updateIsFinishedById(true, id);
+    }
 }

@@ -31,9 +31,34 @@ class AddressControllerTest {
     @Mock
     private AddressService addressService;
 
+    private static User user;
+
+    private static AddressRequestDTO addressRequestDTO;
+
     private static List<AddressResponseDTO> addressResponseDTO;
 
-    @BeforeAll
+    static void setUser() {
+
+        user = User.UserBuilder.builder()
+                .id(1L)
+                .name("name")
+                .username("username")
+                .password("password")
+                .authorities("ROLE_USER")
+                .build();
+    }
+
+    static void setAddressRequestDTO() {
+
+        addressRequestDTO = AddressRequestDTO.AddressRequestDTOBuilder.builder()
+                .number("1")
+                .road("road")
+                .district("district")
+                .state("state")
+                .city("city")
+                .build();
+    }
+
     static void setAddressResponseDTOForFindByUser() {
 
         addressResponseDTO = List.of(
@@ -72,6 +97,14 @@ class AddressControllerTest {
         );
     }
 
+    @BeforeAll
+    static void initializeObjects() {
+
+        setUser();
+        setAddressRequestDTO();
+        setAddressResponseDTOForFindByUser();
+    }
+
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
@@ -89,19 +122,9 @@ class AddressControllerTest {
     }
 
     @Test
-    void registerNewAddress_createANewAddressAndReturnsTheIdOfThisAddress_WhenTheAddressIsNotRegisteredInTheDatabase() {
+    void registerNewAddress_returnsTheIdOfTheAddressThatWasSavedAndAStatusCodeCreated_WhenTheAddressIsNotRegisteredInTheDatabase() {
 
-        User userWhoWillRegisterTheAddress = User.UserBuilder.builder().build();
-
-        AddressRequestDTO addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
-                .number("")
-                .road("")
-                .district("")
-                .state("")
-                .city("")
-                .build();
-
-        Assertions.assertThat(this.addressController.registerNewAddress(userWhoWillRegisterTheAddress, addressToBeSaved, "pt-BR"))
+        Assertions.assertThat(this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));
     }
@@ -112,34 +135,15 @@ class AddressControllerTest {
         BDDMockito.when(this.addressService.registerAddress(
                         ArgumentMatchers.any(UserDetails.class),
                         ArgumentMatchers.any(AddressRequestDTO.class),
-                        ArgumentMatchers.anyString()
-                ))
-                .thenThrow(new ExistingAddressException(""));
+                        ArgumentMatchers.anyString()))
+                .thenThrow(ExistingAddressException.class);
 
-        User userWhoWillRegisterTheAddress = User.UserBuilder.builder().build();
-
-        AddressRequestDTO addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
-                .number("")
-                .road("")
-                .district("")
-                .state("")
-                .city("")
-                .build();
-
-        Assertions.assertThatExceptionOfType(ExistingAddressException.class)
-                .isThrownBy(() -> this.addressController.registerNewAddress(userWhoWillRegisterTheAddress, addressToBeSaved, "pt-BR"));
+                Assertions.assertThatExceptionOfType(ExistingAddressException.class)
+                        .isThrownBy(() -> this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"));
     }
 
     @Test
-    void findAddressByUser_returnsAListOfAddressResponseDTOOfTheUser_wheneverCalled() {
-
-        User user = User.UserBuilder.builder()
-                .id(1L)
-                .name("name")
-                .username("username")
-                .password("password")
-                .authorities("ROLE_USER")
-                .build();
+    void findAddressByUser_returnsAListOfAddressResponseDTOOfTheUserAndAStatusCodeOk_wheneverCalled() {
 
         Assertions.assertThat(this.addressController.findAddressesByUser(user))
                 .isNotNull()
@@ -161,7 +165,7 @@ class AddressControllerTest {
     }
 
     @Test
-    void deleteAAddress_deleteAnAddressUsingTheId_whenTheAddressExistsInTheDatabase() {
+    void deleteAAddress_returnsAStatusCodeNoContent_whenTheAddressExistsInTheDatabase() {
 
         Assertions.assertThatCode(() -> this.addressController.deleteAAddress(1L))
                 .doesNotThrowAnyException();

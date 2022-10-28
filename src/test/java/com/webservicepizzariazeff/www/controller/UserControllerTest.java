@@ -45,7 +45,7 @@ class UserControllerTest {
     }
 
     @Test
-    void registerNewUser_createANewUserAndReturnsTheIdOfThisUser_WhenTheUserIsNotRegisteredInTheDatabase() {
+    void registerNewUser_returnsTheIdOfTheUserThatWasSavedAndAStatusCodeCreated_WhenTheUserIsNotRegisteredInTheDatabase() {
 
         Assertions.assertThat(this.userController.registerNewUser(userRequestDTO, ""))
                 .isNotNull()
