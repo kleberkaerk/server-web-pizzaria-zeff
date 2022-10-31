@@ -1,6 +1,7 @@
 package com.webservicepizzariazeff.www.service;
 
 import com.webservicepizzariazeff.www.domain.Purchase;
+import com.webservicepizzariazeff.www.domain.PurchasedProduct;
 import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
@@ -11,25 +12,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@SuppressWarnings("java:S115")
 public class PurchaseService {
 
     private final PurchaseRepository purchaseRepository;
 
+    private final PurchasedProductService purchasedProductService;
+
     private ResourceBundle messages;
 
-    private static final String resourceBundleName = "messages";
+    private static final String RESOURCE_BUNDLE_NAME = "messages";
+
+    private static final String INVALID_ID = "invalid.id";
 
     @Autowired
-    protected PurchaseService(PurchaseRepository purchaseRepository) {
+    protected PurchaseService(PurchaseRepository purchaseRepository, PurchasedProductService purchasedProductService) {
 
         this.purchaseRepository = purchaseRepository;
+        this.purchasedProductService = purchasedProductService;
     }
 
     public Purchase save(Purchase purchase) {
@@ -53,7 +59,7 @@ public class PurchaseService {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
+        messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
         User user = Mapper.ofTheUserDetailsForUser(userDetails);
 
@@ -87,9 +93,9 @@ public class PurchaseService {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
+        messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
-        Purchase purchaseToBePrepared = this.findById(id, messages.getString("invalid.id"));
+        Purchase purchaseToBePrepared = this.findById(id, messages.getString(INVALID_ID));
 
         if (!purchaseToBePrepared.isActive() || purchaseToBePrepared.isDelivered()) {
 
@@ -103,9 +109,9 @@ public class PurchaseService {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        messages = ResourceBundle.getBundle(resourceBundleName, new Locale(languageAndCountry[0], languageAndCountry[1]));
+        messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
-        Purchase purchaseToBeDelivered = this.findById(id, messages.getString("invalid.id"));
+        Purchase purchaseToBeDelivered = this.findById(id, messages.getString(INVALID_ID));
 
         if (!purchaseToBeDelivered.isActive() || !purchaseToBeDelivered.isFinished()) {
 
@@ -113,5 +119,23 @@ public class PurchaseService {
         }
 
         this.purchaseRepository.updateIsDeliveredById(true, id);
+    }
+
+    private void deletePurchasedProducts(List<PurchasedProduct> purchasedProducts){
+
+        purchasedProducts
+                .forEach(purchasedProduct -> this.purchasedProductService.delete(purchasedProduct.getId()));
+    }
+
+    @Transactional
+    public void deleteAPurchase(Long id){
+
+        messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale("en", "US"));
+
+        Purchase purchaseToBeDeleted = this.findById(id, messages.getString(INVALID_ID));
+
+        this.deletePurchasedProducts(purchaseToBeDeleted.getPurchasedProducts());
+
+        this.purchaseRepository.deleteById(id);
     }
 }

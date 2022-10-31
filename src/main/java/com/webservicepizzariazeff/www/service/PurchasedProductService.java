@@ -20,4 +20,9 @@ public class PurchasedProductService {
 
         this.purchasedProductRepository.save(purchase);
     }
+
+    public void delete(Long id){
+
+        this.purchasedProductRepository.deleteById(id);
+    }
 }

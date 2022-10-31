@@ -67,13 +67,20 @@ public class PurchaseController {
     public ResponseEntity<Void> purchaseDelivery(
             @PathVariable("id") Long id,
             @RequestHeader("Accept-Language") String acceptLanguage
-    ){
+    ) {
 
         this.purchaseService.deliverPurchase(id, acceptLanguage);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @DeleteMapping("")
-//    public ResponseEntity<Void> deletePurchase(){}
+    @DeleteMapping("admin/delete/{id}")
+    public ResponseEntity<Void> deletePurchase(
+            @PathVariable("id") Long id
+    ) {
+
+        this.purchaseService.deleteAPurchase(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

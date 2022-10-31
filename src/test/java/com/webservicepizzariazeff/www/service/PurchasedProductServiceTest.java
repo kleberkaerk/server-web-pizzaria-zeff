@@ -44,12 +44,22 @@ class PurchasedProductServiceTest {
                         .name("name")
                         .purchase(Purchase.PurchaseBuilder.builder().id(1L).build())
                         .build());
+
+        BDDMockito.doNothing()
+                .when(this.purchasedProductRepository).deleteById(ArgumentMatchers.any(Long.class));
     }
 
     @Test
     void save_persistsANewPurchasedProductInTheDatabase_wheneverCalled() {
 
         Assertions.assertThatCode(() -> this.purchasedProductService.save(purchasedProduct))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void delete_deletesAPurchasedProductById_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.purchasedProductService.delete(1L))
                 .doesNotThrowAnyException();
     }
 }

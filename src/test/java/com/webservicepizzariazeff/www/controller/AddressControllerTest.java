@@ -171,23 +171,23 @@ class AddressControllerTest {
     }
 
     @Test
-    void deleteAAddress_returnsAStatusCodeNoContent_whenTheAddressExistsInTheDatabase() {
+    void deleteAddress_returnsAStatusCodeNoContent_whenTheAddressExistsInTheDatabase() {
 
-        Assertions.assertThatCode(() -> this.addressController.deleteAAddress(1L))
+        Assertions.assertThatCode(() -> this.addressController.deleteAddress(1L))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.addressController.deleteAAddress(1L))
+        Assertions.assertThat(this.addressController.deleteAddress(1L))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @Test
-    void deleteAAddress_throwsResponseStatusException_whenTheAddressNotExistsInTheDatabase() {
+    void deleteAddress_throwsResponseStatusException_whenTheAddressNotExistsInTheDatabase() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
                 .when(this.addressService).deleteAAddress(ArgumentMatchers.any(Long.class));
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.addressController.deleteAAddress(1L));
+                .isThrownBy(() -> this.addressController.deleteAddress(1L));
     }
 }

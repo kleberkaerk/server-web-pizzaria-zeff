@@ -206,6 +206,9 @@ class PurchaseControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.purchaseService).deliverPurchase(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyString());
+
+        BDDMockito.doNothing()
+                .when(this.purchaseService).deleteAPurchase(ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -268,6 +271,7 @@ class PurchaseControllerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseController.purchasePreparation(1L, "pt-BR"))
+                .isNotNull()
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
@@ -288,6 +292,7 @@ class PurchaseControllerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseController.purchaseDelivery(1L, "pt-BR"))
+                .isNotNull()
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
@@ -299,5 +304,26 @@ class PurchaseControllerTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseController.purchaseDelivery(1L, "pt-BR"));
+    }
+
+    @Test
+    void deletePurchase_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
+
+        Assertions.assertThatCode(() -> this.purchaseController.deletePurchase(1L))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.purchaseController.deletePurchase(1L))
+                .isNotNull()
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void deletePurchase_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.purchaseService).deleteAPurchase(ArgumentMatchers.any(Long.class));
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseController.deletePurchase(1L));
     }
 }

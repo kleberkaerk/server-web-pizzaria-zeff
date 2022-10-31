@@ -37,6 +37,9 @@ class PurchaseServiceTest {
     @Mock
     private PurchaseRepository purchaseRepository;
 
+    @Mock
+    private PurchasedProductService purchasedProductService;
+
     private static User user;
 
     private static Address address;
@@ -385,7 +388,7 @@ class PurchaseServiceTest {
     }
 
     @BeforeEach
-    void definitionOfBehaviorsForMocks() {
+    void definitionOfBehaviorsForMockPurchaseRepository() {
 
         BDDMockito.when(this.purchaseRepository.save(ArgumentMatchers.any(Purchase.class)))
                 .thenReturn(userPurchases.get(0));
@@ -426,11 +429,18 @@ class PurchaseServiceTest {
                 );
     }
 
+    @BeforeEach
+    void definitionOfBehaviorsForMockPurchasedProductService() {
+
+        BDDMockito.doNothing()
+                .when(this.purchasedProductService).delete(ArgumentMatchers.any(Long.class));
+    }
+
     @Test
     void save_persistAndReturnsANewPurchaseInTheDatabase_wheneverCalled() {
 
-        Assertions.assertThatCode(()-> this.purchaseService.save(purchaseToCompare))
-                        .doesNotThrowAnyException();
+        Assertions.assertThatCode(() -> this.purchaseService.save(purchaseToCompare))
+                .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseService.save(purchaseToCompare))
                 .isNotNull()
@@ -440,7 +450,7 @@ class PurchaseServiceTest {
     @Test
     void findByAllPurchasesOfTheAnUser_returnsAMapOfTheAllActivePurchaseResponseDTOForUserOfTheAUser_wheneverCalled() {
 
-        Assertions.assertThatCode(()-> this.purchaseService.findByAllPurchasesOfTheAnUser(user))
+        Assertions.assertThatCode(() -> this.purchaseService.findByAllPurchasesOfTheAnUser(user))
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseService.findByAllPurchasesOfTheAnUser(user))
@@ -560,5 +570,22 @@ class PurchaseServiceTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseService.deliverPurchase(1L, "pt-BR"));
+    }
+
+    @Test
+    void deleteAPurchase_deletesAPurchase_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.purchaseService.deleteAPurchase(1L))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void deleteAPurchase_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.deleteAPurchase(1L));
     }
 }
