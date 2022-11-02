@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -26,4 +27,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("update Product p set p.isStocked = :isStocked where p.id = :id")
     void updateIsStockedById(@Param("isStocked") boolean isStocked, @Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update Product p set p.price = :price where p.id = :id")
+    void updatePriceById(@Param("price") BigDecimal price, @Param("id") Long id);
 }

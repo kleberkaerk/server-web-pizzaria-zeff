@@ -292,6 +292,9 @@ class ProductControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.productService).updateProductStock(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyBoolean());
+
+        BDDMockito.doNothing()
+                .when(this.productService).updatePriceOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(BigDecimal.class));
     }
 
     @Test
@@ -389,5 +392,30 @@ class ProductControllerTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.productController.updateStock(2L, false));
+    }
+
+    @Test
+    void updatePrice_returnsAStatusCodeNoContent_whenThePassedIdIsValid(){
+
+        BigDecimal price = new BigDecimal("10.00");
+
+        Assertions.assertThatCode(()-> this.productController.updatePrice(1L, price))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.updatePrice(1L, price))
+                .isNotNull()
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void updatePrice_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.productService).updatePriceOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(BigDecimal.class));
+
+        BigDecimal price = new BigDecimal("10");
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.productController.updatePrice(2L, price));
     }
 }

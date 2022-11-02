@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,13 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @PutMapping("admin/price/{id}/{newPrice}")
+    @PutMapping("admin/price/{id}/{newPrice}")
+    public ResponseEntity<Void> updatePrice(@PathVariable Long id, @PathVariable BigDecimal newPrice) {
+
+        this.productService.updatePriceOfProduct(id, newPrice);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 //    @PutMapping("admin/category/{id}/{category}")
 }

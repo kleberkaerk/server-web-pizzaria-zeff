@@ -272,6 +272,9 @@ class ProductServiceTest {
 
         BDDMockito.doNothing()
                 .when(this.productRepository).updateIsStockedById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
+
+        BDDMockito.doNothing()
+                .when(this.productRepository).updatePriceById(ArgumentMatchers.any(BigDecimal.class), ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -358,5 +361,24 @@ class ProductServiceTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.productService.updateProductStock(1L, false));
+    }
+
+    @Test
+    void updatePriceOfProduct_updatesThePriceOfAProduct_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.productService.updatePriceOfProduct(1L, new BigDecimal("10")))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void updatePriceOfProduct_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.productRepository).updatePriceById(ArgumentMatchers.any(BigDecimal.class), ArgumentMatchers.any(Long.class));
+
+        BigDecimal price = new BigDecimal("10");
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.productService.updatePriceOfProduct(2L, price));
     }
 }
