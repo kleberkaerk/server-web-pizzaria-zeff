@@ -20,10 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
 class ProductControllerTest {
@@ -38,13 +36,17 @@ class ProductControllerTest {
 
     private static Map<Type, List<ProductResponseDTO>> mapFindAllProductsInStock;
 
-    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindAllProductsInStock;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllProductsInStock;
 
-    private static List<ProductResponseDTO> productResponseDTOFindProductsByTypeAndInStock;
+    private static List<ProductResponseDTO> productResponseDTOSFindProductsByTypeAndInStock;
 
     private static Map<Type, List<ProductResponseDTO>> mapFindProductsInPromotionAndInStock;
 
-    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindProductsInPromotionAndInStock;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindProductsInPromotionAndInStock;
+
+    private static Map<Boolean, List<ProductResponseDTO>> mapFindAllGrouped;
+
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
 
     static void setProductResponseDTOS() {
 
@@ -188,44 +190,45 @@ class ProductControllerTest {
                         .priceRating(PriceRating.PROMOTION)
                         .image("/image14")
                         .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(15L)
+                        .name("name15")
+                        .description("description15")
+                        .price(new BigDecimal("150.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image15")
+                        .isStocked(false)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(16L)
+                        .name("name16")
+                        .description("description16")
+                        .price(new BigDecimal("160.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image16")
+                        .isStocked(false)
                         .build()
         );
     }
 
     static void setMapForReturnOfTheFindAllProductsInStock() {
 
-        mapFindAllProductsInStock = Map.of(
-                Type.SALTY_PIZZA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_PIZZA)
-                        .toList(),
-                Type.SWEET_PIZZA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_PIZZA)
-                        .toList(),
-                Type.SALTY_ESFIHA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_ESFIHA)
-                        .toList(),
-                Type.SWEET_ESFIHA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_ESFIHA)
-                        .toList(),
-                Type.DRINK, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.DRINK)
-                        .toList()
-        );
+        mapFindAllProductsInStock = productResponseDTOS.stream()
+                .filter(ProductResponseDTO::isStocked)
+                .collect(Collectors.groupingBy(ProductResponseDTO::getType));
     }
 
-    static void setProductResponseDTOToComparisonInFindAllProductsInStock() {
+    static void setProductResponseDTOSToComparisonInFindAllProductsInStock() {
 
-        productResponseDTOToComparisonInFindAllProductsInStock = mapFindAllProductsInStock.get(Type.DRINK);
+        productResponseDTOSToComparisonInFindAllProductsInStock = mapFindAllProductsInStock.get(Type.DRINK);
     }
 
-    static void setProductResponseDTOFindProductsByTypeAndInStock() {
+    static void setProductResponseDTOSFindProductsByTypeAndInStock() {
 
-        productResponseDTOFindProductsByTypeAndInStock = productResponseDTOS.stream()
+        productResponseDTOSFindProductsByTypeAndInStock = productResponseDTOS.stream()
                 .filter(ProductResponseDTO::isStocked)
                 .filter(productResponseDTO -> productResponseDTO.getType() == Type.DRINK)
                 .toList();
@@ -233,38 +236,27 @@ class ProductControllerTest {
 
     static void setMapFindProductsInPromotionAndInStock() {
 
-        mapFindProductsInPromotionAndInStock = Map.of(
-                Type.SALTY_PIZZA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_PIZZA)
-                        .toList(),
-                Type.SWEET_PIZZA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_PIZZA)
-                        .toList(),
-                Type.SALTY_ESFIHA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_ESFIHA)
-                        .toList(),
-                Type.SWEET_ESFIHA, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_ESFIHA)
-                        .toList(),
-                Type.DRINK, productResponseDTOS.stream()
-                        .filter(ProductResponseDTO::isStocked)
-                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
-                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.DRINK)
-                        .toList()
-        );
+        mapFindProductsInPromotionAndInStock = productResponseDTOS.stream()
+                .filter(ProductResponseDTO::isStocked)
+                .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
+                .collect(Collectors.groupingBy(ProductResponseDTO::getType));
     }
 
-    static void setProductResponseDTOToComparisonInFindProductsInPromotionAndInStock() {
+    static void setProductResponseDTOSToComparisonInFindProductsInPromotionAndInStock() {
 
-        productResponseDTOToComparisonInFindProductsInPromotionAndInStock = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
+        productResponseDTOSToComparisonInFindProductsInPromotionAndInStock = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
+    }
+
+    static void setMapFindAllGrouped(){
+
+        mapFindAllGrouped = productResponseDTOS.stream()
+                .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
+                .collect(Collectors.groupingBy(ProductResponseDTO::isStocked));
+    }
+
+    static void setProductResponseDTOSToComparisonInFindAllGrouped(){
+
+        productResponseDTOSToComparisonInFindAllGrouped = mapFindAllGrouped.get(true);
     }
 
     @BeforeAll
@@ -272,10 +264,12 @@ class ProductControllerTest {
 
         setProductResponseDTOS();
         setMapForReturnOfTheFindAllProductsInStock();
-        setProductResponseDTOToComparisonInFindAllProductsInStock();
-        setProductResponseDTOFindProductsByTypeAndInStock();
+        setProductResponseDTOSToComparisonInFindAllProductsInStock();
+        setProductResponseDTOSFindProductsByTypeAndInStock();
         setMapFindProductsInPromotionAndInStock();
-        setProductResponseDTOToComparisonInFindProductsInPromotionAndInStock();
+        setProductResponseDTOSToComparisonInFindProductsInPromotionAndInStock();
+        setMapFindAllGrouped();
+        setProductResponseDTOSToComparisonInFindAllGrouped();
     }
 
     @BeforeEach
@@ -285,10 +279,13 @@ class ProductControllerTest {
                 .thenReturn(mapFindAllProductsInStock);
 
         BDDMockito.when(this.productService.findProductsByTypeAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
-                .thenReturn(new PageImpl<>(productResponseDTOFindProductsByTypeAndInStock));
+                .thenReturn(new PageImpl<>(productResponseDTOSFindProductsByTypeAndInStock));
 
         BDDMockito.when(this.productService.findProductsInPromotionAndInStock())
                 .thenReturn(mapFindProductsInPromotionAndInStock);
+
+        BDDMockito.when(this.productService.findAllGrouped())
+                .thenReturn(mapFindAllGrouped);
     }
 
     @Test
@@ -303,7 +300,7 @@ class ProductControllerTest {
 
         Assertions.assertThat(this.productController.findProductsInStock().getBody())
                 .isNotNull()
-                .containsEntry(Type.DRINK, productResponseDTOToComparisonInFindAllProductsInStock);
+                .containsEntry(Type.DRINK, productResponseDTOSToComparisonInFindAllProductsInStock);
     }
 
     @Test
@@ -314,12 +311,12 @@ class ProductControllerTest {
 
         Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "DRINK"))
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOFindProductsByTypeAndInStock)));
+                .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOSFindProductsByTypeAndInStock)));
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "DRINK").getBody()).toList())
                 .asList()
                 .hasSize(6)
-                .contains(productResponseDTOFindProductsByTypeAndInStock.get(2));
+                .contains(productResponseDTOSFindProductsByTypeAndInStock.get(2));
     }
 
     @Test
@@ -350,6 +347,19 @@ class ProductControllerTest {
                 .isEqualTo(ResponseEntity.ok(mapFindProductsInPromotionAndInStock));
 
         Assertions.assertThat(this.productController.findProductsInPromotion().getBody())
-                .containsEntry(Type.SWEET_ESFIHA, productResponseDTOToComparisonInFindProductsInPromotionAndInStock);
+                .containsEntry(Type.SWEET_ESFIHA, productResponseDTOSToComparisonInFindProductsInPromotionAndInStock);
+    }
+
+    @Test
+    void findAllProducts_returnsAMapOfTheAllProductsOrderedByIsStocked_wheneverCalled(){
+
+        Assertions.assertThatCode(()-> this.productController.findAllProducts())
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.findAllProducts())
+                .isEqualTo(ResponseEntity.ok(mapFindAllGrouped));
+
+        Assertions.assertThat(this.productController.findAllProducts().getBody())
+                .containsEntry(true, productResponseDTOSToComparisonInFindAllGrouped);
     }
 }

@@ -49,7 +49,7 @@ public class SaleService {
 
         String[] languageAndCountry = acceptLanguage.split("-");
 
-        List<Product> filteredProducts = this.filterProductsById(this.productService.findAllNonPageable(), saleRequestDTO.getProductsId());
+        List<Product> filteredProducts = this.filterProductsById(this.productService.findAll(), saleRequestDTO.getProductsId());
 
         BigDecimal amount = this.calculateTotalAmount(filteredProducts);
 

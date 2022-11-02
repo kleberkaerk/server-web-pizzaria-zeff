@@ -27,7 +27,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> findAllNonPageable() {
+    public List<Product> findAll() {
 
         return this.productRepository.findAll();
     }
@@ -64,5 +64,13 @@ public class ProductService {
         List<Product> productsByPriceRating = this.productRepository.findByPriceRatingAndIsStocked(PriceRating.PROMOTION, true);
 
         return mapAndSortAndGroupProductByType(productsByPriceRating);
+    }
+
+    public Map<Boolean, List<ProductResponseDTO>> findAllGrouped() {
+
+        return this.productRepository.findAll().stream()
+                .map(Mapper::ofTheProductToProductResponseDTO)
+                .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
+                .collect(Collectors.groupingBy(ProductResponseDTO::isStocked));
     }
 }

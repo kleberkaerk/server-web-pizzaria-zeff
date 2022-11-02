@@ -22,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
@@ -37,15 +38,17 @@ class ProductServiceTest {
 
     private static List<Product> productsFindByIsStocked;
 
-    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindByIsStocked;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindByIsStocked;
 
     private static List<Product> productsFindByTypeAndIsStocked;
 
-    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindByTypeAndIsStocked;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindByTypeAndIsStocked;
 
     private static List<Product> productsFindByPriceRatingAndIsStocked;
 
-    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindByPriceRatingAndIsStocked;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindByPriceRatingAndIsStocked;
+
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
 
     static void setProductsFindAll() {
 
@@ -170,9 +173,9 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductResponseDTOToComparisonInFindByIsStocked(){
+    static void setProductResponseDTOSToComparisonInFindByIsStocked(){
 
-        productResponseDTOToComparisonInFindByIsStocked = productsFindByIsStocked.stream()
+        productResponseDTOSToComparisonInFindByIsStocked = productsFindByIsStocked.stream()
                 .filter(product -> product.getType() == Type.SALTY_PIZZA)
                 .map(Mapper::ofTheProductToProductResponseDTO)
                 .toList();
@@ -187,9 +190,9 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductResponseDTOToComparisonInFindByTypeAndIsStocked() {
+    static void setProductResponseDTOSToComparisonInFindByTypeAndIsStocked() {
 
-        productResponseDTOToComparisonInFindByTypeAndIsStocked = productsFindByTypeAndIsStocked.stream()
+        productResponseDTOSToComparisonInFindByTypeAndIsStocked = productsFindByTypeAndIsStocked.stream()
                 .map(Mapper::ofTheProductToProductResponseDTO)
                 .toList();
     }
@@ -202,11 +205,20 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductResponseDTOToComparisonInFindByPriceRatingAndIsStocked(){
+    static void setProductResponseDTOSToComparisonInFindByPriceRatingAndIsStocked(){
 
-        productResponseDTOToComparisonInFindByPriceRatingAndIsStocked = productsFindByPriceRatingAndIsStocked.stream()
+        productResponseDTOSToComparisonInFindByPriceRatingAndIsStocked = productsFindByPriceRatingAndIsStocked.stream()
                 .filter(product -> product.getType() == Type.SWEET_PIZZA)
                 .map(Mapper::ofTheProductToProductResponseDTO)
+                .toList();
+    }
+
+    static void setProductResponseDTOSToComparisonInFindAllGrouped(){
+
+        productResponseDTOSToComparisonInFindAllGrouped = productsFindAll.stream()
+                .map(Mapper::ofTheProductToProductResponseDTO)
+                .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
+                .filter(ProductResponseDTO::isStocked)
                 .toList();
     }
 
@@ -215,11 +227,12 @@ class ProductServiceTest {
 
         setProductsFindAll();
         setProductsFindByIsStocked();
-        setProductResponseDTOToComparisonInFindByIsStocked();
+        setProductResponseDTOSToComparisonInFindByIsStocked();
         setProductsFindByTypeAndIsStocked();
-        setProductResponseDTOToComparisonInFindByTypeAndIsStocked();
+        setProductResponseDTOSToComparisonInFindByTypeAndIsStocked();
         setProductsFindByPriceRatingAndIsStocked();
-        setProductResponseDTOToComparisonInFindByPriceRatingAndIsStocked();
+        setProductResponseDTOSToComparisonInFindByPriceRatingAndIsStocked();
+        setProductResponseDTOSToComparisonInFindAllGrouped();
     }
 
     @BeforeEach
@@ -246,12 +259,12 @@ class ProductServiceTest {
     }
 
     @Test
-    void findAllNonPageable_returnsAListOfAllProductsInTheDatabase_wheneverCalled() {
+    void findAll_returnsAListOfAllProductsInTheDatabase_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.productService.findAllNonPageable())
+        Assertions.assertThatCode(() -> this.productService.findAll())
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productService.findAllNonPageable())
+        Assertions.assertThat(this.productService.findAll())
                 .isNotNull()
                 .asList()
                 .isEqualTo(productsFindAll)
@@ -266,7 +279,7 @@ class ProductServiceTest {
 
         Assertions.assertThat(this.productService.findAllProductsInStock())
                 .isNotNull()
-                .containsEntry(Type.SALTY_PIZZA, productResponseDTOToComparisonInFindByIsStocked);
+                .containsEntry(Type.SALTY_PIZZA, productResponseDTOSToComparisonInFindByIsStocked);
     }
 
     @Test
@@ -278,8 +291,8 @@ class ProductServiceTest {
         Assertions.assertThat(this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), "SALTY_ESFIHA").toList())
                 .isNotNull()
                 .asList()
-                .isEqualTo(productResponseDTOToComparisonInFindByTypeAndIsStocked)
-                .contains(productResponseDTOToComparisonInFindByTypeAndIsStocked.get(0));
+                .isEqualTo(productResponseDTOSToComparisonInFindByTypeAndIsStocked)
+                .contains(productResponseDTOSToComparisonInFindByTypeAndIsStocked.get(0));
     }
 
     @Test
@@ -300,6 +313,17 @@ class ProductServiceTest {
 
         Assertions.assertThat(this.productService.findProductsInPromotionAndInStock())
                 .isNotNull()
-                .containsEntry(Type.SWEET_PIZZA, productResponseDTOToComparisonInFindByPriceRatingAndIsStocked);
+                .containsEntry(Type.SWEET_PIZZA, productResponseDTOSToComparisonInFindByPriceRatingAndIsStocked);
+    }
+
+    @Test
+    void findAllGrouped_returnsAMapOfTheAllProductsOrderedByIsStocked_wheneverCalled(){
+
+        Assertions.assertThatCode(()-> this.productService.findAllGrouped())
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productService.findAllGrouped())
+                .isNotNull()
+                .containsEntry(true, productResponseDTOSToComparisonInFindAllGrouped);
     }
 }

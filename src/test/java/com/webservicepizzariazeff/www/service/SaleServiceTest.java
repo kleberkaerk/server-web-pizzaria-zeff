@@ -158,7 +158,7 @@ class SaleServiceTest {
     @BeforeEach
     void definitionBehaviorsForMockProductService() {
 
-        BDDMockito.when(this.productService.findAllNonPageable())
+        BDDMockito.when(this.productService.findAll())
                 .thenReturn(products);
     }
 

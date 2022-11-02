@@ -45,4 +45,10 @@ public class ProductController {
 
         return new ResponseEntity<>(this.productService.findProductsInPromotionAndInStock(), HttpStatus.OK);
     }
+
+    @GetMapping(value = "admin/find-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<Boolean, List<ProductResponseDTO>>> findAllProducts(){
+
+        return new ResponseEntity<>(this.productService.findAllGrouped(), HttpStatus.OK);
+    }
 }

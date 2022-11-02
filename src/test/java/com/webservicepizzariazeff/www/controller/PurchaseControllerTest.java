@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
 class PurchaseControllerTest {
@@ -145,18 +146,10 @@ class PurchaseControllerTest {
 
     static void setMapFindPurchasesOfTheUser() {
 
-        mapFindPurchasesOfTheUser = Map.of(
-                true, purchases.stream()
-                        .filter(Purchase::isActive)
-                        .filter(Purchase::isDelivered)
-                        .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
-                        .toList(),
-                false, purchases.stream()
-                        .filter(Purchase::isActive)
-                        .filter(purchase -> !purchase.isDelivered())
-                        .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
-                        .toList()
-        );
+        mapFindPurchasesOfTheUser = purchases.stream()
+                .filter(Purchase::isActive)
+                .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
+                .collect(Collectors.groupingBy(PurchaseUserResponseDTO::isDelivered));
     }
 
     static void setPurchaseUserResponseDTOSToComparisonInFindPurchasesOfTheUser() {
@@ -166,18 +159,10 @@ class PurchaseControllerTest {
 
     static void setMapFindByAllUsersPurchases(){
 
-        mapFindByAllUsersPurchases = Map.of(
-                true, purchases.stream()
-                        .filter(purchase -> !purchase.isDelivered())
-                        .filter(Purchase::isActive)
-                        .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
-                        .toList(),
-                false, purchases.stream()
-                        .filter(purchase -> !purchase.isDelivered())
-                        .filter(purchase -> !purchase.isActive())
-                        .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
-                        .toList()
-        );
+        mapFindByAllUsersPurchases = purchases.stream()
+                .filter(purchase -> !purchase.isDelivered())
+                .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
+                .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
 
     static void setPurchaseRestaurantResponseDTOSToComparisonInFindByAllUsersPurchases(){
