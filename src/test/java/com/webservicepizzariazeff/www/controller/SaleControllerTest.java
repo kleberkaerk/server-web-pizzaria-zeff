@@ -1,5 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
+import com.webservicepizzariazeff.www.controller.SaleController;
 import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.request.CardRequestDTO;
 import com.webservicepizzariazeff.www.dto.request.FormOfPaymentDTO;

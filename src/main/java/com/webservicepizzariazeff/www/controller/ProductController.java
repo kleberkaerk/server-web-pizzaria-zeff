@@ -9,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -47,8 +44,19 @@ public class ProductController {
     }
 
     @GetMapping(value = "admin/find-all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<Boolean, List<ProductResponseDTO>>> findAllProducts(){
+    public ResponseEntity<Map<Boolean, List<ProductResponseDTO>>> findAllProducts() {
 
         return new ResponseEntity<>(this.productService.findAllGrouped(), HttpStatus.OK);
     }
+
+    @PutMapping("admin/stock/{id}/{isStocked}")
+    public ResponseEntity<Void> updateStock(@PathVariable Long id, @PathVariable boolean isStocked) {
+
+        this.productService.updateProductStock(id, isStocked);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+//    @PutMapping("admin/price/{id}/{newPrice}")
+//    @PutMapping("admin/category/{id}/{category}")
 }

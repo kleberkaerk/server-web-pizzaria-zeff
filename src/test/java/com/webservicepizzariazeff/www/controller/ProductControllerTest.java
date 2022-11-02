@@ -1,5 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
+import com.webservicepizzariazeff.www.controller.ProductController;
 import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Type;
 import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
@@ -16,8 +17,10 @@ import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -247,14 +250,14 @@ class ProductControllerTest {
         productResponseDTOSToComparisonInFindProductsInPromotionAndInStock = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
     }
 
-    static void setMapFindAllGrouped(){
+    static void setMapFindAllGrouped() {
 
         mapFindAllGrouped = productResponseDTOS.stream()
                 .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
                 .collect(Collectors.groupingBy(ProductResponseDTO::isStocked));
     }
 
-    static void setProductResponseDTOSToComparisonInFindAllGrouped(){
+    static void setProductResponseDTOSToComparisonInFindAllGrouped() {
 
         productResponseDTOSToComparisonInFindAllGrouped = mapFindAllGrouped.get(true);
     }
@@ -286,6 +289,9 @@ class ProductControllerTest {
 
         BDDMockito.when(this.productService.findAllGrouped())
                 .thenReturn(mapFindAllGrouped);
+
+        BDDMockito.doNothing()
+                .when(this.productService).updateProductStock(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyBoolean());
     }
 
     @Test
@@ -351,15 +357,37 @@ class ProductControllerTest {
     }
 
     @Test
-    void findAllProducts_returnsAMapOfTheAllProductsOrderedByIsStocked_wheneverCalled(){
+    void findAllProducts_returnsAMapOfTheAllProductsOrderedByIsStocked_wheneverCalled() {
 
-        Assertions.assertThatCode(()-> this.productController.findAllProducts())
+        Assertions.assertThatCode(() -> this.productController.findAllProducts())
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.findAllProducts())
+                .isNotNull()
                 .isEqualTo(ResponseEntity.ok(mapFindAllGrouped));
 
         Assertions.assertThat(this.productController.findAllProducts().getBody())
                 .containsEntry(true, productResponseDTOSToComparisonInFindAllGrouped);
+    }
+
+    @Test
+    void updateStock_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.productController.updateStock(1L, false))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.updateStock(1L, false))
+                .isNotNull()
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void updateStock_throwsResponseStatusException_whenThePassedIdIsInvalid() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.productService).updateProductStock(ArgumentMatchers.any(Long.class), ArgumentMatchers.anyBoolean());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.productController.updateStock(2L, false));
     }
 }

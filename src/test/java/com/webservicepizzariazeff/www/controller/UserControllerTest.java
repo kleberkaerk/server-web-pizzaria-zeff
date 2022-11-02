@@ -1,5 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
+import com.webservicepizzariazeff.www.controller.UserController;
 import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.service.UserService;

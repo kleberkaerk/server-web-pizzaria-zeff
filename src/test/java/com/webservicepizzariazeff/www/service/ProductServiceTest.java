@@ -19,11 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 class ProductServiceTest {
@@ -49,6 +51,8 @@ class ProductServiceTest {
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindByPriceRatingAndIsStocked;
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
+
+    private static Product productFindById;
 
     static void setProductsFindAll() {
 
@@ -173,7 +177,7 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductResponseDTOSToComparisonInFindByIsStocked(){
+    static void setProductResponseDTOSToComparisonInFindByIsStocked() {
 
         productResponseDTOSToComparisonInFindByIsStocked = productsFindByIsStocked.stream()
                 .filter(product -> product.getType() == Type.SALTY_PIZZA)
@@ -205,7 +209,7 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductResponseDTOSToComparisonInFindByPriceRatingAndIsStocked(){
+    static void setProductResponseDTOSToComparisonInFindByPriceRatingAndIsStocked() {
 
         productResponseDTOSToComparisonInFindByPriceRatingAndIsStocked = productsFindByPriceRatingAndIsStocked.stream()
                 .filter(product -> product.getType() == Type.SWEET_PIZZA)
@@ -213,13 +217,18 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductResponseDTOSToComparisonInFindAllGrouped(){
+    static void setProductResponseDTOSToComparisonInFindAllGrouped() {
 
         productResponseDTOSToComparisonInFindAllGrouped = productsFindAll.stream()
                 .map(Mapper::ofTheProductToProductResponseDTO)
                 .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
                 .filter(ProductResponseDTO::isStocked)
                 .toList();
+    }
+
+    static void setProductFindById() {
+
+        productFindById = productsFindAll.get(0);
     }
 
     @BeforeAll
@@ -233,6 +242,7 @@ class ProductServiceTest {
         setProductsFindByPriceRatingAndIsStocked();
         setProductResponseDTOSToComparisonInFindByPriceRatingAndIsStocked();
         setProductResponseDTOSToComparisonInFindAllGrouped();
+        setProductFindById();
     }
 
     @BeforeEach
@@ -256,6 +266,12 @@ class ProductServiceTest {
                         ArgumentMatchers.anyBoolean())
                 )
                 .thenReturn(productsFindByPriceRatingAndIsStocked);
+
+        BDDMockito.when(this.productRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(productFindById));
+
+        BDDMockito.doNothing()
+                .when(this.productRepository).updateIsStockedById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -308,7 +324,7 @@ class ProductServiceTest {
     @Test
     void findProductsInPromotionAndInStock_returnsAMapOfTheAllProductsInPromotionAndInStockOrderedByType_wheneverCalled() {
 
-        Assertions.assertThatCode(()-> this.productService.findProductsInPromotionAndInStock())
+        Assertions.assertThatCode(() -> this.productService.findProductsInPromotionAndInStock())
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findProductsInPromotionAndInStock())
@@ -317,13 +333,30 @@ class ProductServiceTest {
     }
 
     @Test
-    void findAllGrouped_returnsAMapOfTheAllProductsOrderedByIsStocked_wheneverCalled(){
+    void findAllGrouped_returnsAMapOfTheAllProductsOrderedByIsStocked_wheneverCalled() {
 
-        Assertions.assertThatCode(()-> this.productService.findAllGrouped())
+        Assertions.assertThatCode(() -> this.productService.findAllGrouped())
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productService.findAllGrouped())
                 .isNotNull()
                 .containsEntry(true, productResponseDTOSToComparisonInFindAllGrouped);
+    }
+
+    @Test
+    void updateProductStock_updatesTheIsStockedOfAProduct_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.productService.updateProductStock(1L, false))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void updateProductStock_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+
+        BDDMockito.when(this.productRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.productService.updateProductStock(1L, false));
     }
 }
