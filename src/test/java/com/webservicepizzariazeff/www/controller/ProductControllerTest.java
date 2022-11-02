@@ -1,8 +1,8 @@
 package com.webservicepizzariazeff.www.controller;
 
 import com.webservicepizzariazeff.www.domain.PriceRating;
-import com.webservicepizzariazeff.www.domain.Product;
 import com.webservicepizzariazeff.www.domain.Type;
+import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
 import com.webservicepizzariazeff.www.service.ProductService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @ExtendWith(SpringExtension.class)
@@ -34,168 +34,298 @@ class ProductControllerTest {
     @Mock
     ProductService productService;
 
-    private static List<Product> returnFromFindAll;
+    private static List<ProductResponseDTO> productResponseDTOS;
 
-    private static List<Product> returnFromFindByType;
+    private static Map<Type, List<ProductResponseDTO>> mapFindAllProductsInStock;
 
-    private static List<Product> returnFromFindByPriceRating;
+    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindAllProductsInStock;
 
-    private static List<Product> returnFromFindByTypeAndPriceRating;
+    private static List<ProductResponseDTO> productResponseDTOFindProductsByTypeAndInStock;
 
-    static void setReturnFromFindAll() {
+    private static Map<Type, List<ProductResponseDTO>> mapFindProductsInPromotionAndInStock;
 
-        returnFromFindAll = new ArrayList<>(List.of(
-                Product.ProductBuilder.builder()
+    private static List<ProductResponseDTO> productResponseDTOToComparisonInFindProductsInPromotionAndInStock;
+
+    static void setProductResponseDTOS() {
+
+        productResponseDTOS = List.of(
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
                         .id(1L)
                         .name("name1")
                         .description("description1")
-                        .price(new BigDecimal("10"))
+                        .price(new BigDecimal("10.00"))
                         .type(Type.SALTY_PIZZA)
                         .priceRating(PriceRating.PROMOTION)
-                        .image("/image1.png")
+                        .image("/image1")
+                        .isStocked(true)
                         .build(),
-                Product.ProductBuilder.builder()
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
                         .id(2L)
                         .name("name2")
                         .description("description2")
-                        .price(new BigDecimal("20"))
+                        .price(new BigDecimal("20.00"))
                         .type(Type.SWEET_PIZZA)
-                        .priceRating(PriceRating.PROMOTION)
-                        .image("/image2.png")
+                        .priceRating(PriceRating.REGULAR_PRICE)
+                        .image("/image2")
+                        .isStocked(true)
                         .build(),
-                Product.ProductBuilder.builder()
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
                         .id(3L)
                         .name("name3")
                         .description("description3")
-                        .price(new BigDecimal("30"))
-                        .type(Type.SWEET_PIZZA)
-                        .priceRating(PriceRating.PROMOTION)
-                        .image("/image3.png")
+                        .price(new BigDecimal("30.00"))
+                        .type(Type.SALTY_ESFIHA)
+                        .priceRating(PriceRating.REGULAR_PRICE)
+                        .image("/image3")
+                        .isStocked(true)
                         .build(),
-                Product.ProductBuilder.builder()
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
                         .id(4L)
                         .name("name4")
                         .description("description4")
-                        .price(new BigDecimal("40"))
-                        .type(Type.SALTY_ESFIHA)
-                        .priceRating(PriceRating.REGULAR_PRICE)
-                        .image("/image4.png")
+                        .price(new BigDecimal("40.00"))
+                        .type(Type.SWEET_ESFIHA)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image4")
+                        .isStocked(true)
                         .build(),
-                Product.ProductBuilder.builder()
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
                         .id(5L)
                         .name("name5")
                         .description("description5")
-                        .price(new BigDecimal("50"))
-                        .type(Type.SALTY_ESFIHA)
+                        .price(new BigDecimal("50.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image5")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(6L)
+                        .name("name6")
+                        .description("description6")
+                        .price(new BigDecimal("60.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image6")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(7L)
+                        .name("name7")
+                        .description("description7")
+                        .price(new BigDecimal("70.00"))
+                        .type(Type.DRINK)
                         .priceRating(PriceRating.REGULAR_PRICE)
-                        .image("/image5.png")
+                        .image("/image7")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(8L)
+                        .name("name8")
+                        .description("description8")
+                        .price(new BigDecimal("80.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.REGULAR_PRICE)
+                        .image("/image8")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(9L)
+                        .name("name9")
+                        .description("description9")
+                        .price(new BigDecimal("90.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image9")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(10L)
+                        .name("name10")
+                        .description("description10")
+                        .price(new BigDecimal("100.00"))
+                        .type(Type.SWEET_ESFIHA)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image10")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(11L)
+                        .name("name11")
+                        .description("description11")
+                        .price(new BigDecimal("110.00"))
+                        .type(Type.SWEET_PIZZA)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image11")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(12L)
+                        .name("name12")
+                        .description("description12")
+                        .price(new BigDecimal("120.00"))
+                        .type(Type.SWEET_ESFIHA)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image12")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(13L)
+                        .name("name13")
+                        .description("description13")
+                        .price(new BigDecimal("130.00"))
+                        .type(Type.SALTY_ESFIHA)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image13")
+                        .isStocked(true)
+                        .build(),
+                ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                        .id(14L)
+                        .name("name14")
+                        .description("description14")
+                        .price(new BigDecimal("140.00"))
+                        .type(Type.DRINK)
+                        .priceRating(PriceRating.PROMOTION)
+                        .image("/image14")
+                        .isStocked(true)
                         .build()
-        ));
+        );
     }
 
-    static void setReturnFromFindByType() {
+    static void setMapForReturnOfTheFindAllProductsInStock() {
 
-        returnFromFindByType = returnFromFindAll.stream()
-                .filter(product -> product.getType().name().equals(Type.SWEET_PIZZA.name()))
+        mapFindAllProductsInStock = Map.of(
+                Type.SALTY_PIZZA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_PIZZA)
+                        .toList(),
+                Type.SWEET_PIZZA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_PIZZA)
+                        .toList(),
+                Type.SALTY_ESFIHA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_ESFIHA)
+                        .toList(),
+                Type.SWEET_ESFIHA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_ESFIHA)
+                        .toList(),
+                Type.DRINK, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.DRINK)
+                        .toList()
+        );
+    }
+
+    static void setProductResponseDTOToComparisonInFindAllProductsInStock() {
+
+        productResponseDTOToComparisonInFindAllProductsInStock = mapFindAllProductsInStock.get(Type.DRINK);
+    }
+
+    static void setProductResponseDTOFindProductsByTypeAndInStock() {
+
+        productResponseDTOFindProductsByTypeAndInStock = productResponseDTOS.stream()
+                .filter(ProductResponseDTO::isStocked)
+                .filter(productResponseDTO -> productResponseDTO.getType() == Type.DRINK)
                 .toList();
     }
 
-    static void setReturnFromFindByPriceRating() {
+    static void setMapFindProductsInPromotionAndInStock() {
 
-        returnFromFindByPriceRating = returnFromFindAll.stream()
-                .filter(product -> product.getPriceRating().name().equals(PriceRating.REGULAR_PRICE.name()))
-                .toList();
+        mapFindProductsInPromotionAndInStock = Map.of(
+                Type.SALTY_PIZZA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_PIZZA)
+                        .toList(),
+                Type.SWEET_PIZZA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_PIZZA)
+                        .toList(),
+                Type.SALTY_ESFIHA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SALTY_ESFIHA)
+                        .toList(),
+                Type.SWEET_ESFIHA, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.SWEET_ESFIHA)
+                        .toList(),
+                Type.DRINK, productResponseDTOS.stream()
+                        .filter(ProductResponseDTO::isStocked)
+                        .filter(productResponseDTO -> productResponseDTO.getPriceRating() == PriceRating.PROMOTION)
+                        .filter(productResponseDTO -> productResponseDTO.getType() == Type.DRINK)
+                        .toList()
+        );
     }
 
-    static void setReturnFromFindByTypeAndPriceRating() {
+    static void setProductResponseDTOToComparisonInFindProductsInPromotionAndInStock() {
 
-        returnFromFindByTypeAndPriceRating = returnFromFindAll.stream()
-                .filter(product -> product.getType().name().equals(Type.SALTY_PIZZA.name()))
-                .filter(product -> product.getPriceRating().name().equals(PriceRating.PROMOTION.name()))
-                .toList();
+        productResponseDTOToComparisonInFindProductsInPromotionAndInStock = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
     }
 
     @BeforeAll
     static void initializeObjects() {
 
-        setReturnFromFindAll();
-        setReturnFromFindByType();
-        setReturnFromFindByPriceRating();
-        setReturnFromFindByTypeAndPriceRating();
+        setProductResponseDTOS();
+        setMapForReturnOfTheFindAllProductsInStock();
+        setProductResponseDTOToComparisonInFindAllProductsInStock();
+        setProductResponseDTOFindProductsByTypeAndInStock();
+        setMapFindProductsInPromotionAndInStock();
+        setProductResponseDTOToComparisonInFindProductsInPromotionAndInStock();
     }
 
     @BeforeEach
     void definitionBehaviorsForMocks() {
 
-        BDDMockito.when(this.productService.findAll(ArgumentMatchers.any(Pageable.class)))
-                .thenReturn(new PageImpl<>(returnFromFindAll));
+        BDDMockito.when(this.productService.findAllProductsInStock())
+                .thenReturn(mapFindAllProductsInStock);
 
-        BDDMockito.when(this.productService.findByType(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
-                .thenReturn(new PageImpl<>(returnFromFindByType));
+        BDDMockito.when(this.productService.findProductsByTypeAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
+                .thenReturn(new PageImpl<>(productResponseDTOFindProductsByTypeAndInStock));
 
-        BDDMockito.when(this.productService.findByPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
-                .thenReturn(new PageImpl<>(returnFromFindByPriceRating));
-
-        BDDMockito.when(this.productService.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
-                .thenReturn(new PageImpl<>(returnFromFindByTypeAndPriceRating));
+        BDDMockito.when(this.productService.findProductsInPromotionAndInStock())
+                .thenReturn(mapFindProductsInPromotionAndInStock);
     }
 
     @Test
-    void findAll_returnsAPageOfTheAllProductsAndAStatusCodeOk_ever() {
+    void findProductsInStock_returnsAMapOfTheAllProductsInStockOrderedByTypeAndAStatusCodeOk_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.productController.findAll(Page.empty().getPageable()))
+        Assertions.assertThatCode(() -> this.productController.findProductsInStock())
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productController.findAll(Page.empty().getPageable()))
+        Assertions.assertThat(this.productController.findProductsInStock())
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindAll)));
+                .isEqualTo(ResponseEntity.ok(mapFindAllProductsInStock));
 
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findAll(Page.empty().getPageable()).getBody()).toList())
-                .hasSize(5);
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findAll(Page.empty().getPageable()).getBody()).toList())
-                .asList()
-                .contains(Product.ProductBuilder.builder()
-                        .id(1L)
-                        .name("name1")
-                        .description("description1")
-                        .price(new BigDecimal("10"))
-                        .type(Type.SALTY_PIZZA)
-                        .priceRating(PriceRating.REGULAR_PRICE)
-                        .image("/image1.png")
-                        .build());
+        Assertions.assertThat(this.productController.findProductsInStock().getBody())
+                .isNotNull()
+                .containsEntry(Type.DRINK, productResponseDTOToComparisonInFindAllProductsInStock);
     }
 
     @Test
-    void findByType_returnsAPageOfProductsOfAGivenTypeAndAStatusCodeOk_whenTheTypeParameterIsEqualToTheNameOfOneOfTheTypeEnumerations() {
+    void findByType_returnsAPageOfTheAllProductsOfAGivenTypeAndAStatusCodeOk_whenThePassedTypeIsValid() {
 
-        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
+        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "DRINK"))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA"))
+        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "DRINK"))
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindByType)));
+                .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOFindProductsByTypeAndInStock)));
 
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA").getBody()).toList())
-                .hasSize(2);
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "SWEET_PIZZA").getBody()).toList())
+        Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "DRINK").getBody()).toList())
                 .asList()
-                .contains(Product.ProductBuilder.builder()
-                        .id(2L)
-                        .name("name2")
-                        .description("description2")
-                        .price(new BigDecimal("20"))
-                        .type(Type.SWEET_PIZZA)
-                        .priceRating(PriceRating.PROMOTION)
-                        .image("/image2.png")
-                        .build());
+                .hasSize(6)
+                .contains(productResponseDTOFindProductsByTypeAndInStock.get(2));
     }
 
     @Test
     void findByType_returnsAPageWithNoProductsAndAStatusCodeOk_whenTheTypeParameterIsNotEqualToTheNameOfOneOfTheTypeEnumerations() {
 
-        BDDMockito.when(this.productService.findByType(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
+        BDDMockito.when(this.productService.findProductsByTypeAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
                 .thenReturn(Page.empty());
 
         Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "SWEET"))
@@ -210,88 +340,16 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByPriceRating_returnsAPageOfProductsOfAGivenPriceRatingAndAStatusCodeOk_whenThePriceRatingParameterIsEqualToTheNameOfOneOfThePriceRatingEnumerations() {
+    void findProductsInPromotion_returnsAMapOfTheAllProductsInPromotionOrderedByTypeAndAStatusCodeOk_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
+        Assertions.assertThatCode(() -> this.productController.findProductsInPromotion())
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE"))
+        Assertions.assertThat(this.productController.findProductsInPromotion())
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindByPriceRating)));
+                .isEqualTo(ResponseEntity.ok(mapFindProductsInPromotionAndInStock));
 
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE").getBody()).toList())
-                .hasSize(2);
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR_PRICE").getBody()).toList())
-                .asList()
-                .contains(Product.ProductBuilder.builder()
-                        .id(4L)
-                        .name("name4")
-                        .description("description4")
-                        .price(new BigDecimal("40"))
-                        .type(Type.SALTY_ESFIHA)
-                        .priceRating(PriceRating.REGULAR_PRICE)
-                        .image("/image4.png")
-                        .build());
-    }
-
-    @Test
-    void findByPriceRating_returnsAPageWithNoProductsAndAStatusCodeOk_whenThePriceRatingParameterIsNotEqualToTheNameOfOneOfThePriceRatingEnumerations() {
-
-        BDDMockito.when(this.productService.findByPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
-                .thenReturn(Page.empty());
-
-        Assertions.assertThatCode(() -> this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR"))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR"))
-                .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByPriceRating(Page.empty().getPageable(), "REGULAR").getBody()).toList())
-                .isEmpty();
-    }
-
-    @Test
-    void findByTypeAndPriceRating_returnsAPageOfProductsOfAGivenTypeAndPriceRatingAndAStatusCodeOk_whenTheTypeParameterAndPriceRatingParameterAreEqualToTheNamesOfOneTypeEnumerationAndPriceRatingEnumeration() {
-
-        Assertions.assertThatCode(() -> this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION"))
-                .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(returnFromFindByTypeAndPriceRating)));
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION").getBody()).toList())
-                .hasSize(1);
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY_PIZZA", "PROMOTION").getBody()).toList())
-                .asList()
-                .contains(Product.ProductBuilder.builder()
-                        .id(1L)
-                        .name("name1")
-                        .description("description1")
-                        .price(new BigDecimal("10"))
-                        .type(Type.SALTY_PIZZA)
-                        .priceRating(PriceRating.PROMOTION)
-                        .image("/image1.png")
-                        .build());
-    }
-
-    @Test
-    void findByTypeAndPriceRating_returnsAPageWithNoProductsAndAStatusCodeOk_whenTheTypeParameterOrPriceRatingParameterAreNotEqualToTheNamesOfOneTypeEnumerationOrPriceRatingEnumeration() {
-
-        BDDMockito.when(this.productService.findByTypeAndPriceRating(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
-                .thenReturn(Page.empty());
-
-        Assertions.assertThatCode(() -> this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR"))
-                .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByTypeAndPriceRating(Page.empty().getPageable(), "SALTY", "REGULAR").getBody()).toList())
-                .isEmpty();
+        Assertions.assertThat(this.productController.findProductsInPromotion().getBody())
+                .containsEntry(Type.SWEET_ESFIHA, productResponseDTOToComparisonInFindProductsInPromotionAndInStock);
     }
 }

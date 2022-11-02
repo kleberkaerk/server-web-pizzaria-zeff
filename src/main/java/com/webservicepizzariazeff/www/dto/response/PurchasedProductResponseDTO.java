@@ -1,5 +1,7 @@
 package com.webservicepizzariazeff.www.dto.response;
 
+import java.util.Objects;
+
 public class PurchasedProductResponseDTO {
 
     private final String name;
@@ -18,6 +20,19 @@ public class PurchasedProductResponseDTO {
         return "PurchasedProductResponseDTO{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PurchasedProductResponseDTO that = (PurchasedProductResponseDTO) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     public static final class PurchasedProductResponseDTOBuilder {

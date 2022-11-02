@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "purchases")
@@ -144,6 +145,29 @@ public class Purchase {
                 ", user=" + user +
                 ", address=" + address +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Purchase purchase = (Purchase) o;
+        return isActive == purchase.isActive &&
+                isFinished == purchase.isFinished &&
+                isDelivered == purchase.isDelivered &&
+                isPaymentThroughTheWebsite == purchase.isPaymentThroughTheWebsite &&
+                Objects.equals(id, purchase.id) &&
+                Objects.equals(amount, purchase.amount) &&
+                Objects.equals(dateAndTime, purchase.dateAndTime) &&
+                Objects.equals(cardName, purchase.cardName) &&
+                Objects.equals(purchasedProducts, purchase.purchasedProducts) &&
+                Objects.equals(user, purchase.user) &&
+                Objects.equals(address, purchase.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, amount, dateAndTime, cardName, isActive, isFinished, isDelivered, isPaymentThroughTheWebsite, purchasedProducts, user, address);
     }
 
     public static final class PurchaseBuilder {

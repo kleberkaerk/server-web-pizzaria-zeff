@@ -12,6 +12,10 @@ class PurchaseUserResponseDTOTest {
 
     private PurchaseUserResponseDTO purchaseUserResponseDTO;
 
+    private PurchaseUserResponseDTO samePurchaseUserResponseDTO;
+
+    private PurchaseUserResponseDTO differentPurchaseUserResponseDTO;
+
     private static List<PurchasedProductResponseDTO> purchasedProductResponseDTOList;
 
     private static AddressResponseDTO addressResponseDTO;
@@ -57,11 +61,37 @@ class PurchaseUserResponseDTOTest {
                 .id(1L)
                 .amount(new BigDecimal("10.00"))
                 .dateAndTime("12/34/5678T90:12")
-                .cardName("cardName")
+                .cardName("cardName1")
                 .isActive(true)
                 .isFinished(true)
                 .isDelivered(true)
                 .isPaymentThroughTheWebsite(true)
+                .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
+                .addressResponseDTO(addressResponseDTO)
+                .build();
+
+        this.samePurchaseUserResponseDTO = PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+                .id(1L)
+                .amount(new BigDecimal("10.00"))
+                .dateAndTime("12/34/5678T90:12")
+                .cardName("cardName1")
+                .isActive(true)
+                .isFinished(true)
+                .isDelivered(true)
+                .isPaymentThroughTheWebsite(true)
+                .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
+                .addressResponseDTO(addressResponseDTO)
+                .build();
+
+        this.differentPurchaseUserResponseDTO = PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+                .id(2L)
+                .amount(new BigDecimal("20.00"))
+                .dateAndTime("12/34/5678T90:12")
+                .cardName("cardName2")
+                .isActive(false)
+                .isFinished(false)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
                 .purchasedProductResponseDTOS(purchasedProductResponseDTOList)
                 .addressResponseDTO(addressResponseDTO)
                 .build();
@@ -92,7 +122,7 @@ class PurchaseUserResponseDTOTest {
     void getCardName() {
 
         Assertions.assertThat(this.purchaseUserResponseDTO.getCardName())
-                .isEqualTo("cardName");
+                .isEqualTo("cardName1");
     }
 
     @Test
@@ -141,7 +171,7 @@ class PurchaseUserResponseDTOTest {
     void testToString() {
 
         Assertions.assertThat(this.purchaseUserResponseDTO)
-                .hasToString("PurchaseResponseDTOForUser{" +
+                .hasToString("PurchaseUserResponseDTO{" +
                         "id=" + this.purchaseUserResponseDTO.getId() +
                         ", amount=" + this.purchaseUserResponseDTO.getAmount() +
                         ", dateAndTime='" + this.purchaseUserResponseDTO.getDateAndTime() + '\'' +
@@ -153,5 +183,22 @@ class PurchaseUserResponseDTOTest {
                         ", purchasedProductResponseDTOS=" + this.purchaseUserResponseDTO.getPurchasedProductResponseDTOS() +
                         ", addressResponseDTO=" + this.purchaseUserResponseDTO.getAddressResponseDTO() +
                         '}');
+    }
+
+    @Test
+    void testEquals(){
+
+        Assertions.assertThat(this.purchaseUserResponseDTO.equals(this.samePurchaseUserResponseDTO))
+                .isTrue();
+
+        Assertions.assertThat(this.purchaseUserResponseDTO.equals(this.differentPurchaseUserResponseDTO))
+                .isFalse();
+    }
+
+    @Test
+    void testHashCode(){
+
+        Assertions.assertThat(this.purchaseUserResponseDTO)
+                .hasSameHashCodeAs(this.samePurchaseUserResponseDTO);
     }
 }

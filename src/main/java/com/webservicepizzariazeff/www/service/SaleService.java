@@ -53,7 +53,7 @@ public class SaleService {
 
         BigDecimal amount = this.calculateTotalAmount(filteredProducts);
 
-        User user = Mapper.ofTheUserDetailsForUser(userDetails);
+        User user = Mapper.ofTheUserDetailsToUser(userDetails);
 
         Address userAddress = this.addressService.findById(saleRequestDTO.getAddressId());
 
@@ -83,7 +83,7 @@ public class SaleService {
     private void mapAndSavePurchasedProducts(List<Product> products, Purchase purchase) {
 
         List<PurchasedProduct> purchasedProducts = products.stream()
-                .map(product -> Mapper.ofTheProductForPurchasedProduct(product, purchase))
+                .map(product -> Mapper.ofTheProductToPurchasedProduct(product, purchase))
                 .toList();
 
         purchasedProducts.forEach(this.purchasedProductService::save);
@@ -95,6 +95,7 @@ public class SaleService {
 
         productsId.forEach(productId -> products.stream()
                 .filter(product -> product.getId().equals(productId))
+                .filter(Product::isStocked)
                 .findFirst().ifPresent(filteredProducts::add));
 
         return filteredProducts;

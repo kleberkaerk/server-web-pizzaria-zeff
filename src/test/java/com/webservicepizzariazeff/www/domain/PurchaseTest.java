@@ -15,6 +15,10 @@ class PurchaseTest {
 
     private Purchase purchase;
 
+    private Purchase samePurchase;
+
+    private Purchase differentPurchase;
+
     private static User user;
 
     private static Address address;
@@ -86,6 +90,34 @@ class PurchaseTest {
                 .isFinished(true)
                 .isDelivered(true)
                 .isPaymentThroughTheWebsite(true)
+                .user(user)
+                .address(address)
+                .purchasedProducts(purchasedProducts)
+                .build();
+
+        samePurchase = Purchase.PurchaseBuilder.builder()
+                .id(1L)
+                .amount(new BigDecimal("1.0"))
+                .dateAndTime("12/34/5678T12:34")
+                .cardName("cardName")
+                .isActive(true)
+                .isFinished(true)
+                .isDelivered(true)
+                .isPaymentThroughTheWebsite(true)
+                .user(user)
+                .address(address)
+                .purchasedProducts(purchasedProducts)
+                .build();
+
+        differentPurchase = Purchase.PurchaseBuilder.builder()
+                .id(2L)
+                .amount(new BigDecimal("2.0"))
+                .dateAndTime("12/34/5678T12:34")
+                .cardName("cardName2")
+                .isActive(false)
+                .isFinished(false)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
                 .user(user)
                 .address(address)
                 .purchasedProducts(purchasedProducts)
@@ -209,5 +241,22 @@ class PurchaseTest {
                         ", user=" + this.purchase.getUser() +
                         ", address=" + this.purchase.getAddress() +
                         '}');
+    }
+
+    @Test
+    void testEquals(){
+
+        Assertions.assertThat(this.purchase.equals(this.samePurchase))
+                .isTrue();
+
+        Assertions.assertThat(this.purchase.equals(this.differentPurchase))
+                .isFalse();
+    }
+
+    @Test
+    void testHashCode(){
+
+        Assertions.assertThat(this.purchase)
+                .hasSameHashCodeAs(this.samePurchase);
     }
 }

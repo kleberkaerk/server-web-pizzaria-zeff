@@ -27,16 +27,35 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    private static UserRequestDTO user;
+    private static User user;
 
-    @BeforeAll
+    private static UserRequestDTO userRequestDTO;
+
     static void setUser() {
 
-        user = UserRequestDTO.UserDTOBuilder.builder()
+        user = User.UserBuilder.builder()
+                .id(1L)
+                .name("name")
+                .username("username")
+                .password("password")
+                .authorities("ROLE_USER")
+                .build();
+    }
+
+    static void setUserRequestDTO() {
+
+        userRequestDTO = UserRequestDTO.UserDTOBuilder.builder()
                 .name("name")
                 .username("username")
                 .password("password")
                 .build();
+    }
+
+    @BeforeAll
+    static void initializeObjects() {
+
+        setUser();
+        setUserRequestDTO();
     }
 
     @BeforeEach
@@ -46,67 +65,41 @@ class UserServiceTest {
                 .thenReturn(Optional.empty());
 
         BDDMockito.when(this.userRepository.save(ArgumentMatchers.any(User.class)))
-                .thenReturn(User.UserBuilder.builder()
-                        .id(2L)
-                        .name("name2")
-                        .username("user2")
-                        .password("1234")
-                        .authorities("ROLE_USER")
-                        .build());
+                .thenReturn(user);
     }
 
     @Test
     void registerUser_persistNewUserInDatabase_WhenTheUserIsNotRegisteredInTheDatabase() {
 
-        Assertions.assertThatCode(() -> this.userService.registerUser(user, "pt-BR"))
+        Assertions.assertThatCode(() -> this.userService.registerUser(userRequestDTO, "pt-BR"))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.userService.registerUser(user, "pt-BR"))
-                .isEqualTo(2L);
+        Assertions.assertThat(this.userService.registerUser(userRequestDTO, "pt-BR"))
+                .isEqualTo(1L);
     }
 
     @Test
     void registerUser_throwsExistingUserException_whenTheUserIsAlreadyRegisteredInTheDatabase() {
 
         BDDMockito.when(this.userRepository.findByUsername(ArgumentMatchers.anyString()))
-                .thenReturn(Optional.of(
-                        User.UserBuilder.builder()
-                                .id(1L)
-                                .name("")
-                                .username("")
-                                .password("")
-                                .authorities("ROLE_USER")
-                                .build()
-                ));
+                .thenReturn(Optional.of(user));
 
         Assertions.assertThatExceptionOfType(ExistingUserException.class)
-                .isThrownBy(() -> this.userService.registerUser(user, "pt-BR"));
+                .isThrownBy(() -> this.userService.registerUser(userRequestDTO, "pt-BR"));
     }
 
     @Test
     void loadUserByUsername_findsAUserByUsernameAndReturnsThisUser_whenTheUserIsSavedInDatabase() {
 
         BDDMockito.when(this.userRepository.findByUsername(ArgumentMatchers.anyString()))
-                .thenReturn(Optional.of(User.UserBuilder.builder()
-                        .id(1L)
-                        .name("name")
-                        .username("username")
-                        .password("password")
-                        .authorities("ROLE_USER")
-                        .build()));
+                .thenReturn(Optional.of(user));
 
         Assertions.assertThatCode(() -> this.userService.loadUserByUsername("username"))
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.userService.loadUserByUsername("username"))
                 .isNotNull()
-                .isEqualTo(User.UserBuilder.builder()
-                        .id(1L)
-                        .name("name")
-                        .username("username")
-                        .password("password")
-                        .authorities("ROLE_USER")
-                        .build());
+                .isEqualTo(user);
     }
 
     @Test

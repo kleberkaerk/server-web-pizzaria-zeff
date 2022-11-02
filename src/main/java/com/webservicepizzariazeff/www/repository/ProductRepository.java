@@ -8,12 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByIsStocked(boolean isStocked);
 
-    Page<Product> findByType(Pageable pageable, Type type);
+    Page<Product> findByTypeAndIsStocked(Pageable pageable, Type type, boolean isStocked);
 
-    Page<Product> findByPriceRating(Pageable pageable, PriceRating priceRating);
-
-    Page<Product> findByTypeAndPriceRating(Pageable pageable, Type type, PriceRating priceRating);
+    List<Product> findByPriceRatingAndIsStocked(PriceRating priceRating, boolean isStocked);
 }

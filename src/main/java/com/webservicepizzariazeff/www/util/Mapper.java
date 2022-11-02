@@ -2,10 +2,7 @@ package com.webservicepizzariazeff.www.util;
 
 import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
-import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -15,7 +12,7 @@ public class Mapper {
     private Mapper() {
     }
 
-    public static Address ofTheAddressRequestDTOForAddress(AddressRequestDTO addressRequestDTO, User user) {
+    public static Address ofTheAddressRequestDTOToAddress(AddressRequestDTO addressRequestDTO, User user) {
 
         return Address.AddressBuilder.builder()
                 .number(addressRequestDTO.getNumber())
@@ -27,12 +24,12 @@ public class Mapper {
                 .build();
     }
 
-    public static User ofTheUserDetailsForUser(UserDetails userDetails) {
+    public static User ofTheUserDetailsToUser(UserDetails userDetails) {
 
         return (User) userDetails;
     }
 
-    public static AddressResponseDTO ofTheAddressForAddressResponseDTO(Address address) {
+    public static AddressResponseDTO ofTheAddressToAddressResponseDTO(Address address) {
 
         return AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(address.getId())
@@ -44,7 +41,7 @@ public class Mapper {
                 .build();
     }
 
-    public static PurchasedProduct ofTheProductForPurchasedProduct(Product product, Purchase purchase) {
+    public static PurchasedProduct ofTheProductToPurchasedProduct(Product product, Purchase purchase) {
 
         return PurchasedProduct.PurchasedProductBuilder.builder()
                 .name(product.getName())
@@ -52,7 +49,7 @@ public class Mapper {
                 .build();
     }
 
-    private static List<PurchasedProductResponseDTO> ofThePurchasedProductListForPurchasedProductResponseDTOList(List<PurchasedProduct> purchasedProducts) {
+    private static List<PurchasedProductResponseDTO> ofThePurchasedProductListToPurchasedProductResponseDTOList(List<PurchasedProduct> purchasedProducts) {
 
         return purchasedProducts.stream()
                 .map(purchasedProduct -> PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder
@@ -62,7 +59,7 @@ public class Mapper {
                 .toList();
     }
 
-    public static PurchaseUserResponseDTO ofThePurchaseForPurchaseUserResponseDTO(Purchase purchase) {
+    public static PurchaseUserResponseDTO ofThePurchaseToPurchaseUserResponseDTO(Purchase purchase) {
 
         return PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                 .id(purchase.getId())
@@ -74,13 +71,13 @@ public class Mapper {
                 .isDelivered(purchase.isDelivered())
                 .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
                 .purchasedProductResponseDTOS(
-                        Mapper.ofThePurchasedProductListForPurchasedProductResponseDTOList(purchase.getPurchasedProducts())
+                        Mapper.ofThePurchasedProductListToPurchasedProductResponseDTOList(purchase.getPurchasedProducts())
                 )
-                .addressResponseDTO(Mapper.ofTheAddressForAddressResponseDTO(purchase.getAddress()))
+                .addressResponseDTO(Mapper.ofTheAddressToAddressResponseDTO(purchase.getAddress()))
                 .build();
     }
 
-    public static PurchaseRestaurantResponseDTO ofThePurchaseForPurchaseRestaurantResponseDTO(Purchase purchase) {
+    public static PurchaseRestaurantResponseDTO ofThePurchaseToPurchaseRestaurantResponseDTO(Purchase purchase) {
 
         return PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
                 .id(purchase.getId())
@@ -90,9 +87,23 @@ public class Mapper {
                 .isDelivered(purchase.isDelivered())
                 .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
                 .purchasedProductResponseDTOS(
-                        Mapper.ofThePurchasedProductListForPurchasedProductResponseDTOList(purchase.getPurchasedProducts())
+                        Mapper.ofThePurchasedProductListToPurchasedProductResponseDTOList(purchase.getPurchasedProducts())
                 )
-                .addressResponseDTO(Mapper.ofTheAddressForAddressResponseDTO(purchase.getAddress()))
+                .addressResponseDTO(Mapper.ofTheAddressToAddressResponseDTO(purchase.getAddress()))
+                .build();
+    }
+
+    public static ProductResponseDTO ofTheProductToProductResponseDTO(Product product){
+
+        return ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .type(product.getType())
+                .priceRating(product.getPriceRating())
+                .isStocked(product.isStocked())
+                .image(product.getImage())
                 .build();
     }
 }

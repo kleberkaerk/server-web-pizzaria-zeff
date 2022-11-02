@@ -1,6 +1,7 @@
 package com.webservicepizzariazeff.www.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "purchased_products")
@@ -40,6 +41,19 @@ public class PurchasedProduct {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PurchasedProduct that = (PurchasedProduct) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(purchase, that.purchase);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, purchase);
     }
 
     public static final class PurchasedProductBuilder {

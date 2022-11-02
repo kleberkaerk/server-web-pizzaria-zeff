@@ -42,19 +42,19 @@ class SaleServiceTest {
     @Mock
     private PaymentSimulationRepository paymentSimulationRepository;
 
-    private static User userForArgument;
+    private static User userToArgument;
 
-    private static SaleRequestDTO saleRequestDTOForArgument;
+    private static SaleRequestDTO saleRequestDTOToArgument;
 
-    private static List<Product> productsForReturn;
+    private static List<Product> products;
 
-    private static Address addressForReturn;
+    private static Address address;
 
-    private static Purchase purchaseForReturn;
+    private static Purchase purchase;
 
-    static void setUserForArgument() {
+    static void setUserToArgument() {
 
-        userForArgument = User.UserBuilder.builder()
+        userToArgument = User.UserBuilder.builder()
                 .id(1L)
                 .name("name")
                 .username("username")
@@ -63,9 +63,9 @@ class SaleServiceTest {
                 .build();
     }
 
-    static void setSaleRequestDTOForArgument() {
+    static void setSaleRequestDTOToArgument() {
 
-        CardRequestDTO cardRequestDTOForSaleRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
+        CardRequestDTO cardRequestDTO = CardRequestDTO.CardRequestDTOBuilder.builder()
                 .nameOfCardHolder("nameOfCardHolder")
                 .cardNumber("1234567890123456")
                 .dueDate("12/34")
@@ -73,17 +73,17 @@ class SaleServiceTest {
                 .formOfPaymentDTO(FormOfPaymentDTO.CREDIT)
                 .build();
 
-        saleRequestDTOForArgument = SaleRequestDTO.SaleRequestDTOBuilder.builder()
+        saleRequestDTOToArgument = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
                 .addressId(1L)
-                .cardRequestDTO(cardRequestDTOForSaleRequestDTO)
+                .cardRequestDTO(cardRequestDTO)
                 .isPaymentThroughTheWebsite(true)
                 .build();
     }
 
-    static void setProductsForReturn() {
+    static void setProducts() {
 
-        productsForReturn = List.of(
+        products = List.of(
                 Product.ProductBuilder.builder()
                         .id(1L)
                         .name("name1")
@@ -91,6 +91,7 @@ class SaleServiceTest {
                         .price(new BigDecimal("10.0"))
                         .type(Type.SWEET_ESFIHA)
                         .priceRating(PriceRating.PROMOTION)
+                        .isStocked(true)
                         .image("/image1")
                         .build(),
                 Product.ProductBuilder.builder()
@@ -100,6 +101,7 @@ class SaleServiceTest {
                         .price(new BigDecimal("20.0"))
                         .type(Type.SWEET_ESFIHA)
                         .priceRating(PriceRating.PROMOTION)
+                        .isStocked(true)
                         .image("/image2")
                         .build(),
                 Product.ProductBuilder.builder()
@@ -109,14 +111,15 @@ class SaleServiceTest {
                         .price(new BigDecimal("30.0"))
                         .type(Type.SWEET_ESFIHA)
                         .priceRating(PriceRating.PROMOTION)
+                        .isStocked(true)
                         .image("/image3")
                         .build()
         );
     }
 
-    static void setAddressForReturn() {
+    static void setAddress() {
 
-        addressForReturn = Address.AddressBuilder.builder()
+        address = Address.AddressBuilder.builder()
                 .id(1L)
                 .number("1")
                 .road("road")
@@ -126,92 +129,80 @@ class SaleServiceTest {
                 .build();
     }
 
-    static void setPurchaseForReturn() {
+    static void setPurchase() {
 
-        purchaseForReturn = Purchase.PurchaseBuilder.builder()
+        purchase = Purchase.PurchaseBuilder.builder()
                 .id(1L)
                 .amount(new BigDecimal("60.0"))
                 .cardName("nameOfCardHolder")
+                .isActive(true)
+                .isFinished(false)
+                .isDelivered(false)
                 .dateAndTime("12/34/5678T12:34")
                 .isPaymentThroughTheWebsite(true)
-                .isActive(true)
-                .isFinished(true)
-                .isDelivered(true)
-                .user(userForArgument)
-                .address(addressForReturn)
+                .user(userToArgument)
+                .address(address)
                 .build();
     }
 
     @BeforeAll
     static void initializeObjects() {
 
-        setUserForArgument();
-        setSaleRequestDTOForArgument();
-        setProductsForReturn();
-        setAddressForReturn();
-        setPurchaseForReturn();
+        setUserToArgument();
+        setSaleRequestDTOToArgument();
+        setProducts();
+        setAddress();
+        setPurchase();
     }
 
     @BeforeEach
     void definitionBehaviorsForMockProductService() {
 
         BDDMockito.when(this.productService.findAllNonPageable())
-                .thenReturn(productsForReturn);
+                .thenReturn(products);
     }
 
     @BeforeEach
     void definitionBehaviorsForMockAddressService() {
 
         BDDMockito.when(this.addressService.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(addressForReturn);
+                .thenReturn(address);
     }
 
     @BeforeEach
     void definitionBehaviorsForMockPaymentSimulationRepository() {
 
         BDDMockito.when(this.purchaseService.save(ArgumentMatchers.any(Purchase.class)))
-                .thenReturn(purchaseForReturn);
+                .thenReturn(purchase);
     }
 
     @BeforeEach
     void definitionBehaviorsForMockPurchasedProductService() {
 
-        BDDMockito.doNothing().when(this.purchasedProductService).save(ArgumentMatchers.any(PurchasedProduct.class));
+        BDDMockito.doNothing()
+                .when(this.purchasedProductService).save(ArgumentMatchers.any(PurchasedProduct.class));
     }
 
     @BeforeEach
     void definitionBehaviorsForMockPurchaseService() {
 
-        BDDMockito.doNothing().when(this.paymentSimulationRepository).payment(
-                ArgumentMatchers.any(CardRequestDTO.class),
-                ArgumentMatchers.any(BigDecimal.class),
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.anyString()
-        );
+        BDDMockito.doNothing()
+                .when(this.paymentSimulationRepository).payment(
+                        ArgumentMatchers.any(CardRequestDTO.class),
+                        ArgumentMatchers.any(BigDecimal.class),
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyString()
+                );
     }
 
     @Test
     void sale_makesTheSaleOfProductsAndReturnsThePurchaseId_whenTheArgumentsAreCorrect() {
 
-        Assertions.assertThatCode(() -> this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"))
+        Assertions.assertThatCode(() -> this.saleService.sale(userToArgument, saleRequestDTOToArgument, "pt-BR"))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"))
+        Assertions.assertThat(this.saleService.sale(userToArgument, saleRequestDTOToArgument, "pt-BR"))
                 .isEqualTo(1L);
-    }
-
-    @Test
-    void sale_throwsNullPointerException_whenIfTheProductListHasNoPrice() {
-
-        BDDMockito.when(this.productService.findAllNonPageable())
-                .thenReturn(List.of(
-                        Product.ProductBuilder.builder().id(1L).name("name1").build(),
-                        Product.ProductBuilder.builder().id(2L).name("name2").build(),
-                        Product.ProductBuilder.builder().id(3L).name("name3").build()
-                ));
-
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"));
     }
 
     @Test
@@ -221,11 +212,11 @@ class SaleServiceTest {
                 .thenThrow(ResponseStatusException.class);
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.saleService.sale(userForArgument, saleRequestDTOForArgument, "pt-BR"));
+                .isThrownBy(() -> this.saleService.sale(userToArgument, saleRequestDTOToArgument, "pt-BR"));
     }
 
     @Test
-    void sale_throwsNullPointerException_whenSaleRequestDTOHasANullCardRequestDTO() {
+    void sale_throwsNullPointerException_whenSaleRequestDTOHasANullCardRequestDTOAndPaymentThroughTheWebsiteEqualToTrue() {
 
         SaleRequestDTO saleThatThrowsNullPointerException = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
@@ -234,7 +225,7 @@ class SaleServiceTest {
                 .build();
 
         Assertions.assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> this.saleService.sale(userForArgument, saleThatThrowsNullPointerException, "pt-BR"));
+                .isThrownBy(() -> this.saleService.sale(userToArgument, saleThatThrowsNullPointerException, "pt-BR"));
     }
 
     @Test
@@ -261,6 +252,6 @@ class SaleServiceTest {
                 .build();
 
         Assertions.assertThatExceptionOfType(InvalidCardException.class)
-                .isThrownBy(() -> this.saleService.sale(userForArgument, saleThatThrowsInvalidCardException, "pt-BR"));
+                .isThrownBy(() -> this.saleService.sale(userToArgument, saleThatThrowsInvalidCardException, "pt-BR"));
     }
 }

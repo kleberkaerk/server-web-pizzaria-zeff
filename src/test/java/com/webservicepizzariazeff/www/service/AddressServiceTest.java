@@ -30,51 +30,19 @@ class AddressServiceTest {
     @Mock
     private AddressRepository addressRepository;
 
-    private static List<Address> listOfTheAddressForReturn;
+    private static User user;
 
-    private static User userWhoOwnsTheAddress;
+    private static Address address;
 
-    private static AddressRequestDTO addressToBeSaved;
+    private static AddressRequestDTO addressRequestDTO;
 
-    static void setListOfTheAddressForReturn() {
+    private static List<Address> addresses;
 
-        listOfTheAddressForReturn = List.of(
-                Address.AddressBuilder.builder()
-                        .id(1L)
-                        .number("1")
-                        .road("road")
-                        .district("district")
-                        .city("city")
-                        .state("state")
-                        .user(User.UserBuilder.builder()
-                                .id(1L)
-                                .name("name")
-                                .username("username")
-                                .password("password")
-                                .authorities("ROLE_USER")
-                                .build())
-                        .build(),
-                Address.AddressBuilder.builder()
-                        .id(2L)
-                        .number("2")
-                        .road("road2")
-                        .district("district2")
-                        .city("city2")
-                        .state("state2")
-                        .user(User.UserBuilder.builder()
-                                .id(2L)
-                                .name("name2")
-                                .username("username2")
-                                .password("password2")
-                                .authorities("ROLE_USER")
-                                .build())
-                        .build()
-        );
-    }
+    private static AddressResponseDTO addressResponseDTOToComparisonInFindByUser;
 
-    static void setUserWhoOwnsTheAddress() {
+    static void setUser(){
 
-        userWhoOwnsTheAddress = User.UserBuilder.builder()
+        user = User.UserBuilder.builder()
                 .id(1L)
                 .name("name")
                 .username("username")
@@ -83,9 +51,22 @@ class AddressServiceTest {
                 .build();
     }
 
-    static void setAddressToBeSaved() {
+    static void setAddress(){
 
-        addressToBeSaved = AddressRequestDTO.AddressRequestDTOBuilder.builder()
+        address = Address.AddressBuilder.builder()
+                .id(1L)
+                .number("1")
+                .road("road")
+                .district("district")
+                .city("city")
+                .state("state")
+                .user(user)
+                .build();
+    }
+
+    static void setAddressRequestDTO() {
+
+        addressRequestDTO = AddressRequestDTO.AddressRequestDTOBuilder.builder()
                 .number("1")
                 .road("road")
                 .district("district")
@@ -94,19 +75,57 @@ class AddressServiceTest {
                 .build();
     }
 
+    static void setAddresses() {
+
+        addresses = List.of(
+                Address.AddressBuilder.builder()
+                        .id(1L)
+                        .number("1")
+                        .road("road")
+                        .district("district")
+                        .city("city")
+                        .state("state")
+                        .user(user)
+                        .build(),
+                Address.AddressBuilder.builder()
+                        .id(2L)
+                        .number("2")
+                        .road("road2")
+                        .district("district2")
+                        .city("city2")
+                        .state("state2")
+                        .user(user)
+                        .build()
+        );
+    }
+
+    static void setAddressResponseDTOToComparisonInFindByUser(){
+
+        addressResponseDTOToComparisonInFindByUser = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+                .id(1L)
+                .number("1")
+                .road("road")
+                .district("district")
+                .city("city")
+                .state("state")
+                .build();
+    }
+
     @BeforeAll
     static void initializeObjects() {
 
-        setListOfTheAddressForReturn();
-        setUserWhoOwnsTheAddress();
-        setAddressToBeSaved();
+        setUser();
+        setAddress();
+        setAddressRequestDTO();
+        setAddresses();
+        setAddressResponseDTOToComparisonInFindByUser();
     }
 
     @BeforeEach
     void definitionOfBehaviorsForMocks() {
 
         BDDMockito.when(this.addressRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(listOfTheAddressForReturn.get(0)));
+                .thenReturn(Optional.of(address));
 
         BDDMockito.when(this.addressRepository.findByNumberAndRoadAndDistrictAndCityAndStateAndUser(
                         ArgumentMatchers.anyString(),
@@ -119,10 +138,10 @@ class AddressServiceTest {
                 .thenReturn(Optional.empty());
 
         BDDMockito.when(this.addressRepository.save(ArgumentMatchers.any(Address.class)))
-                .thenReturn(listOfTheAddressForReturn.get(0));
+                .thenReturn(address);
 
         BDDMockito.when(this.addressRepository.findByUser(ArgumentMatchers.any(User.class)))
-                .thenReturn(listOfTheAddressForReturn);
+                .thenReturn(addresses);
 
         BDDMockito.doNothing()
                 .when(this.addressRepository).deleteById(ArgumentMatchers.any());
@@ -136,15 +155,7 @@ class AddressServiceTest {
 
         Assertions.assertThat(this.addressService.findById(1L))
                 .isNotNull()
-                .isEqualTo(Address.AddressBuilder.builder()
-                        .id(1L)
-                        .number("1")
-                        .road("road")
-                        .district("district")
-                        .city("city")
-                        .state("state")
-                        .user(userWhoOwnsTheAddress)
-                        .build());
+                .isEqualTo(address);
     }
 
     @Test
@@ -160,10 +171,10 @@ class AddressServiceTest {
     @Test
     void registerAddress_registersANewAddressForAUserAndReturnsTheIdOfTheCreatedAddress_whenTheAddressDoesNotExistInTheDatabase() {
 
-        Assertions.assertThatCode(() -> this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"))
+        Assertions.assertThatCode(() -> this.addressService.registerAddress(user, addressRequestDTO, "pt-BR"))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"))
+        Assertions.assertThat(this.addressService.registerAddress(user, addressRequestDTO, "pt-BR"))
                 .isEqualTo(1L);
     }
 
@@ -177,29 +188,22 @@ class AddressServiceTest {
                 ArgumentMatchers.anyString(),
                 ArgumentMatchers.anyString(),
                 ArgumentMatchers.any(User.class)
-        )).thenReturn(Optional.of(listOfTheAddressForReturn.get(0)));
+        )).thenReturn(Optional.of(address));
 
         Assertions.assertThatExceptionOfType(ExistingAddressException.class)
-                .isThrownBy(() -> this.addressService.registerAddress(userWhoOwnsTheAddress, addressToBeSaved, "pt-BR"));
+                .isThrownBy(() -> this.addressService.registerAddress(user, addressRequestDTO, "pt-BR"));
     }
 
     @Test
     void findByUser_returnsAListOfAddressResponseDTOOfTheUser_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.addressService.findByUser(userWhoOwnsTheAddress))
+        Assertions.assertThatCode(() -> this.addressService.findByUser(user))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.addressService.findByUser(userWhoOwnsTheAddress))
+        Assertions.assertThat(this.addressService.findByUser(user))
                 .isNotNull()
                 .asList()
-                .contains(AddressResponseDTO.AddressResponseDTOBuilder.builder()
-                        .id(2L)
-                        .number("2")
-                        .road("road2")
-                        .district("district2")
-                        .city("city2")
-                        .state("state2")
-                        .build());
+                .contains(addressResponseDTOToComparisonInFindByUser);
     }
 
     @Test

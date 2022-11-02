@@ -39,11 +39,7 @@ class PurchasedProductServiceTest {
     void definitionBehaviorsForMocks() {
 
         BDDMockito.when(this.purchasedProductRepository.save(ArgumentMatchers.any(PurchasedProduct.class)))
-                .thenReturn(PurchasedProduct.PurchasedProductBuilder.builder()
-                        .id(1L)
-                        .name("name")
-                        .purchase(Purchase.PurchaseBuilder.builder().id(1L).build())
-                        .build());
+                .thenReturn(purchasedProduct);
 
         BDDMockito.doNothing()
                 .when(this.purchasedProductRepository).deleteById(ArgumentMatchers.any(Long.class));

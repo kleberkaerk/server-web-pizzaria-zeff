@@ -1,6 +1,7 @@
 package com.webservicepizzariazeff.www.dto.response;
 
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("java:S107")
 public class PurchaseRestaurantResponseDTO {
@@ -79,6 +80,19 @@ public class PurchaseRestaurantResponseDTO {
                 ", purchasedProductResponseDTOS=" + purchasedProductResponseDTOS +
                 ", addressResponseDTO=" + addressResponseDTO +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PurchaseRestaurantResponseDTO that = (PurchaseRestaurantResponseDTO) o;
+        return isActive == that.isActive && isFinished == that.isFinished && isDelivered == that.isDelivered && isPaymentThroughTheWebsite == that.isPaymentThroughTheWebsite && Objects.equals(id, that.id) && Objects.equals(clientName, that.clientName) && Objects.equals(purchasedProductResponseDTOS, that.purchasedProductResponseDTOS) && Objects.equals(addressResponseDTO, that.addressResponseDTO);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, clientName, isActive, isFinished, isDelivered, isPaymentThroughTheWebsite, purchasedProductResponseDTOS, addressResponseDTO);
     }
 
     public static final class PurchaseRestaurantResponseDTOBuilder {

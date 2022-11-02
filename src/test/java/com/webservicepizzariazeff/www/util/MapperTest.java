@@ -3,10 +3,7 @@ package com.webservicepizzariazeff.www.util;
 
 import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
-import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
+import com.webservicepizzariazeff.www.dto.response.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,17 +19,19 @@ class MapperTest {
 
     private static Address address;
 
+    private static AddressResponseDTO addressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO;
+
     private static Product product;
 
-    private static List<PurchasedProduct> purchasedProductList;
+    private static List<PurchasedProduct> purchasedProducts;
 
     private static Purchase purchase;
 
-    private static PurchaseUserResponseDTO purchaseUserResponseDTO;
+    private static PurchaseUserResponseDTO purchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO;
 
-    private static List<PurchasedProductResponseDTO> purchasedProductResponseDTOS;
+    private static PurchaseRestaurantResponseDTO purchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO;
 
-    private static AddressResponseDTO addressResponseDTO;
+    private static ProductResponseDTO productResponseDTOToComparisonInOfTheProductToProductResponseDTO;
 
     static void setAddressRequestDTO() {
 
@@ -65,7 +64,18 @@ class MapperTest {
                 .district("district")
                 .city("city")
                 .state("state")
-                .user(user)
+                .build();
+    }
+
+    static void setAddressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO() {
+
+        addressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+                .id(1L)
+                .number("1")
+                .road("road")
+                .district("district")
+                .city("city")
+                .state("state")
                 .build();
     }
 
@@ -74,28 +84,33 @@ class MapperTest {
         product = Product.ProductBuilder.builder()
                 .id(1L)
                 .name("name")
-                .description("description")
-                .type(Type.SALTY_PIZZA)
-                .price(new BigDecimal("10.00"))
-                .image("/image")
-                .priceRating(PriceRating.REGULAR_PRICE)
+                .description("")
+                .price(new BigDecimal("10"))
+                .type(Type.SALTY_ESFIHA)
+                .priceRating(PriceRating.PROMOTION)
+                .isStocked(true)
+                .image("/image1")
                 .build();
     }
 
-    static void setPurchasedProductList() {
+    static void setPurchasedProducts() {
 
-        purchasedProductList = List.of(
+        purchasedProducts = List.of(
                 PurchasedProduct.PurchasedProductBuilder.builder()
                         .id(1L)
-                        .name("name1")
+                        .name("name")
                         .build(),
                 PurchasedProduct.PurchasedProductBuilder.builder()
                         .id(2L)
-                        .name("name2")
+                        .name("name")
                         .build(),
                 PurchasedProduct.PurchasedProductBuilder.builder()
                         .id(3L)
-                        .name("name3")
+                        .name("name")
+                        .build(),
+                PurchasedProduct.PurchasedProductBuilder.builder()
+                        .id(4L)
+                        .name("name")
                         .build()
         );
     }
@@ -104,22 +119,22 @@ class MapperTest {
 
         purchase = Purchase.PurchaseBuilder.builder()
                 .id(1L)
-                .amount(new BigDecimal("10.00"))
+                .amount(new BigDecimal("10"))
                 .dateAndTime("12/34/5678T90:12")
                 .cardName("cardName")
                 .isActive(true)
-                .isFinished(true)
-                .isDelivered(true)
-                .isPaymentThroughTheWebsite(true)
-                .purchasedProducts(purchasedProductList)
+                .isFinished(false)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
                 .user(user)
                 .address(address)
+                .purchasedProducts(purchasedProducts)
                 .build();
     }
 
-    static void setPurchaseUserResponseDTO() {
+    static void setPurchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO() {
 
-        purchaseUserResponseDTO = PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+        purchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO = PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                 .id(purchase.getId())
                 .amount(purchase.getAmount())
                 .dateAndTime(purchase.getDateAndTime())
@@ -128,52 +143,49 @@ class MapperTest {
                 .isFinished(purchase.isFinished())
                 .isDelivered(purchase.isDelivered())
                 .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
-                .purchasedProductResponseDTOS(List.of(
-                        PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                                .name(purchasedProductList.get(0).getName())
-                                .build(),
-                        PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                                .name(purchasedProductList.get(1).getName())
-                                .build(),
-                        PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                                .name(purchasedProductList.get(2).getName())
-                                .build()
-                ))
-                .addressResponseDTO(AddressResponseDTO.AddressResponseDTOBuilder.builder()
-                        .id(address.getId())
-                        .number(address.getNumber())
-                        .road(address.getRoad())
-                        .district(address.getDistrict())
-                        .city(address.getCity())
-                        .state(address.getState())
-                        .build()
-                ).build();
+                .purchasedProductResponseDTOS(
+                        purchasedProducts.stream()
+                                .map(purchasedProduct -> PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                                        .name(purchasedProduct.getName())
+                                        .build())
+                                .toList()
+                )
+                .addressResponseDTO(Mapper.ofTheAddressToAddressResponseDTO(purchase.getAddress()))
+                .build();
     }
 
-    static void setPurchasedProductResponseDTOS() {
+    static void setPurchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO() {
 
-        purchasedProductResponseDTOS = List.of(
-                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProductList.get(0).getName())
-                        .build(),
-                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProductList.get(1).getName())
-                        .build(),
-                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProductList.get(2).getName())
-                        .build()
-        );
+        purchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO =
+                PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                        .id(purchase.getId())
+                        .clientName(purchase.getUser().getName())
+                        .isActive(purchase.isActive())
+                        .isFinished(purchase.isFinished())
+                        .isDelivered(purchase.isDelivered())
+                        .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
+                        .purchasedProductResponseDTOS(
+                                purchasedProducts.stream()
+                                        .map(purchasedProduct -> PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
+                                                .name(purchasedProduct.getName())
+                                                .build())
+                                        .toList()
+                        )
+                        .addressResponseDTO(Mapper.ofTheAddressToAddressResponseDTO(purchase.getAddress()))
+                        .build();
     }
 
-    static void setAddressResponseDTO() {
+    static void setProductResponseDTOToComparisonInOfTheProductToProductResponseDTO() {
 
-        addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
-                .id(address.getId())
-                .number(address.getNumber())
-                .road(address.getRoad())
-                .district(address.getDistrict())
-                .city(address.getCity())
-                .state(address.getState())
+        productResponseDTOToComparisonInOfTheProductToProductResponseDTO = ProductResponseDTO.ProductResponseDTOBuilder.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .type(product.getType())
+                .priceRating(product.getPriceRating())
+                .isStocked(product.isStocked())
+                .image(product.getImage())
                 .build();
     }
 
@@ -183,105 +195,114 @@ class MapperTest {
         setAddressRequestDTO();
         setUser();
         setAddress();
+        setAddressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO();
         setProduct();
-        setPurchasedProductList();
+        setPurchasedProducts();
         setPurchase();
-        setPurchaseUserResponseDTO();
-        setPurchasedProductResponseDTOS();
-        setAddressResponseDTO();
+        setPurchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO();
+        setPurchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO();
+        setProductResponseDTOToComparisonInOfTheProductToProductResponseDTO();
     }
 
     @Test
-    void ofTheAddressDTOForAddress_mapsFromAAddressRequestDTOToAnAddress_WheneverCalled() {
+    void ofTheAddressRequestDTOToAddress_mapsFromAAddressRequestDTOToAnAddress_WheneverCalled() {
 
-        Assertions.assertThatCode(() -> Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user))
+        Assertions.assertThatCode(() -> Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getNumber())
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getId())
+                .isNull();
+
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getNumber())
+                .isNotNull()
                 .isEqualTo("1");
 
-        Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getRoad())
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getRoad())
+                .isNotNull()
                 .isEqualTo("road");
 
-        Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getDistrict())
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getDistrict())
+                .isNotNull()
                 .isEqualTo("district");
 
-        Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getCity())
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getCity())
+                .isNotNull()
                 .isEqualTo("city");
 
-        Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getState())
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getState())
+                .isNotNull()
                 .isEqualTo("state");
 
-        Assertions.assertThat(Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user).getUser())
+        Assertions.assertThat(Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user).getUser())
+                .isNotNull()
                 .isEqualTo(user);
     }
 
     @Test
-    void ofTheUserDetailsForUser_mapsFromAUserDetailsToAnUser_WheneverCalled() {
+    void ofTheUserDetailsToUser_mapsFromAUserDetailsToAnUser_WheneverCalled() {
 
-        Assertions.assertThatCode(() -> Mapper.ofTheUserDetailsForUser(user))
+        Assertions.assertThatCode(() -> Mapper.ofTheUserDetailsToUser(user))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(Mapper.ofTheUserDetailsForUser(user))
-                .isEqualTo(User.UserBuilder.builder()
-                        .id(1L)
-                        .name("name")
-                        .username("username")
-                        .password("password")
-                        .authorities("ROLE_USER")
-                        .build());
-    }
-
-    @Test
-    void ofTheAddressForAddressResponseDTO_mapsFromAddressToAnAddressResponseDTO_wheneverCalled() {
-
-        Assertions.assertThatCode(() -> Mapper.ofTheAddressForAddressResponseDTO(address))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(Mapper.ofTheAddressForAddressResponseDTO(address))
-                .isEqualTo(addressResponseDTO);
-    }
-
-    @Test
-    void ofTheProductForPurchasedProduct_mapsFromProductToPurchasedProduct_wheneverCalled() {
-
-        Assertions.assertThatCode(() -> Mapper.ofTheProductForPurchasedProduct(product, purchase))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(Mapper.ofTheProductForPurchasedProduct(product, purchase))
-                .hasToString(PurchasedProduct.PurchasedProductBuilder.builder()
-                        .name(product.getName())
-                        .purchase(purchase)
-                        .build().toString());
-    }
-
-    @Test
-    void ofThePurchaseForPurchaseResponseDTOForUser_mapsFromPurchaseToPurchaseUserResponseDTO_wheneverCalled() {
-
-        Assertions.assertThatCode(() -> Mapper.ofThePurchaseForPurchaseUserResponseDTO(purchase))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(Mapper.ofThePurchaseForPurchaseUserResponseDTO(purchase).toString())
-                .hasToString(purchaseUserResponseDTO.toString());
-    }
-
-    @Test
-    void ofThePurchaseForPurchaseResponseDTOForRestaurant_mapsFromPurchaseToPurchaseRestaurantResponseDTO_wheneverCalled() {
-
-        Assertions.assertThatCode(() -> Mapper.ofThePurchaseForPurchaseRestaurantResponseDTO(purchase))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(Mapper.ofThePurchaseForPurchaseRestaurantResponseDTO(purchase))
+        Assertions.assertThat(Mapper.ofTheUserDetailsToUser(user))
                 .isNotNull()
-                .hasToString(PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
-                        .id(purchase.getId())
-                        .clientName(purchase.getUser().getName())
-                        .isActive(purchase.isActive())
-                        .isFinished(purchase.isFinished())
-                        .isDelivered(purchase.isDelivered())
-                        .isPaymentThroughTheWebsite(purchase.isPaymentThroughTheWebsite())
-                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                        .addressResponseDTO(addressResponseDTO)
-                        .build().toString());
+                .isEqualTo(user);
+    }
+
+    @Test
+    void ofTheAddressToAddressResponseDTO_mapsFromAddressToAnAddressResponseDTO_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofTheAddressToAddressResponseDTO(address))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(Mapper.ofTheAddressToAddressResponseDTO(address))
+                .isNotNull()
+                .isEqualTo(addressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO);
+    }
+
+    @Test
+    void ofTheProductToPurchasedProduct_mapsFromProductToPurchasedProduct_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofTheProductToPurchasedProduct(product, purchase))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(Mapper.ofTheProductToPurchasedProduct(product, purchase).getId())
+                .isNull();
+
+        Assertions.assertThat(Mapper.ofTheProductToPurchasedProduct(product, purchase).getName())
+                .isNotNull()
+                .isEqualTo(product.getName());
+    }
+
+    @Test
+    void ofThePurchaseToPurchaseUserResponseDTO_mapsFromPurchaseToPurchaseUserResponseDTO_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofThePurchaseToPurchaseUserResponseDTO(purchase))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(Mapper.ofThePurchaseToPurchaseUserResponseDTO(purchase))
+                .isNotNull()
+                .isEqualTo(purchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO);
+    }
+
+    @Test
+    void ofThePurchaseToPurchaseResponseDTOForRestaurant_mapsFromPurchaseToPurchaseRestaurantResponseDTO_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofThePurchaseToPurchaseRestaurantResponseDTO(purchase))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(Mapper.ofThePurchaseToPurchaseRestaurantResponseDTO(purchase))
+                .isNotNull()
+                .isEqualTo(purchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO);
+    }
+
+    @Test
+    void ofTheProductToProductResponseDTO_mapsFromProductToProductResponseDTO_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> Mapper.ofTheProductToProductResponseDTO(product))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(Mapper.ofTheProductToProductResponseDTO(product))
+                .isEqualTo(productResponseDTOToComparisonInOfTheProductToProductResponseDTO);
     }
 }

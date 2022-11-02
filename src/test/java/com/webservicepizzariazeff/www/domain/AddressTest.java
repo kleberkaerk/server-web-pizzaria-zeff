@@ -13,12 +13,12 @@ class AddressTest {
 
     private Address differentAddress;
 
-    private static User userWhoOwnsTheAddress;
+    private static User user;
 
     @BeforeAll
     static void setUserWhoOwnsTheAddress() {
 
-        userWhoOwnsTheAddress = User.UserBuilder.builder()
+        user = User.UserBuilder.builder()
                 .id(1L)
                 .name("name")
                 .username("username")
@@ -37,7 +37,7 @@ class AddressTest {
                 .district("district")
                 .city("city")
                 .state("state")
-                .user(userWhoOwnsTheAddress)
+                .user(user)
                 .build();
 
         this.sameAddress = Address.AddressBuilder.builder()
@@ -47,7 +47,7 @@ class AddressTest {
                 .district("district")
                 .city("city")
                 .state("state")
-                .user(userWhoOwnsTheAddress)
+                .user(user)
                 .build();
 
         this.differentAddress = Address.AddressBuilder.builder()
@@ -57,7 +57,7 @@ class AddressTest {
                 .district("district2")
                 .city("city2")
                 .state("state2")
-                .user(userWhoOwnsTheAddress)
+                .user(user)
                 .build();
     }
 
@@ -107,13 +107,7 @@ class AddressTest {
     void getUser() {
 
         Assertions.assertThat(address.getUser())
-                .isEqualTo(User.UserBuilder.builder()
-                        .id(1L)
-                        .name("name")
-                        .username("username")
-                        .password("password")
-                        .authorities("ROLE_USER")
-                        .build());
+                .isEqualTo(user);
     }
 
     @Test

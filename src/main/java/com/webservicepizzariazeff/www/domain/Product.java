@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@SuppressWarnings("java:S107")
 @Entity
 @Table(name = "products")
 public class Product {
@@ -29,19 +30,23 @@ public class Product {
     @Column(name = "price_rating", length = 13)
     private PriceRating priceRating;
 
+    @Column(name = "stocked")
+    private boolean isStocked;
+
     @Column(name = "image", length = 100)
     private String image;
 
     protected Product() {
     }
 
-    private Product(Long id, String name, String description, BigDecimal price, Type type, PriceRating priceRating, String image) {
+    private Product(Long id, String name, String description, BigDecimal price, Type type, PriceRating priceRating, boolean isStocked, String image) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.type = type;
         this.priceRating = priceRating;
+        this.isStocked = isStocked;
         this.image = image;
     }
 
@@ -67,6 +72,10 @@ public class Product {
 
     public PriceRating getPriceRating() {
         return priceRating;
+    }
+
+    public boolean isStocked() {
+        return isStocked;
     }
 
     public String getImage() {
@@ -95,6 +104,7 @@ public class Product {
                 ", price=" + price +
                 ", type=" + type +
                 ", priceRating=" + priceRating +
+                ", isStocked=" + isStocked +
                 ", image='" + image + '\'' +
                 '}';
     }
@@ -106,6 +116,8 @@ public class Product {
         private BigDecimal price;
         private Type type;
         private PriceRating priceRating;
+
+        private boolean isStocked;
         private String image;
 
         private ProductBuilder() {
@@ -145,13 +157,20 @@ public class Product {
             return this;
         }
 
+        public ProductBuilder isStocked(boolean isStocked) {
+
+            this.isStocked = isStocked;
+            return this;
+        }
+
         public ProductBuilder image(String image) {
             this.image = image;
             return this;
         }
 
         public Product build() {
-            return new Product(id, name, description, price, type, priceRating, image);
+
+            return new Product(id, name, description, price, type, priceRating, isStocked, image);
         }
     }
 }

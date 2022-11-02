@@ -52,7 +52,7 @@ public class AddressService {
 
         ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
 
-        User user = Mapper.ofTheUserDetailsForUser(userDetails);
+        User user = Mapper.ofTheUserDetailsToUser(userDetails);
 
         Optional<Address> optionalAddress = this.searchForExistingAddressInTheDatabase(addressRequestDTO, user);
 
@@ -60,19 +60,19 @@ public class AddressService {
             throw new ExistingAddressException(messages.getString("existing.address"));
         }
 
-        Address addressToBeSaved = Mapper.ofTheAddressRequestDTOForAddress(addressRequestDTO, user);
+        Address addressToBeSaved = Mapper.ofTheAddressRequestDTOToAddress(addressRequestDTO, user);
 
         return this.addressRepository.save(addressToBeSaved).getId();
     }
 
     public List<AddressResponseDTO> findByUser(UserDetails userDetails) {
 
-        User user = Mapper.ofTheUserDetailsForUser(userDetails);
+        User user = Mapper.ofTheUserDetailsToUser(userDetails);
 
         List<Address> addressesFound = this.addressRepository.findByUser(user);
 
         return addressesFound.stream()
-                .map(Mapper::ofTheAddressForAddressResponseDTO)
+                .map(Mapper::ofTheAddressToAddressResponseDTO)
                 .toList();
     }
 

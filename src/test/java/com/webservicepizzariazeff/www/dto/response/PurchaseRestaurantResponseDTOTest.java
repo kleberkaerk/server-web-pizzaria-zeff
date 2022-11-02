@@ -11,6 +11,10 @@ class PurchaseRestaurantResponseDTOTest {
 
     private PurchaseRestaurantResponseDTO purchaseRestaurantResponseDTO;
 
+    private PurchaseRestaurantResponseDTO samePurchaseRestaurantResponseDTO;
+
+    private PurchaseRestaurantResponseDTO differentPurchaseRestaurantResponseDTO;
+
     private static List<PurchasedProductResponseDTO> purchasedProductResponseDTOS;
 
     private static AddressResponseDTO addressResponseDTO;
@@ -46,7 +50,7 @@ class PurchaseRestaurantResponseDTOTest {
     }
 
     @BeforeAll
-    static void initializeObjects(){
+    static void initializeObjects() {
 
         setPurchasedProductResponseDTOS();
         setAddressResponseDTO();
@@ -62,6 +66,28 @@ class PurchaseRestaurantResponseDTOTest {
                 .isFinished(true)
                 .isDelivered(true)
                 .isPaymentThroughTheWebsite(true)
+                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                .addressResponseDTO(addressResponseDTO)
+                .build();
+
+        this.samePurchaseRestaurantResponseDTO = PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                .id(1L)
+                .clientName("clientName")
+                .isActive(true)
+                .isFinished(true)
+                .isDelivered(true)
+                .isPaymentThroughTheWebsite(true)
+                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
+                .addressResponseDTO(addressResponseDTO)
+                .build();
+
+        this.differentPurchaseRestaurantResponseDTO = PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
+                .id(2L)
+                .clientName("clientName2")
+                .isActive(false)
+                .isFinished(false)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
                 .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
                 .addressResponseDTO(addressResponseDTO)
                 .build();
@@ -141,5 +167,22 @@ class PurchaseRestaurantResponseDTOTest {
                         ", purchasedProductResponseDTOS=" + this.purchaseRestaurantResponseDTO.getPurchasedProductResponseDTOS() +
                         ", addressResponseDTO=" + this.purchaseRestaurantResponseDTO.getAddressResponseDTO() +
                         '}');
+    }
+
+    @Test
+    void testEquals(){
+
+        Assertions.assertThat(this.purchaseRestaurantResponseDTO.equals(this.samePurchaseRestaurantResponseDTO))
+                .isTrue();
+
+        Assertions.assertThat(this.purchaseRestaurantResponseDTO.equals(this.differentPurchaseRestaurantResponseDTO))
+                .isFalse();
+    }
+
+    @Test
+    void testHashCode(){
+
+        Assertions.assertThat(this.purchaseRestaurantResponseDTO)
+                .hasSameHashCodeAs(this.samePurchaseRestaurantResponseDTO);
     }
 }

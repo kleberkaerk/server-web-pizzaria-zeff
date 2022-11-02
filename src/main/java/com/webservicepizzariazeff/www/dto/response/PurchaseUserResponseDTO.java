@@ -2,6 +2,7 @@ package com.webservicepizzariazeff.www.dto.response;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("java:S107")
 public class PurchaseUserResponseDTO {
@@ -83,7 +84,7 @@ public class PurchaseUserResponseDTO {
 
     @Override
     public String toString() {
-        return "PurchaseResponseDTOForUser{" +
+        return "PurchaseUserResponseDTO{" +
                 "id=" + id +
                 ", amount=" + amount +
                 ", dateAndTime='" + dateAndTime + '\'' +
@@ -95,6 +96,19 @@ public class PurchaseUserResponseDTO {
                 ", purchasedProductResponseDTOS=" + purchasedProductResponseDTOS +
                 ", addressResponseDTO=" + addressResponseDTO +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PurchaseUserResponseDTO that = (PurchaseUserResponseDTO) o;
+        return isActive == that.isActive && isFinished == that.isFinished && isDelivered == that.isDelivered && isPaymentThroughTheWebsite == that.isPaymentThroughTheWebsite && Objects.equals(id, that.id) && Objects.equals(amount, that.amount) && Objects.equals(dateAndTime, that.dateAndTime) && Objects.equals(cardName, that.cardName) && Objects.equals(purchasedProductResponseDTOS, that.purchasedProductResponseDTOS) && Objects.equals(addressResponseDTO, that.addressResponseDTO);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, amount, dateAndTime, cardName, isActive, isFinished, isDelivered, isPaymentThroughTheWebsite, purchasedProductResponseDTOS, addressResponseDTO);
     }
 
     public static final class PurchaseUserResponseDTOBuilder {

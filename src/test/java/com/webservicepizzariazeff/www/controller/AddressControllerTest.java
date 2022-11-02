@@ -141,8 +141,8 @@ class AddressControllerTest {
                         ArgumentMatchers.anyString()))
                 .thenThrow(ExistingAddressException.class);
 
-                Assertions.assertThatExceptionOfType(ExistingAddressException.class)
-                        .isThrownBy(() -> this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"));
+        Assertions.assertThatExceptionOfType(ExistingAddressException.class)
+                .isThrownBy(() -> this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"));
     }
 
     @Test
@@ -156,18 +156,9 @@ class AddressControllerTest {
                 .isEqualTo(ResponseEntity.ok(addressResponseDTO));
 
         Assertions.assertThat(this.addressController.findAddressesByUser(user).getBody())
-                .hasSize(4);
-
-        Assertions.assertThat(this.addressController.findAddressesByUser(user).getBody())
+                .hasSize(4)
                 .asList()
-                .contains(AddressResponseDTO.AddressResponseDTOBuilder.builder()
-                        .id(3L)
-                        .number("3")
-                        .road("road3")
-                        .district("district3")
-                        .city("city3")
-                        .state("state3")
-                        .build());
+                .contains(addressResponseDTO.get(2));
     }
 
     @Test

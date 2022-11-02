@@ -4,12 +4,11 @@ import com.webservicepizzariazeff.www.domain.Address;
 import com.webservicepizzariazeff.www.domain.Purchase;
 import com.webservicepizzariazeff.www.domain.PurchasedProduct;
 import com.webservicepizzariazeff.www.domain.User;
-import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO;
 import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
-import com.webservicepizzariazeff.www.dto.response.PurchasedProductResponseDTO;
 import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.repository.PurchaseRepository;
+import com.webservicepizzariazeff.www.util.Mapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +22,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
@@ -44,21 +42,26 @@ class PurchaseServiceTest {
 
     private static Address address;
 
-    private static Purchase purchaseToCompare;
+    private static Purchase purchase;
 
     private static List<PurchasedProduct> purchasedProducts;
 
-    private static List<Purchase> userPurchases;
+    private static List<Purchase> purchases;
 
-    private static Map<Boolean, List<PurchaseUserResponseDTO>> mapPurchaseUserResponseDTOToCompare;
+    private static List<Purchase> PurchasesFindByUserAndIsActive;
 
-    private static List<Purchase> restaurantPurchases;
+    private static List<PurchaseUserResponseDTO> purchasesToComparisonInFindByUserAndIsActive;
 
-    private static Map<Boolean, List<PurchaseRestaurantResponseDTO>> mapPurchaseRestaurantResponseDTOToCompare;
+    private static List<Purchase> purchasesFindByIsDelivered;
+
+    private static List<PurchaseRestaurantResponseDTO> purchasesToComparisonInFindByIsDelivered;
+
+    private static Purchase purchaseDeliverPurchase;
 
     static void setUser() {
 
-        user = User.UserBuilder.builder().id(1L)
+        user = User.UserBuilder.builder()
+                .id(1L)
                 .name("name")
                 .username("username")
                 .password("password")
@@ -69,6 +72,7 @@ class PurchaseServiceTest {
     static void setAddress() {
 
         address = Address.AddressBuilder.builder()
+                .id(1L)
                 .number("1")
                 .road("road")
                 .district("district")
@@ -95,9 +99,9 @@ class PurchaseServiceTest {
         );
     }
 
-    static void setPurchaseToCompare() {
+    static void setPurchase() {
 
-        purchaseToCompare = Purchase.PurchaseBuilder.builder()
+        purchase = Purchase.PurchaseBuilder.builder()
                 .id(1L)
                 .amount(new BigDecimal("10.00"))
                 .dateAndTime("12/34/5678T90:12")
@@ -112,9 +116,9 @@ class PurchaseServiceTest {
                 .build();
     }
 
-    static void setUserPurchases() {
+    static void setPurchases() {
 
-        userPurchases = List.of(
+        purchases = List.of(
                 Purchase.PurchaseBuilder.builder()
                         .id(1L)
                         .amount(new BigDecimal("10.00"))
@@ -133,7 +137,7 @@ class PurchaseServiceTest {
                         .amount(new BigDecimal("20.00"))
                         .dateAndTime("12/34/5678T90:12")
                         .cardName("cardName")
-                        .isActive(true)
+                        .isActive(false)
                         .isFinished(false)
                         .isDelivered(false)
                         .isPaymentThroughTheWebsite(false)
@@ -157,221 +161,52 @@ class PurchaseServiceTest {
         );
     }
 
-    static void setMapPurchaseUserResponseDTOToCompare() {
+    static void setPurchasesFindByUserAndIsActive() {
 
-        List<PurchasedProductResponseDTO> purchasedProductResponseDTOS = purchasedProducts.stream()
-                .map(purchasedProduct -> PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProduct.getName())
-                        .build()
-                ).toList();
-
-        AddressResponseDTO addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
-                .id(address.getId())
-                .number(address.getNumber())
-                .road(address.getRoad())
-                .district(address.getDistrict())
-                .city(address.getCity())
-                .state(address.getState())
-                .build();
-
-        mapPurchaseUserResponseDTOToCompare = new HashMap<>(
-                Map.of(
-                        false, List.of(
-                                PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
-                                        .id(userPurchases.get(1).getId())
-                                        .amount(userPurchases.get(1).getAmount())
-                                        .dateAndTime(userPurchases.get(1).getDateAndTime())
-                                        .cardName(userPurchases.get(1).getCardName())
-                                        .isActive(userPurchases.get(1).isActive())
-                                        .isFinished(userPurchases.get(1).isFinished())
-                                        .isDelivered(userPurchases.get(1).isDelivered())
-                                        .isPaymentThroughTheWebsite(userPurchases.get(1).isPaymentThroughTheWebsite())
-                                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                        .addressResponseDTO(addressResponseDTO)
-                                        .build(),
-                                PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
-                                        .id(userPurchases.get(0).getId())
-                                        .amount(userPurchases.get(0).getAmount())
-                                        .dateAndTime(userPurchases.get(0).getDateAndTime())
-                                        .cardName(userPurchases.get(0).getCardName())
-                                        .isActive(userPurchases.get(0).isActive())
-                                        .isFinished(userPurchases.get(0).isFinished())
-                                        .isDelivered(userPurchases.get(0).isDelivered())
-                                        .isPaymentThroughTheWebsite(userPurchases.get(0).isPaymentThroughTheWebsite())
-                                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                        .addressResponseDTO(addressResponseDTO)
-                                        .build()
-                        ),
-                        true, List.of(
-                                PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
-                                        .id(userPurchases.get(2).getId())
-                                        .amount(userPurchases.get(2).getAmount())
-                                        .dateAndTime(userPurchases.get(2).getDateAndTime())
-                                        .cardName(userPurchases.get(2).getCardName())
-                                        .isActive(userPurchases.get(2).isActive())
-                                        .isFinished(userPurchases.get(2).isFinished())
-                                        .isDelivered(userPurchases.get(2).isDelivered())
-                                        .isPaymentThroughTheWebsite(userPurchases.get(2).isPaymentThroughTheWebsite())
-                                        .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                        .addressResponseDTO(addressResponseDTO)
-                                        .build()
-                        )
-                )
-        );
+        PurchasesFindByUserAndIsActive = purchases.stream()
+                .filter(Purchase::isActive)
+                .toList();
     }
 
-    static void setRestaurantPurchases() {
+    static void setPurchasesToComparisonInFindByUserAndIsActive() {
 
-        restaurantPurchases = List.of(
-                Purchase.PurchaseBuilder.builder()
-                        .id(1L)
-                        .amount(new BigDecimal("10.00"))
-                        .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName1")
-                        .isActive(true)
-                        .isFinished(false)
-                        .isDelivered(false)
-                        .isPaymentThroughTheWebsite(false)
-                        .purchasedProducts(purchasedProducts)
-                        .user(user)
-                        .address(address)
-                        .build(),
-                Purchase.PurchaseBuilder.builder()
-                        .id(2L)
-                        .amount(new BigDecimal("20.00"))
-                        .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName2")
-                        .isActive(false)
-                        .isFinished(false)
-                        .isDelivered(false)
-                        .isPaymentThroughTheWebsite(false)
-                        .purchasedProducts(purchasedProducts)
-                        .user(user)
-                        .address(address)
-                        .build(),
-                Purchase.PurchaseBuilder.builder()
-                        .id(3L)
-                        .amount(new BigDecimal("30.00"))
-                        .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName3")
-                        .isActive(false)
-                        .isFinished(false)
-                        .isDelivered(false)
-                        .isPaymentThroughTheWebsite(true)
-                        .purchasedProducts(purchasedProducts)
-                        .user(user)
-                        .address(address)
-                        .build(),
-                Purchase.PurchaseBuilder.builder()
-                        .id(4L)
-                        .amount(new BigDecimal("40.00"))
-                        .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName4")
-                        .isActive(true)
-                        .isFinished(true)
-                        .isDelivered(false)
-                        .isPaymentThroughTheWebsite(true)
-                        .purchasedProducts(purchasedProducts)
-                        .user(user)
-                        .address(address)
-                        .build(),
-                Purchase.PurchaseBuilder.builder()
-                        .id(5L)
-                        .amount(new BigDecimal("50.00"))
-                        .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName5")
-                        .isActive(true)
-                        .isFinished(true)
-                        .isDelivered(false)
-                        .isPaymentThroughTheWebsite(false)
-                        .purchasedProducts(purchasedProducts)
-                        .user(user)
-                        .address(address)
-                        .build()
-        );
+        purchasesToComparisonInFindByUserAndIsActive = PurchasesFindByUserAndIsActive.stream()
+                .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
+                .sorted(Comparator.comparing(PurchaseUserResponseDTO::getId).reversed())
+                .filter(PurchaseUserResponseDTO::isDelivered)
+                .toList();
     }
 
-    static void setMapPurchaseRestaurantResponseDTOToCompare() {
+    static void setPurchasesFindByIsDelivered(){
 
-        List<PurchasedProductResponseDTO> purchasedProductResponseDTOS = List.of(
-                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProducts.get(0).getName())
-                        .build(),
-                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProducts.get(1).getName())
-                        .build(),
-                PurchasedProductResponseDTO.PurchasedProductResponseDTOBuilder.builder()
-                        .name(purchasedProducts.get(2).getName())
-                        .build()
-        );
+        purchasesFindByIsDelivered = purchases.stream()
+                .filter(purchase -> !purchase.isDelivered())
+                .toList();
+    }
 
-        AddressResponseDTO addressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
-                .id(address.getId())
-                .number(address.getNumber())
-                .road(address.getRoad())
-                .district(address.getDistrict())
-                .city(address.getCity())
-                .state(address.getState())
+    static void setPurchasesToComparisonInFindByIsDelivered(){
+        purchasesToComparisonInFindByIsDelivered = purchasesFindByIsDelivered.stream()
+                .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
+                .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
+                .filter(PurchaseRestaurantResponseDTO::isActive)
+                .toList();
+    }
+
+    static void setPurchaseDeliverPurchase(){
+
+        purchaseDeliverPurchase =  Purchase.PurchaseBuilder.builder()
+                .id(1L)
+                .amount(new BigDecimal("10.00"))
+                .dateAndTime("12/34/5678T90:12")
+                .cardName("cardName")
+                .isActive(true)
+                .isFinished(true)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
+                .user(user)
+                .address(address)
+                .purchasedProducts(purchasedProducts)
                 .build();
-
-        mapPurchaseRestaurantResponseDTOToCompare = new HashMap<>(Map.of(
-                true, List.of(
-                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
-                                .id(restaurantPurchases.get(0).getId())
-                                .clientName(restaurantPurchases.get(0).getUser().getName())
-                                .isActive(restaurantPurchases.get(0).isActive())
-                                .isFinished(restaurantPurchases.get(0).isFinished())
-                                .isDelivered(restaurantPurchases.get(0).isDelivered())
-                                .isPaymentThroughTheWebsite(restaurantPurchases.get(0).isPaymentThroughTheWebsite())
-                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                .addressResponseDTO(addressResponseDTO)
-                                .build(),
-                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
-                                .id(restaurantPurchases.get(3).getId())
-                                .clientName(restaurantPurchases.get(3).getUser().getName())
-                                .isActive(restaurantPurchases.get(3).isActive())
-                                .isFinished(restaurantPurchases.get(3).isFinished())
-                                .isDelivered(restaurantPurchases.get(3).isDelivered())
-                                .isPaymentThroughTheWebsite(restaurantPurchases.get(3).isPaymentThroughTheWebsite())
-                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                .addressResponseDTO(addressResponseDTO)
-                                .build(),
-                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
-                                .id(restaurantPurchases.get(4).getId())
-                                .clientName(restaurantPurchases.get(4).getUser().getName())
-                                .isActive(restaurantPurchases.get(4).isActive())
-                                .isFinished(restaurantPurchases.get(4).isFinished())
-                                .isDelivered(restaurantPurchases.get(4).isDelivered())
-                                .isPaymentThroughTheWebsite(restaurantPurchases.get(4).isPaymentThroughTheWebsite())
-                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                .addressResponseDTO(addressResponseDTO)
-                                .build()
-                ),
-                false, List.of(
-                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
-
-                                .id(restaurantPurchases.get(1).getId())
-                                .clientName(restaurantPurchases.get(1).getUser().getName())
-                                .isActive(restaurantPurchases.get(1).isActive())
-                                .isFinished(restaurantPurchases.get(1).isFinished())
-                                .isDelivered(restaurantPurchases.get(1).isDelivered())
-                                .isPaymentThroughTheWebsite(restaurantPurchases.get(1).isPaymentThroughTheWebsite())
-                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                .addressResponseDTO(addressResponseDTO)
-                                .build(),
-                        PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
-
-                                .id(restaurantPurchases.get(2).getId())
-                                .clientName(restaurantPurchases.get(2).getUser().getName())
-                                .isActive(restaurantPurchases.get(2).isActive())
-                                .isFinished(restaurantPurchases.get(2).isFinished())
-                                .isDelivered(restaurantPurchases.get(2).isDelivered())
-                                .isPaymentThroughTheWebsite(restaurantPurchases.get(2).isPaymentThroughTheWebsite())
-                                .purchasedProductResponseDTOS(purchasedProductResponseDTOS)
-                                .addressResponseDTO(addressResponseDTO)
-                                .build()
-                )
-        ));
     }
 
     @BeforeAll
@@ -380,33 +215,33 @@ class PurchaseServiceTest {
         setUser();
         setAddress();
         setPurchasedProducts();
-        setPurchaseToCompare();
-        setUserPurchases();
-        setMapPurchaseUserResponseDTOToCompare();
-        setRestaurantPurchases();
-        setMapPurchaseRestaurantResponseDTOToCompare();
+        setPurchase();
+        setPurchases();
+        setPurchasesFindByUserAndIsActive();
+        setPurchasesToComparisonInFindByUserAndIsActive();
+        setPurchasesFindByIsDelivered();
+        setPurchasesToComparisonInFindByIsDelivered();
+        setPurchaseDeliverPurchase();
+
     }
 
     @BeforeEach
     void definitionOfBehaviorsForMockPurchaseRepository() {
 
         BDDMockito.when(this.purchaseRepository.save(ArgumentMatchers.any(Purchase.class)))
-                .thenReturn(userPurchases.get(0));
+                .thenReturn(purchase);
 
         BDDMockito.when(this.purchaseRepository.findByUserAndIsActive(
                         ArgumentMatchers.any(User.class),
                         ArgumentMatchers.anyBoolean()
                 ))
-                .thenReturn(userPurchases);
+                .thenReturn(PurchasesFindByUserAndIsActive);
 
         BDDMockito.when(this.purchaseRepository.findByIdAndUser(
                         ArgumentMatchers.any(Long.class),
                         ArgumentMatchers.any(User.class)
                 ))
-                .thenReturn(Optional.of(userPurchases.get(0)));
-
-        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(userPurchases.get(0)));
+                .thenReturn(Optional.of(purchase));
 
         BDDMockito.doNothing()
                 .when(this.purchaseRepository).updateIsActiveById(
@@ -415,7 +250,11 @@ class PurchaseServiceTest {
                 );
 
         BDDMockito.when(this.purchaseRepository.findByIsDelivered(ArgumentMatchers.anyBoolean()))
-                .thenReturn(restaurantPurchases);
+                .thenReturn(purchasesFindByIsDelivered);
+
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(purchase));
 
         BDDMockito.doNothing().when(this.purchaseRepository).updateIsFinishedById(
                 ArgumentMatchers.anyBoolean(),
@@ -439,12 +278,12 @@ class PurchaseServiceTest {
     @Test
     void save_persistAndReturnsANewPurchaseInTheDatabase_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.purchaseService.save(purchaseToCompare))
+        Assertions.assertThatCode(() -> this.purchaseService.save(purchase))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.purchaseService.save(purchaseToCompare))
+        Assertions.assertThat(this.purchaseService.save(purchase))
                 .isNotNull()
-                .hasToString(purchaseToCompare.toString());
+                .isEqualTo(purchase);
     }
 
     @Test
@@ -455,7 +294,7 @@ class PurchaseServiceTest {
 
         Assertions.assertThat(this.purchaseService.findByAllPurchasesOfTheAnUser(user))
                 .isNotNull()
-                .hasToString(mapPurchaseUserResponseDTOToCompare.toString());
+                .containsEntry(true, purchasesToComparisonInFindByUserAndIsActive);
     }
 
     @Test
@@ -496,14 +335,14 @@ class PurchaseServiceTest {
     }
 
     @Test
-    void findByAllUsersPurchases_returnsAllPurchaseUserResponseDTOOfTheAUser_wheneverCalled() {
+    void findByAllUsersPurchases_returnsAllPurchaseRestaurantResponseDTONonDelivered_wheneverCalled() {
 
         Assertions.assertThatCode(() -> this.purchaseService.findByAllUsersPurchases())
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseService.findByAllUsersPurchases())
                 .isNotNull()
-                .hasToString(mapPurchaseRestaurantResponseDTOToCompare.toString());
+                .containsEntry(true, purchasesToComparisonInFindByIsDelivered);
     }
 
     @Test
@@ -527,7 +366,7 @@ class PurchaseServiceTest {
     void preparePurchase_throwsResponseStatusException_whenThePassedIdIsInvalid() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(userPurchases.get(2)));
+                .thenReturn(Optional.of(purchases.get(1)));
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseService.preparePurchase(1L, "pt-BR"));
@@ -537,19 +376,7 @@ class PurchaseServiceTest {
     void deliverPurchase_updatesTheIsDeliveredOfAPurchaseToTrue_whenTheIdIsValid() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(Purchase.PurchaseBuilder.builder()
-                        .id(1L)
-                        .amount(new BigDecimal("10.00"))
-                        .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName")
-                        .isActive(true)
-                        .isFinished(true)
-                        .isDelivered(false)
-                        .isPaymentThroughTheWebsite(false)
-                        .user(user)
-                        .address(address)
-                        .purchasedProducts(purchasedProducts)
-                        .build()));
+                .thenReturn(Optional.of(purchaseDeliverPurchase));
 
         Assertions.assertThatCode(() -> this.purchaseService.deliverPurchase(1L, "pt-BR"))
                 .doesNotThrowAnyException();

@@ -24,6 +24,7 @@ class ProductTest {
                 .price(new BigDecimal("10"))
                 .type(Type.SALTY_PIZZA)
                 .priceRating(PriceRating.REGULAR_PRICE)
+                .isStocked(true)
                 .image("/image.png")
                 .build();
 
@@ -34,6 +35,7 @@ class ProductTest {
                 .price(new BigDecimal("10"))
                 .type(Type.SALTY_PIZZA)
                 .priceRating(PriceRating.REGULAR_PRICE)
+                .isStocked(true)
                 .image("/image.png")
                 .build();
 
@@ -44,6 +46,7 @@ class ProductTest {
                 .price(new BigDecimal("10"))
                 .type(Type.SALTY_PIZZA)
                 .priceRating(PriceRating.REGULAR_PRICE)
+                .isStocked(false)
                 .image("/image.png")
                 .build();
     }
@@ -51,66 +54,73 @@ class ProductTest {
     @Test
     void getId() {
 
-        Assertions.assertThat(product.getId())
+        Assertions.assertThat(this.product.getId())
                 .isEqualTo(1L);
     }
 
     @Test
     void getName() {
 
-        Assertions.assertThat(product.getName())
+        Assertions.assertThat(this.product.getName())
                 .isEqualTo("name");
     }
 
     @Test
     void getDescription() {
 
-        Assertions.assertThat(product.getDescription())
+        Assertions.assertThat(this.product.getDescription())
                 .isEqualTo("description");
     }
 
     @Test
     void getPrice() {
 
-        Assertions.assertThat(product.getPrice())
+        Assertions.assertThat(this.product.getPrice())
                 .isEqualTo(new BigDecimal("10"));
     }
 
     @Test
     void getType() {
 
-        Assertions.assertThat(product.getType())
+        Assertions.assertThat(this.product.getType())
                 .isEqualTo(Type.SALTY_PIZZA);
     }
 
     @Test
     void getPriceRating() {
 
-        Assertions.assertThat(product.getPriceRating())
+        Assertions.assertThat(this.product.getPriceRating())
                 .isEqualTo(PriceRating.REGULAR_PRICE);
+    }
+
+    @Test
+    void isStocked() {
+
+        Assertions.assertThat(this.product.isStocked())
+                .isTrue();
     }
 
     @Test
     void getImage() {
 
-        Assertions.assertThat(product.getImage())
+        Assertions.assertThat(this.product.getImage())
                 .isEqualTo("/image.png");
     }
 
     @Test
     void testEquals() {
 
-        Assertions.assertThat(product.equals(this.sameProduct))
+        Assertions.assertThat(this.product.equals(this.sameProduct))
                 .isTrue();
 
-        Assertions.assertThat(product.equals(this.differentProduct))
+        Assertions.assertThat(this.product.equals(this.differentProduct))
                 .isFalse();
     }
 
     @Test
     void testHashCode() {
 
-        Assertions.assertThat(product)
+        Assertions.assertThat(this.product)
                 .hasSameHashCodeAs(this.sameProduct);
     }
 
@@ -125,6 +135,7 @@ class ProductTest {
                         ", price=" + this.product.getPrice() +
                         ", type=" + this.product.getType() +
                         ", priceRating=" + this.product.getPriceRating() +
+                        ", isStocked=" + this.product.isStocked() +
                         ", image='" + this.product.getImage() + '\'' +
                         '}');
     }
