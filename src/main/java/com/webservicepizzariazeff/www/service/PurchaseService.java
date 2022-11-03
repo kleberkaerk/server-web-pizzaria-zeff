@@ -121,18 +121,22 @@ public class PurchaseService {
         this.purchaseRepository.updateIsDeliveredById(true, id);
     }
 
-    private void deletePurchasedProducts(List<PurchasedProduct> purchasedProducts){
+    private void deletePurchasedProducts(List<PurchasedProduct> purchasedProducts) {
 
         purchasedProducts
                 .forEach(purchasedProduct -> this.purchasedProductService.delete(purchasedProduct.getId()));
     }
 
     @Transactional
-    public void deleteAPurchase(Long id){
+    public void deleteAPurchase(Long id) {
 
         messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale("en", "US"));
 
         Purchase purchaseToBeDeleted = this.findById(id, messages.getString(INVALID_ID));
+
+        if (purchaseToBeDeleted.isActive() || purchaseToBeDeleted.isFinished() || purchaseToBeDeleted.isDelivered()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
         this.deletePurchasedProducts(purchaseToBeDeleted.getPurchasedProducts());
 

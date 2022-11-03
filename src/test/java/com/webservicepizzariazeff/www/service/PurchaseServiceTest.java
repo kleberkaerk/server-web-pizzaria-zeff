@@ -402,6 +402,23 @@ class PurchaseServiceTest {
     @Test
     void deleteAPurchase_deletesAPurchase_whenThePassedIdIsValid() {
 
+        Purchase purchaseToBeDeleted = Purchase.PurchaseBuilder.builder()
+                .id(1L)
+                .amount(new BigDecimal("10.00"))
+                .dateAndTime("12/34/5678T90:12")
+                .cardName("cardName")
+                .isActive(false)
+                .isFinished(false)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
+                .user(user)
+                .address(address)
+                .purchasedProducts(purchasedProducts)
+                .build();
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(purchaseToBeDeleted));
+
         Assertions.assertThatCode(() -> this.purchaseService.deleteAPurchase(1L))
                 .doesNotThrowAnyException();
     }
@@ -411,6 +428,30 @@ class PurchaseServiceTest {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.deleteAPurchase(2L));
+    }
+
+    @Test
+    void deleteAPurchase_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+
+        Purchase invalidPurchase = Purchase.PurchaseBuilder.builder()
+                .id(1L)
+                .amount(new BigDecimal("10.00"))
+                .dateAndTime("12/34/5678T90:12")
+                .cardName("cardName")
+                .isActive(true)
+                .isFinished(false)
+                .isDelivered(false)
+                .isPaymentThroughTheWebsite(false)
+                .user(user)
+                .address(address)
+                .purchasedProducts(purchasedProducts)
+                .build();
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(invalidPurchase));
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseService.deleteAPurchase(1L));
