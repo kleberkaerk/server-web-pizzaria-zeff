@@ -50,14 +50,9 @@ public class ProductService {
         return mapAndSortAndGroupProductByType(allProductsInStock);
     }
 
-    public Page<ProductResponseDTO> findProductsByTypeAndInStock(Pageable pageable, String type) {
+    public Page<ProductResponseDTO> findProductsByTypeAndInStock(Pageable pageable, Type type) {
 
-        if (Validator.checkThatStringIsNotAEnum(type, Type.values(), (enumeration, string) -> enumeration.name().equals(string))) {
-
-            return Page.empty();
-        }
-
-        Page<Product> productsByType = this.productRepository.findByTypeAndIsStocked(pageable, Type.valueOf(type), true);
+        Page<Product> productsByType = this.productRepository.findByTypeAndIsStocked(pageable, type, true);
 
         return productsByType.map(Mapper::ofTheProductToProductResponseDTO);
     }

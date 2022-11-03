@@ -281,7 +281,7 @@ class ProductControllerTest {
         BDDMockito.when(this.productService.findAllProductsInStock())
                 .thenReturn(mapFindAllProductsInStock);
 
-        BDDMockito.when(this.productService.findProductsByTypeAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
+        BDDMockito.when(this.productService.findProductsByTypeAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.any(Type.class)))
                 .thenReturn(new PageImpl<>(productResponseDTOSFindProductsByTypeAndInStock));
 
         BDDMockito.when(this.productService.findProductsInPromotionAndInStock())
@@ -316,36 +316,19 @@ class ProductControllerTest {
     }
 
     @Test
-    void findByType_returnsAPageOfTheAllProductsOfAGivenTypeAndAStatusCodeOk_whenThePassedTypeIsValid() {
+    void findByType_returnsAPageOfTheAllProductsOfAGivenTypeAndAStatusCodeOk_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "DRINK"))
+        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), Type.DRINK))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "DRINK"))
+        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), Type.DRINK))
                 .isNotNull()
                 .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOSFindProductsByTypeAndInStock)));
 
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "DRINK").getBody()).toList())
+        Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), Type.DRINK).getBody()).toList())
                 .asList()
                 .hasSize(6)
                 .contains(productResponseDTOSFindProductsByTypeAndInStock.get(2));
-    }
-
-    @Test
-    void findByType_returnsAPageWithNoProductsAndAStatusCodeOk_whenTheTypeParameterIsNotEqualToTheNameOfOneOfTheTypeEnumerations() {
-
-        BDDMockito.when(this.productService.findProductsByTypeAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
-                .thenReturn(Page.empty());
-
-        Assertions.assertThatCode(() -> this.productController.findByType(Page.empty().getPageable(), "SWEET"))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(this.productController.findByType(Page.empty().getPageable(), "SWEET"))
-                .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(Collections.emptyList())));
-
-        Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), "SWEET").getBody()).toList())
-                .isEmpty();
     }
 
     @Test

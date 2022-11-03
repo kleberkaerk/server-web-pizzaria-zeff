@@ -34,7 +34,7 @@ public class ProductController {
     }
 
     @GetMapping(value = "find-by-type", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<ProductResponseDTO>> findByType(Pageable pageable, @RequestParam() String type) {
+    public ResponseEntity<Page<ProductResponseDTO>> findByType(Pageable pageable, @RequestParam Type type) {
 
         return new ResponseEntity<>(this.productService.findProductsByTypeAndInStock(pageable, type), HttpStatus.OK);
     }

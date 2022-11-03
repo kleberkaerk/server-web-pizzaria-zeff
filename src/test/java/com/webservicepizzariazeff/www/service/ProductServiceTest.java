@@ -305,26 +305,16 @@ class ProductServiceTest {
     }
 
     @Test
-    void findProductsByTypeAndInStock_returnsAPageOfTheAllProductsOfAGivenType_whenThePassedTypeIsValid() {
+    void findProductsByTypeAndInStock_returnsAPageOfTheAllProductsOfAGivenType_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), "SALTY_ESFIHA"))
+        Assertions.assertThatCode(() -> this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), Type.SALTY_ESFIHA))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), "SALTY_ESFIHA").toList())
+        Assertions.assertThat(this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), Type.SALTY_ESFIHA).toList())
                 .isNotNull()
                 .asList()
                 .isEqualTo(productResponseDTOSToComparisonInFindByTypeAndIsStocked)
                 .contains(productResponseDTOSToComparisonInFindByTypeAndIsStocked.get(0));
-    }
-
-    @Test
-    void findProductsByTypeAndInStock_returnsAPageWithNoProducts_whenTheTypeParameterIsNotEqualToTheNameOfOneOfTheTypeEnumerations() {
-
-        Assertions.assertThatCode(() -> this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), "SALTY"))
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(this.productService.findProductsByTypeAndInStock(Page.empty().getPageable(), "SALTY"))
-                .isEqualTo(Page.empty());
     }
 
     @Test
