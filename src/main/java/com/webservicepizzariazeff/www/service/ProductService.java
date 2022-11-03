@@ -98,4 +98,11 @@ public class ProductService {
 
         this.productRepository.updatePriceRatingById(priceRating, productToBeUpdated.getId());
     }
+
+    public void deleteProduct(Long id){
+
+        Product productToBeDeleted = this.findById(id);
+
+        this.productRepository.deleteById(productToBeDeleted.getId());
+    }
 }

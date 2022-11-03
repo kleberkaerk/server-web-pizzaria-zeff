@@ -278,6 +278,9 @@ class ProductServiceTest {
 
         BDDMockito.doNothing()
                 .when(this.productRepository).updatePriceRatingById(ArgumentMatchers.any(PriceRating.class), ArgumentMatchers.any(Long.class));
+
+        BDDMockito.doNothing()
+                .when(this.productRepository).deleteById(ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -390,5 +393,22 @@ class ProductServiceTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.productService.updatePriceRatingOfProduct(2L, PriceRating.PROMOTION));
+    }
+
+    @Test
+    void deleteProduct_deleteAProduct_whenThePassedIdIsValid(){
+
+        Assertions.assertThatCode(()-> this.productService.deleteProduct(1L))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void deleteProduct_throwsResponseStatusException_whenThePassedIdDoesNotExist(){
+
+        BDDMockito.when(this.productRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.productService.deleteProduct(2L));
     }
 }

@@ -298,6 +298,9 @@ class ProductControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.productService).updatePriceRatingOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(PriceRating.class));
+
+        BDDMockito.doNothing()
+                .when(this.productService).deleteProduct(ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -408,7 +411,7 @@ class ProductControllerTest {
     @Test
     void updatePriceRating_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
 
-        Assertions.assertThatCode(()-> this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE))
+        Assertions.assertThatCode(() -> this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE))
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE))
@@ -416,12 +419,32 @@ class ProductControllerTest {
     }
 
     @Test
-    void updatePriceRating_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+    void updatePriceRating_throwsResponseStatusException_whenThePassedIdIsInvalid() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
                 .when(this.productService).updatePriceRatingOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(PriceRating.class));
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE));
+                .isThrownBy(() -> this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE));
+    }
+
+    @Test
+    void delete_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.productController.delete(1L))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.delete(1L))
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void delete_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.productService).deleteProduct(ArgumentMatchers.any(Long.class));
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.productController.delete(1L));
     }
 }
