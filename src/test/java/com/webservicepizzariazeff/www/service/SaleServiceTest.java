@@ -216,16 +216,16 @@ class SaleServiceTest {
     }
 
     @Test
-    void sale_throwsNullPointerException_whenSaleRequestDTOHasANullCardRequestDTOAndPaymentThroughTheWebsiteEqualToTrue() {
+    void sale_throwsInvalidCardException_whenSaleRequestDTOHasANullCardRequestDTOAndPaymentThroughTheWebsiteEqualToTrue() {
 
-        SaleRequestDTO saleThatThrowsNullPointerException = SaleRequestDTO.SaleRequestDTOBuilder.builder()
+        SaleRequestDTO saleThatThrowsInvalidCardException = SaleRequestDTO.SaleRequestDTOBuilder.builder()
                 .productsId(List.of(1L, 2L, 3L))
                 .addressId(1L)
                 .isPaymentThroughTheWebsite(true)
                 .build();
 
-        Assertions.assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> this.saleService.sale(userToArgument, saleThatThrowsNullPointerException, "pt-BR"));
+        Assertions.assertThatExceptionOfType(InvalidCardException.class)
+                .isThrownBy(() -> this.saleService.sale(userToArgument, saleThatThrowsInvalidCardException, "pt-BR"));
     }
 
     @Test

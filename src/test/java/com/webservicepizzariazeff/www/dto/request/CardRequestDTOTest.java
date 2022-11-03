@@ -51,7 +51,7 @@ class CardRequestDTOTest {
     @Test
     void getFormOfPayment() {
 
-        Assertions.assertThat(this.cardRequestDTO.getFormOfPayment())
+        Assertions.assertThat(this.cardRequestDTO.getFormOfPaymentDTO())
                 .isEqualTo(FormOfPaymentDTO.DEBIT);
     }
 
@@ -64,7 +64,7 @@ class CardRequestDTOTest {
                         ", cardNumber='" + this.cardRequestDTO.getCardNumber() + '\'' +
                         ", dueDate='" + this.cardRequestDTO.getDueDate() + '\'' +
                         ", securityCode='" + this.cardRequestDTO.getSecurityCode() + '\'' +
-                        ", formOfPayment=" + this.cardRequestDTO.getFormOfPayment() +
+                        ", formOfPayment=" + this.cardRequestDTO.getFormOfPaymentDTO() +
                         '}');
     }
 }

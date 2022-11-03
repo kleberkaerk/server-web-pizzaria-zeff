@@ -1,19 +1,13 @@
 package com.webservicepizzariazeff.www.dto.request;
 
-import javax.validation.constraints.NotEmpty;
-
 public class CardRequestDTO {
 
-    @NotEmpty
     private final String nameOfCardHolder;
 
-    @NotEmpty
     private final String cardNumber;
 
-    @NotEmpty
     private final String dueDate;
 
-    @NotEmpty
     private final String securityCode;
 
     private final FormOfPaymentDTO formOfPaymentDTO;
@@ -43,7 +37,7 @@ public class CardRequestDTO {
         return securityCode;
     }
 
-    public FormOfPaymentDTO getFormOfPayment() {
+    public FormOfPaymentDTO getFormOfPaymentDTO() {
         return formOfPaymentDTO;
     }
 
@@ -59,10 +53,10 @@ public class CardRequestDTO {
     }
 
     public static final class CardRequestDTOBuilder {
-        private @NotEmpty String nameOfCardHolder;
-        private @NotEmpty String cardNumber;
-        private @NotEmpty String dueDate;
-        private @NotEmpty String securityCode;
+        private String nameOfCardHolder;
+        private String cardNumber;
+        private String dueDate;
+        private String securityCode;
         private FormOfPaymentDTO formOfPaymentDTO;
 
         private CardRequestDTOBuilder() {
