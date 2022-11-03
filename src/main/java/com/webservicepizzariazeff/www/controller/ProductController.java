@@ -1,5 +1,6 @@
 package com.webservicepizzariazeff.www.controller;
 
+import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Type;
 import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
 import com.webservicepizzariazeff.www.service.ProductService;
@@ -66,5 +67,11 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @PutMapping("admin/category/{id}/{category}")
+    @PutMapping("admin/rating/{id}/{priceRating}")
+    public ResponseEntity<Void> updatePriceRating(@PathVariable Long id, @PathVariable PriceRating priceRating) {
+
+        this.productService.updatePriceRatingOfProduct(id, priceRating);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

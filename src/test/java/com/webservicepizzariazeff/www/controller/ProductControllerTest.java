@@ -295,6 +295,9 @@ class ProductControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.productService).updatePriceOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(BigDecimal.class));
+
+        BDDMockito.doNothing()
+                .when(this.productService).updatePriceRatingOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(PriceRating.class));
     }
 
     @Test
@@ -395,11 +398,11 @@ class ProductControllerTest {
     }
 
     @Test
-    void updatePrice_returnsAStatusCodeNoContent_whenThePassedIdIsValid(){
+    void updatePrice_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
 
         BigDecimal price = new BigDecimal("10.00");
 
-        Assertions.assertThatCode(()-> this.productController.updatePrice(1L, price))
+        Assertions.assertThatCode(() -> this.productController.updatePrice(1L, price))
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.updatePrice(1L, price))
@@ -408,7 +411,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void updatePrice_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+    void updatePrice_throwsResponseStatusException_whenThePassedIdIsInvalid() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
                 .when(this.productService).updatePriceOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(BigDecimal.class));
@@ -416,6 +419,26 @@ class ProductControllerTest {
         BigDecimal price = new BigDecimal("10");
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.productController.updatePrice(2L, price));
+                .isThrownBy(() -> this.productController.updatePrice(2L, price));
+    }
+
+    @Test
+    void updatePriceRating_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(()-> this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE))
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void updatePriceRating_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.productService).updatePriceRatingOfProduct(ArgumentMatchers.any(Long.class), ArgumentMatchers.any(PriceRating.class));
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.productController.updatePriceRating(1L, PriceRating.REGULAR_PRICE));
     }
 }

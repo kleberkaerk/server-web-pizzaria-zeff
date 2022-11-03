@@ -96,4 +96,11 @@ public class ProductService {
 
         this.productRepository.updatePriceById(newPrice, productToBeUpdated.getId());
     }
+
+    public void updatePriceRatingOfProduct(Long id, PriceRating priceRating) {
+
+        Product productToBeUpdated = this.findById(id);
+
+        this.productRepository.updatePriceRatingById(priceRating, productToBeUpdated.getId());
+    }
 }

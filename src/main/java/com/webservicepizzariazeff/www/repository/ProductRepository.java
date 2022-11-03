@@ -32,4 +32,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("update Product p set p.price = :price where p.id = :id")
     void updatePriceById(@Param("price") BigDecimal price, @Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update Product p set p.priceRating = :priceRating where p.id = :id")
+    void updatePriceRatingById(@Param("priceRating") PriceRating priceRating, @Param("id") Long id);
 }
