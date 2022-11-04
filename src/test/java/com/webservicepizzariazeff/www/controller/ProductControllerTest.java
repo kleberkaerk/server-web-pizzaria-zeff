@@ -24,10 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
@@ -43,17 +40,17 @@ class ProductControllerTest {
 
     private static Map<Type, List<ProductResponseDTO>> mapFindAllProductsInStock;
 
-    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllProductsInStock;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindProductsInStock;
 
     private static List<ProductResponseDTO> productResponseDTOSFindProductsByTypeAndInStock;
 
     private static Map<Type, List<ProductResponseDTO>> mapFindProductsInPromotionAndInStock;
 
-    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindProductsInPromotionAndInStock;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindProductsInPromotion;
 
     private static Map<Boolean, List<ProductResponseDTO>> mapFindAllGrouped;
 
-    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllProducts;
 
     private static ProductRequestDTO productRequestDTO;
 
@@ -230,9 +227,9 @@ class ProductControllerTest {
                 .collect(Collectors.groupingBy(ProductResponseDTO::getType));
     }
 
-    static void setProductResponseDTOSToComparisonInFindAllProductsInStock() {
+    static void setProductResponseDTOSToComparisonInFindProductsInStock() {
 
-        productResponseDTOSToComparisonInFindAllProductsInStock = mapFindAllProductsInStock.get(Type.DRINK);
+        productResponseDTOSToComparisonInFindProductsInStock = mapFindAllProductsInStock.get(Type.DRINK);
     }
 
     static void setProductResponseDTOSFindProductsByTypeAndInStock() {
@@ -251,9 +248,9 @@ class ProductControllerTest {
                 .collect(Collectors.groupingBy(ProductResponseDTO::getType));
     }
 
-    static void setProductResponseDTOSToComparisonInFindProductsInPromotionAndInStock() {
+    static void setProductResponseDTOSToComparisonInFindProductsInPromotion() {
 
-        productResponseDTOSToComparisonInFindProductsInPromotionAndInStock = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
+        productResponseDTOSToComparisonInFindProductsInPromotion = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
     }
 
     static void setMapFindAllGrouped() {
@@ -263,9 +260,9 @@ class ProductControllerTest {
                 .collect(Collectors.groupingBy(ProductResponseDTO::isStocked));
     }
 
-    static void setProductResponseDTOSToComparisonInFindAllGrouped() {
+    static void setProductResponseDTOSToComparisonInFindAllProducts() {
 
-        productResponseDTOSToComparisonInFindAllGrouped = mapFindAllGrouped.get(true);
+        productResponseDTOSToComparisonInFindAllProducts = mapFindAllGrouped.get(true);
     }
 
     static void setProductRequestDTO() {
@@ -284,12 +281,12 @@ class ProductControllerTest {
 
         setProductResponseDTOS();
         setMapForReturnOfTheFindAllProductsInStock();
-        setProductResponseDTOSToComparisonInFindAllProductsInStock();
+        setProductResponseDTOSToComparisonInFindProductsInStock();
         setProductResponseDTOSFindProductsByTypeAndInStock();
         setMapFindProductsInPromotionAndInStock();
-        setProductResponseDTOSToComparisonInFindProductsInPromotionAndInStock();
+        setProductResponseDTOSToComparisonInFindProductsInPromotion();
         setMapFindAllGrouped();
-        setProductResponseDTOSToComparisonInFindAllGrouped();
+        setProductResponseDTOSToComparisonInFindAllProducts();
         setProductRequestDTO();
     }
 
@@ -322,6 +319,9 @@ class ProductControllerTest {
 
         BDDMockito.when(this.productService.registerNewProduct(ArgumentMatchers.any(ProductRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenReturn(1L);
+
+        BDDMockito.when(this.productService.searchProductsByName(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
+                .thenReturn(new PageImpl<>(productResponseDTOS));
     }
 
     @Test
@@ -336,7 +336,7 @@ class ProductControllerTest {
 
         Assertions.assertThat(this.productController.findProductsInStock().getBody())
                 .isNotNull()
-                .containsEntry(Type.DRINK, productResponseDTOSToComparisonInFindAllProductsInStock);
+                .containsEntry(Type.DRINK, productResponseDTOSToComparisonInFindProductsInStock);
     }
 
     @Test
@@ -366,7 +366,24 @@ class ProductControllerTest {
                 .isEqualTo(ResponseEntity.ok(mapFindProductsInPromotionAndInStock));
 
         Assertions.assertThat(this.productController.findProductsInPromotion().getBody())
-                .containsEntry(Type.SWEET_ESFIHA, productResponseDTOSToComparisonInFindProductsInPromotionAndInStock);
+                .containsEntry(Type.SWEET_ESFIHA, productResponseDTOSToComparisonInFindProductsInPromotion);
+    }
+
+    @Test
+    void searchProducts_returnsAPageOfTheAllProductsThatHaveACertainNameAndAStatusCodeOk_wheneverCalled() {
+
+        Assertions.assertThatCode(()-> this.productController.searchProducts(Page.empty().getPageable(), "name"))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.searchProducts(Page.empty().getPageable(), "name"))
+                .isNotNull()
+                .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOS)));
+
+        Assertions.assertThat(Objects.requireNonNull(this.productController.searchProducts(Page.empty().getPageable(), "name").getBody()).toList())
+                .isNotNull()
+                .asList()
+                .hasSize(16)
+                .contains(productResponseDTOS.get(1));
     }
 
     @Test
@@ -380,7 +397,7 @@ class ProductControllerTest {
                 .isEqualTo(ResponseEntity.ok(mapFindAllGrouped));
 
         Assertions.assertThat(this.productController.findAllProducts().getBody())
-                .containsEntry(true, productResponseDTOSToComparisonInFindAllGrouped);
+                .containsEntry(true, productResponseDTOSToComparisonInFindAllProducts);
     }
 
     @Test
@@ -480,12 +497,12 @@ class ProductControllerTest {
     }
 
     @Test
-    void registerProduct_throwsExistingProductException_whenTheProductIsAlreadyRegistered(){
+    void registerProduct_throwsExistingProductException_whenTheProductIsAlreadyRegistered() {
 
         BDDMockito.when(this.productService.registerNewProduct(ArgumentMatchers.any(ProductRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenThrow(ExistingProductException.class);
 
         Assertions.assertThatExceptionOfType(ExistingProductException.class)
-                        .isThrownBy(()-> this.productController.registerProduct(productRequestDTO, "pt-BR"));
+                .isThrownBy(() -> this.productController.registerProduct(productRequestDTO, "pt-BR"));
     }
 }

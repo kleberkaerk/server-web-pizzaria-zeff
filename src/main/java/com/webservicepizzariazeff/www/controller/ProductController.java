@@ -47,6 +47,12 @@ public class ProductController {
         return new ResponseEntity<>(this.productService.findProductsInPromotionAndInStock(), HttpStatus.OK);
     }
 
+    @GetMapping("search")
+    public ResponseEntity<Page<ProductResponseDTO>> searchProducts(Pageable pageable, @RequestParam String name) {
+
+        return new ResponseEntity<>(this.productService.searchProductsByName(pageable, name), HttpStatus.OK);
+    }
+
     @GetMapping(value = "admin/find-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<Boolean, List<ProductResponseDTO>>> findAllProducts() {
 

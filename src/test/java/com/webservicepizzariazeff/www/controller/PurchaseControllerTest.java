@@ -52,7 +52,7 @@ class PurchaseControllerTest {
 
     private static Map<Boolean, List<PurchaseRestaurantResponseDTO>> mapFindByAllUsersPurchases;
 
-    private static List<PurchaseRestaurantResponseDTO> purchaseRestaurantResponseDTOSToComparisonInFindByAllUsersPurchases;
+    private static List<PurchaseRestaurantResponseDTO> purchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases;
 
     static void setUser() {
 
@@ -165,9 +165,9 @@ class PurchaseControllerTest {
                 .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
 
-    static void setPurchaseRestaurantResponseDTOSToComparisonInFindByAllUsersPurchases(){
+    static void setPurchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases(){
 
-        purchaseRestaurantResponseDTOSToComparisonInFindByAllUsersPurchases = mapFindByAllUsersPurchases.get(false);
+        purchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases = mapFindByAllUsersPurchases.get(false);
     }
 
     @BeforeAll
@@ -180,7 +180,7 @@ class PurchaseControllerTest {
         setMapFindPurchasesOfTheUser();
         setPurchaseUserResponseDTOSToComparisonInFindPurchasesOfTheUser();
         setMapFindByAllUsersPurchases();
-        setPurchaseRestaurantResponseDTOSToComparisonInFindByAllUsersPurchases();
+        setPurchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases();
     }
 
     @BeforeEach
@@ -267,7 +267,7 @@ class PurchaseControllerTest {
 
         Assertions.assertThat(this.purchaseController.findUsersPurchases().getBody())
                 .isNotNull()
-                .containsEntry(false, purchaseRestaurantResponseDTOSToComparisonInFindByAllUsersPurchases);
+                .containsEntry(false, purchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases);
     }
 
     @Test

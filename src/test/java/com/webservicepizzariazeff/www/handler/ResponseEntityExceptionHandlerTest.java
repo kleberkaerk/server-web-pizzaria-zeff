@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Objects;
-
 class ResponseEntityExceptionHandlerTest {
 
     private ResponseEntityExceptionHandler responseEntityExceptionHandler;

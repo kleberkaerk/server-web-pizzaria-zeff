@@ -50,11 +50,11 @@ class PurchaseServiceTest {
 
     private static List<Purchase> PurchasesFindByUserAndIsActive;
 
-    private static List<PurchaseUserResponseDTO> purchasesToComparisonInFindByUserAndIsActive;
+    private static List<PurchaseUserResponseDTO> purchasesToComparisonInFindByAllPurchasesOfTheAnUser;
 
     private static List<Purchase> purchasesFindByIsDelivered;
 
-    private static List<PurchaseRestaurantResponseDTO> purchasesToComparisonInFindByIsDelivered;
+    private static List<PurchaseRestaurantResponseDTO> purchasesToComparisonInFndByAllUsersPurchases;
 
     private static Purchase purchaseDeliverPurchase;
 
@@ -168,9 +168,9 @@ class PurchaseServiceTest {
                 .toList();
     }
 
-    static void setPurchasesToComparisonInFindByUserAndIsActive() {
+    static void setPurchasesToComparisonInFindByAllPurchasesOfTheAnUser() {
 
-        purchasesToComparisonInFindByUserAndIsActive = PurchasesFindByUserAndIsActive.stream()
+        purchasesToComparisonInFindByAllPurchasesOfTheAnUser = PurchasesFindByUserAndIsActive.stream()
                 .map(Mapper::fromPurchaseToPurchaseUserResponseDTO)
                 .sorted(Comparator.comparing(PurchaseUserResponseDTO::getId).reversed())
                 .filter(PurchaseUserResponseDTO::isDelivered)
@@ -184,8 +184,8 @@ class PurchaseServiceTest {
                 .toList();
     }
 
-    static void setPurchasesToComparisonInFindByIsDelivered() {
-        purchasesToComparisonInFindByIsDelivered = purchasesFindByIsDelivered.stream()
+    static void setPurchasesToComparisonInFndByAllUsersPurchases() {
+        purchasesToComparisonInFndByAllUsersPurchases = purchasesFindByIsDelivered.stream()
                 .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
                 .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
                 .filter(PurchaseRestaurantResponseDTO::isActive)
@@ -218,9 +218,9 @@ class PurchaseServiceTest {
         setPurchase();
         setPurchases();
         setPurchasesFindByUserAndIsActive();
-        setPurchasesToComparisonInFindByUserAndIsActive();
+        setPurchasesToComparisonInFindByAllPurchasesOfTheAnUser();
         setPurchasesFindByIsDelivered();
-        setPurchasesToComparisonInFindByIsDelivered();
+        setPurchasesToComparisonInFndByAllUsersPurchases();
         setPurchaseDeliverPurchase();
 
     }
@@ -294,7 +294,7 @@ class PurchaseServiceTest {
 
         Assertions.assertThat(this.purchaseService.findByAllPurchasesOfTheAnUser(user))
                 .isNotNull()
-                .containsEntry(true, purchasesToComparisonInFindByUserAndIsActive);
+                .containsEntry(true, purchasesToComparisonInFindByAllPurchasesOfTheAnUser);
     }
 
     @Test
@@ -349,7 +349,7 @@ class PurchaseServiceTest {
 
         Assertions.assertThat(this.purchaseService.findByAllUsersPurchases())
                 .isNotNull()
-                .containsEntry(true, purchasesToComparisonInFindByIsDelivered);
+                .containsEntry(true, purchasesToComparisonInFndByAllUsersPurchases);
     }
 
     @Test

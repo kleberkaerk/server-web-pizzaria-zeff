@@ -20,7 +20,7 @@ class MapperTest {
 
     private static Address address;
 
-    private static AddressResponseDTO addressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO;
+    private static AddressResponseDTO addressResponseDTOToComparisonInFromAddressToAddressResponseDTO;
 
     private static Product product;
 
@@ -28,11 +28,11 @@ class MapperTest {
 
     private static Purchase purchase;
 
-    private static PurchaseUserResponseDTO purchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO;
+    private static PurchaseUserResponseDTO purchaseUserResponseDTOToComparisonInFromPurchaseToPurchaseUserResponseDTO;
 
-    private static PurchaseRestaurantResponseDTO purchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO;
+    private static PurchaseRestaurantResponseDTO purchaseRestaurantResponseDTOToComparisonInFromPurchaseToPurchaseRestaurantResponseDTO;
 
-    private static ProductResponseDTO productResponseDTOToComparisonInOfTheProductToProductResponseDTO;
+    private static ProductResponseDTO productResponseDTOToComparisonInFromProductToProductResponseDTO;
 
     private static ProductRequestDTO productRequestDTO;
 
@@ -70,9 +70,9 @@ class MapperTest {
                 .build();
     }
 
-    static void setAddressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO() {
+    static void setAddressResponseDTOToComparisonInFromAddressToAddressResponseDTO() {
 
-        addressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
+        addressResponseDTOToComparisonInFromAddressToAddressResponseDTO = AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(1L)
                 .number("1")
                 .road("road")
@@ -135,9 +135,9 @@ class MapperTest {
                 .build();
     }
 
-    static void setPurchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO() {
+    static void setPurchaseUserResponseDTOToComparisonInFromPurchaseToPurchaseUserResponseDTO() {
 
-        purchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO = PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
+        purchaseUserResponseDTOToComparisonInFromPurchaseToPurchaseUserResponseDTO = PurchaseUserResponseDTO.PurchaseUserResponseDTOBuilder.builder()
                 .id(purchase.getId())
                 .amount(purchase.getAmount())
                 .dateAndTime(purchase.getDateAndTime())
@@ -157,9 +157,9 @@ class MapperTest {
                 .build();
     }
 
-    static void setPurchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO() {
+    static void setPurchaseRestaurantResponseDTOToComparisonInFromPurchaseToPurchaseRestaurantResponseDTO() {
 
-        purchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO =
+        purchaseRestaurantResponseDTOToComparisonInFromPurchaseToPurchaseRestaurantResponseDTO =
                 PurchaseRestaurantResponseDTO.PurchaseRestaurantResponseDTOBuilder.builder()
                         .id(purchase.getId())
                         .clientName(purchase.getUser().getName())
@@ -178,9 +178,9 @@ class MapperTest {
                         .build();
     }
 
-    static void setProductResponseDTOToComparisonInOfTheProductToProductResponseDTO() {
+    static void setProductResponseDTOToComparisonInFromProductToProductResponseDTO() {
 
-        productResponseDTOToComparisonInOfTheProductToProductResponseDTO = ProductResponseDTO.ProductResponseDTOBuilder.builder()
+        productResponseDTOToComparisonInFromProductToProductResponseDTO = ProductResponseDTO.ProductResponseDTOBuilder.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
@@ -209,13 +209,13 @@ class MapperTest {
         setAddressRequestDTO();
         setUser();
         setAddress();
-        setAddressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO();
+        setAddressResponseDTOToComparisonInFromAddressToAddressResponseDTO();
         setProduct();
         setPurchasedProducts();
         setPurchase();
-        setPurchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO();
-        setPurchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO();
-        setProductResponseDTOToComparisonInOfTheProductToProductResponseDTO();
+        setPurchaseUserResponseDTOToComparisonInFromPurchaseToPurchaseUserResponseDTO();
+        setPurchaseRestaurantResponseDTOToComparisonInFromPurchaseToPurchaseRestaurantResponseDTO();
+        setProductResponseDTOToComparisonInFromProductToProductResponseDTO();
         setProductRequestDTO();
     }
 
@@ -272,7 +272,7 @@ class MapperTest {
 
         Assertions.assertThat(Mapper.fromAddressToAddressResponseDTO(address))
                 .isNotNull()
-                .isEqualTo(addressResponseDTOToComparisonInOfTheAddressToAddressResponseDTO);
+                .isEqualTo(addressResponseDTOToComparisonInFromAddressToAddressResponseDTO);
     }
 
     @Test
@@ -297,7 +297,7 @@ class MapperTest {
 
         Assertions.assertThat(Mapper.fromPurchaseToPurchaseUserResponseDTO(purchase))
                 .isNotNull()
-                .isEqualTo(purchaseUserResponseDTOToComparisonInOfThePurchaseToPurchaseUserResponseDTO);
+                .isEqualTo(purchaseUserResponseDTOToComparisonInFromPurchaseToPurchaseUserResponseDTO);
     }
 
     @Test
@@ -308,7 +308,7 @@ class MapperTest {
 
         Assertions.assertThat(Mapper.fromPurchaseToPurchaseRestaurantResponseDTO(purchase))
                 .isNotNull()
-                .isEqualTo(purchaseRestaurantResponseDTOToComparisonInfThePurchaseToPurchaseRestaurantResponseDTO);
+                .isEqualTo(purchaseRestaurantResponseDTOToComparisonInFromPurchaseToPurchaseRestaurantResponseDTO);
     }
 
     @Test
@@ -319,7 +319,7 @@ class MapperTest {
 
         Assertions.assertThat(Mapper.fromProductToProductResponseDTO(product))
                 .isNotNull()
-                .isEqualTo(productResponseDTOToComparisonInOfTheProductToProductResponseDTO);
+                .isEqualTo(productResponseDTOToComparisonInFromProductToProductResponseDTO);
     }
 
     @Test
