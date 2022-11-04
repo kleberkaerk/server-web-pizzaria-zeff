@@ -195,6 +195,13 @@ class AddressServiceTest {
     }
 
     @Test
+    void registerAddress_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid(){
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.addressService.registerAddress(user, addressRequestDTO, "a"));
+    }
+
+    @Test
     void findByUser_returnsAListOfAddressResponseDTOOfTheUser_wheneverCalled() {
 
         Assertions.assertThatCode(() -> this.addressService.findByUser(user))

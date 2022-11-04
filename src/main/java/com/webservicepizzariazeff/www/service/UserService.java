@@ -4,6 +4,8 @@ import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.repository.UserRepository;
+import com.webservicepizzariazeff.www.util.Mapper;
+import com.webservicepizzariazeff.www.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,7 +39,8 @@ public class UserService implements UserDetailsService {
 
     public Long registerUser(UserRequestDTO userRequestDTO, String acceptLanguage) {
 
-        String[] languageAndCountry = acceptLanguage.split("-");
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
 
         ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
 

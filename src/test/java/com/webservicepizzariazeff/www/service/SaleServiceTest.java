@@ -254,4 +254,11 @@ class SaleServiceTest {
         Assertions.assertThatExceptionOfType(InvalidCardException.class)
                 .isThrownBy(() -> this.saleService.sale(userToArgument, saleThatThrowsInvalidCardException, "pt-BR"));
     }
+
+    @Test
+    void sale_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid(){
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.saleService.sale(userToArgument, saleRequestDTOToArgument, "a"));
+    }
 }

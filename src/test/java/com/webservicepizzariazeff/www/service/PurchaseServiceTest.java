@@ -177,14 +177,14 @@ class PurchaseServiceTest {
                 .toList();
     }
 
-    static void setPurchasesFindByIsDelivered(){
+    static void setPurchasesFindByIsDelivered() {
 
         purchasesFindByIsDelivered = purchases.stream()
                 .filter(purchase -> !purchase.isDelivered())
                 .toList();
     }
 
-    static void setPurchasesToComparisonInFindByIsDelivered(){
+    static void setPurchasesToComparisonInFindByIsDelivered() {
         purchasesToComparisonInFindByIsDelivered = purchasesFindByIsDelivered.stream()
                 .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
                 .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
@@ -192,9 +192,9 @@ class PurchaseServiceTest {
                 .toList();
     }
 
-    static void setPurchaseDeliverPurchase(){
+    static void setPurchaseDeliverPurchase() {
 
-        purchaseDeliverPurchase =  Purchase.PurchaseBuilder.builder()
+        purchaseDeliverPurchase = Purchase.PurchaseBuilder.builder()
                 .id(1L)
                 .amount(new BigDecimal("10.00"))
                 .dateAndTime("12/34/5678T90:12")
@@ -335,6 +335,13 @@ class PurchaseServiceTest {
     }
 
     @Test
+    void cancelPurchaseOfTheUser_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid() {
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.cancelPurchaseOfTheUser(user, 1L, "a"));
+    }
+
+    @Test
     void findByAllUsersPurchases_returnsAllPurchaseRestaurantResponseDTONonDelivered_wheneverCalled() {
 
         Assertions.assertThatCode(() -> this.purchaseService.findByAllUsersPurchases())
@@ -434,7 +441,7 @@ class PurchaseServiceTest {
     }
 
     @Test
-    void deleteAPurchase_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+    void deleteAPurchase_throwsResponseStatusException_whenThePassedIdIsInvalid() {
 
         Purchase invalidPurchase = Purchase.PurchaseBuilder.builder()
                 .id(1L)

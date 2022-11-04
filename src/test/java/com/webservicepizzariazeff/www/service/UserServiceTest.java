@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -86,6 +87,13 @@ class UserServiceTest {
 
         Assertions.assertThatExceptionOfType(ExistingUserException.class)
                 .isThrownBy(() -> this.userService.registerUser(userRequestDTO, "pt-BR"));
+    }
+
+    @Test
+    void registerUser_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid() {
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.userService.registerUser(userRequestDTO, "a"));
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
 import com.webservicepizzariazeff.www.exception.ExistingAddressException;
 import com.webservicepizzariazeff.www.repository.AddressRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
+import com.webservicepizzariazeff.www.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,7 +49,8 @@ public class AddressService {
 
     public Long registerAddress(UserDetails userDetails, AddressRequestDTO addressRequestDTO, String acceptLanguage) {
 
-        String[] languageAndCountry = acceptLanguage.split("-");
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
 
         ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
 

@@ -85,7 +85,7 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("admin/register")
+    @PutMapping(value = "admin/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Long> registerProduct(
             @RequestBody @Valid ProductRequestDTO productRequestDTO,
             @RequestHeader("Accept-Language") String acceptLanguage

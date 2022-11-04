@@ -8,6 +8,7 @@ import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.repository.PurchaseRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
+import com.webservicepizzariazeff.www.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,7 +58,8 @@ public class PurchaseService {
 
     public void cancelPurchaseOfTheUser(UserDetails userDetails, Long id, String acceptLanguage) {
 
-        String[] languageAndCountry = acceptLanguage.split("-");
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
 
         messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 

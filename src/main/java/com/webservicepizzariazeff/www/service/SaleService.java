@@ -5,6 +5,7 @@ import com.webservicepizzariazeff.www.dto.request.SaleRequestDTO;
 import com.webservicepizzariazeff.www.exception.InvalidCardException;
 import com.webservicepizzariazeff.www.repository.PaymentSimulationRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
+import com.webservicepizzariazeff.www.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,7 +51,8 @@ public class SaleService {
     @Transactional
     public Long sale(UserDetails userDetails, SaleRequestDTO saleRequestDTO, String acceptLanguage) {
 
-        String[] languageAndCountry = acceptLanguage.split("-");
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
 
         List<Product> filteredProducts = this.filterProductsById(this.productService.findAll(), saleRequestDTO.getProductsId());
 
