@@ -148,7 +148,7 @@ class PurchaseControllerTest {
 
         mapFindPurchasesOfTheUser = purchases.stream()
                 .filter(Purchase::isActive)
-                .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
+                .map(Mapper::fromPurchaseToPurchaseUserResponseDTO)
                 .collect(Collectors.groupingBy(PurchaseUserResponseDTO::isDelivered));
     }
 
@@ -161,7 +161,7 @@ class PurchaseControllerTest {
 
         mapFindByAllUsersPurchases = purchases.stream()
                 .filter(purchase -> !purchase.isDelivered())
-                .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
+                .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
                 .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
 

@@ -38,7 +38,7 @@ public class ProductService {
     private Map<Type, List<ProductResponseDTO>> mapAndSortAndGroupProductByType(List<Product> products) {
 
         return products.stream()
-                .map(Mapper::ofTheProductToProductResponseDTO)
+                .map(Mapper::fromProductToProductResponseDTO)
                 .sorted(Comparator.comparing(ProductResponseDTO::getName))
                 .collect(Collectors.groupingBy(ProductResponseDTO::getType));
     }
@@ -54,7 +54,7 @@ public class ProductService {
 
         Page<Product> productsByType = this.productRepository.findByTypeAndIsStocked(pageable, type, true);
 
-        return productsByType.map(Mapper::ofTheProductToProductResponseDTO);
+        return productsByType.map(Mapper::fromProductToProductResponseDTO);
     }
 
     public Map<Type, List<ProductResponseDTO>> findProductsInPromotionAndInStock() {
@@ -67,7 +67,7 @@ public class ProductService {
     public Map<Boolean, List<ProductResponseDTO>> findAllGrouped() {
 
         return this.productRepository.findAll().stream()
-                .map(Mapper::ofTheProductToProductResponseDTO)
+                .map(Mapper::fromProductToProductResponseDTO)
                 .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
                 .collect(Collectors.groupingBy(ProductResponseDTO::isStocked));
     }
@@ -123,6 +123,6 @@ public class ProductService {
             throw new ExistingProductException(messages.getString("existing.product"));
         }
 
-        return this.productRepository.save(Mapper.ofTheProductRequestDTOToProduct(productRequestDTO)).getId();
+        return this.productRepository.save(Mapper.fromProductRequestDTOToProduct(productRequestDTO)).getId();
     }
 }

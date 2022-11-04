@@ -185,7 +185,7 @@ class ProductServiceTest {
 
         productResponseDTOSToComparisonInFindByIsStocked = productsFindByIsStocked.stream()
                 .filter(product -> product.getType() == Type.SALTY_PIZZA)
-                .map(Mapper::ofTheProductToProductResponseDTO)
+                .map(Mapper::fromProductToProductResponseDTO)
                 .toList();
 
     }
@@ -201,7 +201,7 @@ class ProductServiceTest {
     static void setProductResponseDTOSToComparisonInFindByTypeAndIsStocked() {
 
         productResponseDTOSToComparisonInFindByTypeAndIsStocked = productsFindByTypeAndIsStocked.stream()
-                .map(Mapper::ofTheProductToProductResponseDTO)
+                .map(Mapper::fromProductToProductResponseDTO)
                 .toList();
     }
 
@@ -217,14 +217,14 @@ class ProductServiceTest {
 
         productResponseDTOSToComparisonInFindByPriceRatingAndIsStocked = productsFindByPriceRatingAndIsStocked.stream()
                 .filter(product -> product.getType() == Type.SWEET_PIZZA)
-                .map(Mapper::ofTheProductToProductResponseDTO)
+                .map(Mapper::fromProductToProductResponseDTO)
                 .toList();
     }
 
     static void setProductResponseDTOSToComparisonInFindAllGrouped() {
 
         productResponseDTOSToComparisonInFindAllGrouped = productsFindAll.stream()
-                .map(Mapper::ofTheProductToProductResponseDTO)
+                .map(Mapper::fromProductToProductResponseDTO)
                 .sorted(Comparator.comparing(ProductResponseDTO::getPriceRating))
                 .filter(ProductResponseDTO::isStocked)
                 .toList();

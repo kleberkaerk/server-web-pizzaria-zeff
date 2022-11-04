@@ -171,7 +171,7 @@ class PurchaseServiceTest {
     static void setPurchasesToComparisonInFindByUserAndIsActive() {
 
         purchasesToComparisonInFindByUserAndIsActive = PurchasesFindByUserAndIsActive.stream()
-                .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
+                .map(Mapper::fromPurchaseToPurchaseUserResponseDTO)
                 .sorted(Comparator.comparing(PurchaseUserResponseDTO::getId).reversed())
                 .filter(PurchaseUserResponseDTO::isDelivered)
                 .toList();
@@ -186,7 +186,7 @@ class PurchaseServiceTest {
 
     static void setPurchasesToComparisonInFindByIsDelivered(){
         purchasesToComparisonInFindByIsDelivered = purchasesFindByIsDelivered.stream()
-                .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
+                .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
                 .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
                 .filter(PurchaseRestaurantResponseDTO::isActive)
                 .toList();

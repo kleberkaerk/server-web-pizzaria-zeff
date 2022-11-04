@@ -45,12 +45,12 @@ public class PurchaseService {
 
     public Map<Boolean, List<PurchaseUserResponseDTO>> findByAllPurchasesOfTheAnUser(UserDetails userDetails) {
 
-        User user = Mapper.ofTheUserDetailsToUser(userDetails);
+        User user = Mapper.fromUserDetailsToUser(userDetails);
 
         List<Purchase> userActivePurchases = this.purchaseRepository.findByUserAndIsActive(user, true);
 
         return userActivePurchases.stream()
-                .map(Mapper::ofThePurchaseToPurchaseUserResponseDTO)
+                .map(Mapper::fromPurchaseToPurchaseUserResponseDTO)
                 .sorted(Comparator.comparing(PurchaseUserResponseDTO::getId).reversed())
                 .collect(Collectors.groupingBy(PurchaseUserResponseDTO::isDelivered));
     }
@@ -61,7 +61,7 @@ public class PurchaseService {
 
         messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
-        User user = Mapper.ofTheUserDetailsToUser(userDetails);
+        User user = Mapper.fromUserDetailsToUser(userDetails);
 
         Purchase purchaseToBeCanceled = this.purchaseRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
@@ -78,7 +78,7 @@ public class PurchaseService {
         List<Purchase> purchasesIsNotDelivered = this.purchaseRepository.findByIsDelivered(false);
 
         return purchasesIsNotDelivered.stream()
-                .map(Mapper::ofThePurchaseToPurchaseRestaurantResponseDTO)
+                .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
                 .sorted(Comparator.comparing(PurchaseRestaurantResponseDTO::getId))
                 .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
