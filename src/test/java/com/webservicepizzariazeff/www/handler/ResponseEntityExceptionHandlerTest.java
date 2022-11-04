@@ -1,6 +1,7 @@
 package com.webservicepizzariazeff.www.handler;
 
 import com.webservicepizzariazeff.www.exception.ExistingAddressException;
+import com.webservicepizzariazeff.www.exception.ExistingProductException;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
 import com.webservicepizzariazeff.www.exception_handler.*;
@@ -17,92 +18,101 @@ class ResponseEntityExceptionHandlerTest {
 
     private ResponseEntityExceptionHandler responseEntityExceptionHandler;
 
-    private static ResponseEntity<ExistingUserExceptionHandler> existingUserExceptionHandlerResponseEntity;
+    private static ExistingUserException existingUserExceptionToArgument;
 
-    private static ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandlerResponseEntity;
+    private static ResponseEntity<ExistingUserExceptionHandler> existingUserExceptionHandlerToComparison;
 
-    private static ResponseEntity<ExistingAddressExceptionHandler> existingAddressExceptionHandlerResponseEntity;
+    private static ResponseEntity<MethodArgumentNotValidExceptionHandler> methodArgumentNotValidExceptionHandlerToComparison;
 
-    private static ResponseEntity<NullPointerExceptionHandler> nullPointerExceptionHandlerResponseEntity;
+    private static ExistingAddressException existingAddressExceptionToArgument;
 
-    private static ResponseEntity<PurchaseFinishedExceptionHandler> purchaseFinishedExceptionHandlerResponseEntity;
+    private static ResponseEntity<ExistingAddressExceptionHandler> existingAddressExceptionHandlerToComparison;
 
-    private static ExistingUserException existingUserExceptionForArgument;
+    private static PurchaseFinishedException purchaseFinishedExceptionToArgument;
 
-    private static ExistingAddressException existingAddressExceptionForArgument;
+    private static ResponseEntity<PurchaseFinishedExceptionHandler> purchaseFinishedExceptionHandlerToComparison;
 
-    private static PurchaseFinishedException purchaseFinishedException;
+    private static ExistingProductException existingProductExceptionToArgument;
 
-    static void setExistingUserExceptionHandlerResponseEntity() {
+    private static ResponseEntity<ExistingProductExceptionHandler> existingProductExceptionHandlerToComparison;
 
-        existingUserExceptionHandlerResponseEntity = new ResponseEntity<>(
+    static void setExistingUserExceptionToArgument() {
+
+        existingUserExceptionToArgument = new ExistingUserException("message ExistingUserException");
+    }
+
+    static void setExistingUserExceptionHandlerToComparison() {
+
+        existingUserExceptionHandlerToComparison = new ResponseEntity<>(
                 ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
-                        .message("message ExistingUserExceptionHandler")
+                        .message("message ExistingUserException")
                         .build(), HttpStatus.CONFLICT
         );
     }
 
-    static void setMethodArgumentNotValidExceptionHandlerResponseEntity() {
+    static void setMethodArgumentNotValidExceptionHandlerToComparison() {
 
-        methodArgumentNotValidExceptionHandlerResponseEntity = new ResponseEntity<>(
+        methodArgumentNotValidExceptionHandlerToComparison = new ResponseEntity<>(
                 MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
                         .message("Invalid value.")
                         .build(), HttpStatus.BAD_REQUEST
         );
     }
 
-    static void setExistingUserExceptionForArgument() {
+    static void setExistingAddressExceptionToArgument() {
 
-        existingUserExceptionForArgument = new ExistingUserException("message ExistingUserExceptionHandler");
+        existingAddressExceptionToArgument = new ExistingAddressException("message ExistingAddressException");
     }
 
-    static void setExistingAddressExceptionHandlerResponseEntity() {
+    static void setExistingAddressExceptionHandlerToComparison() {
 
-        existingAddressExceptionHandlerResponseEntity = new ResponseEntity<>(
+        existingAddressExceptionHandlerToComparison = new ResponseEntity<>(
                 ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
-                        .message("message ExistingAddressExceptionHandler")
+                        .message("message ExistingAddressException")
                         .build(), HttpStatus.CONFLICT
         );
     }
 
-    static void setExistingAddressExceptionForArgument() {
+    static void setPurchaseFinishedExceptionToArgument() {
 
-        existingAddressExceptionForArgument = new ExistingAddressException("message ExistingAddressExceptionHandler");
+        purchaseFinishedExceptionToArgument = new PurchaseFinishedException("message PurchaseFinishedException");
     }
 
-    static void setNullPointerExceptionHandlerResponseEntity() {
+    static void setPurchaseFinishedExceptionHandlerToComparison() {
 
-        nullPointerExceptionHandlerResponseEntity = new ResponseEntity<>(
-                NullPointerExceptionHandler.NullPointerExceptionHandlerBuilder.builder()
-                        .message("Invalid Request.")
-                        .build(), HttpStatus.BAD_REQUEST
+        purchaseFinishedExceptionHandlerToComparison = new ResponseEntity<>(
+                PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
+                        .message("message PurchaseFinishedException")
+                        .build(), HttpStatus.CONFLICT
         );
     }
 
-    static void setPurchaseFinishedException() {
+    static void setExistingProductExceptionToArgument() {
 
-        purchaseFinishedException = new PurchaseFinishedException("message PurchaseFinishedException");
+        existingProductExceptionToArgument = new ExistingProductException("message ExistingProductException");
     }
 
-    static void setPurchaseFinishedExceptionHandlerResponseEntity() {
+    static void setExistingProductExceptionHandlerToComparison() {
 
-        purchaseFinishedExceptionHandlerResponseEntity = new ResponseEntity<>(
-                PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
-                        .message("message PurchaseFinishedException")
-                        .build(), HttpStatus.CONFLICT);
+        existingProductExceptionHandlerToComparison = new ResponseEntity<>(
+                ExistingProductExceptionHandler.ExistingProductExceptionHandlerBuilder.builder()
+                        .message("message ExistingProductException")
+                        .build(), HttpStatus.CONFLICT
+        );
     }
 
     @BeforeAll
     static void initializeObjects() {
 
-        setExistingUserExceptionHandlerResponseEntity();
-        setMethodArgumentNotValidExceptionHandlerResponseEntity();
-        setExistingUserExceptionForArgument();
-        setExistingAddressExceptionHandlerResponseEntity();
-        setExistingAddressExceptionForArgument();
-        setNullPointerExceptionHandlerResponseEntity();
-        setPurchaseFinishedException();
-        setPurchaseFinishedExceptionHandlerResponseEntity();
+        setExistingUserExceptionToArgument();
+        setExistingUserExceptionHandlerToComparison();
+        setMethodArgumentNotValidExceptionHandlerToComparison();
+        setExistingAddressExceptionToArgument();
+        setExistingAddressExceptionHandlerToComparison();
+        setPurchaseFinishedExceptionToArgument();
+        setPurchaseFinishedExceptionHandlerToComparison();
+        setExistingProductExceptionToArgument();
+        setExistingProductExceptionHandlerToComparison();
     }
 
     @BeforeEach
@@ -114,14 +124,11 @@ class ResponseEntityExceptionHandlerTest {
     @Test
     void handlerExistingUserException_returnsAResponseEntityOfTypeExistingUserExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument))
+        Assertions.assertThatCode(() -> responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionToArgument))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument).getStatusCode())
-                .isEqualTo(existingUserExceptionHandlerResponseEntity.getStatusCode());
-
-        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionForArgument).getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(existingUserExceptionHandlerResponseEntity.getBody()).getMessage());
+        Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionToArgument))
+                .isEqualTo(existingUserExceptionHandlerToComparison);
     }
 
     @Test
@@ -130,49 +137,36 @@ class ResponseEntityExceptionHandlerTest {
         Assertions.assertThatCode(() -> responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getStatusCode())
-                .isEqualTo(methodArgumentNotValidExceptionHandlerResponseEntity.getStatusCode());
-
-        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerMethodArgumentNotValidException().getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(methodArgumentNotValidExceptionHandlerResponseEntity.getBody()).getMessage());
+        Assertions.assertThat(responseEntityExceptionHandler.handlerMethodArgumentNotValidException())
+                .isEqualTo(methodArgumentNotValidExceptionHandlerToComparison);
     }
 
     @Test
     void handlerExistingAddressException_returnsAResponseEntityOfTypeExistingAddressExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument))
+        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionToArgument))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getStatusCode())
-                .isEqualTo(existingAddressExceptionHandlerResponseEntity.getStatusCode());
-
-        Assertions.assertThat(Objects.requireNonNull(responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionForArgument).getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(existingAddressExceptionHandlerResponseEntity.getBody()).getMessage());
-    }
-
-    @Test
-    void handlerNullPointerException_returnsAResponseEntityOfTypeNullPointerExceptionHandler_wheneverCalled() {
-
-        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerNullPointerException())
-                .doesNotThrowAnyException();
-
-        Assertions.assertThat(this.responseEntityExceptionHandler.handlerNullPointerException().getStatusCode())
-                .isEqualTo(nullPointerExceptionHandlerResponseEntity.getStatusCode());
-
-        Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerNullPointerException().getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(nullPointerExceptionHandlerResponseEntity.getBody()).getMessage());
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionToArgument))
+                .isEqualTo(existingAddressExceptionHandlerToComparison);
     }
 
     @Test
     void handlerPurchaseFinishedException_returnsAResponseEntityOfTypePurchaseFinishedExceptionHandler_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException))
+        Assertions.assertThatCode(() -> this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedExceptionToArgument))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException).getStatusCode())
-                .isEqualTo(purchaseFinishedExceptionHandlerResponseEntity.getStatusCode());
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedExceptionToArgument))
+                .isEqualTo(purchaseFinishedExceptionHandlerToComparison);
+    }
 
-        Assertions.assertThat(Objects.requireNonNull(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedException).getBody()).getMessage())
-                .isEqualTo(Objects.requireNonNull(purchaseFinishedExceptionHandlerResponseEntity.getBody()).getMessage());
+    @Test
+    void handlerExistingProductException_returnsAResponseEntityOfTypeExistingProductExceptionHandler_wheneverCalled() {
+
+        Assertions.assertThatCode(()-> this.responseEntityExceptionHandler.handlerExistingProductException(existingProductExceptionToArgument))
+                .doesNotThrowAnyException();
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingProductException(existingProductExceptionToArgument))
+                .isEqualTo(existingProductExceptionHandlerToComparison);
     }
 }

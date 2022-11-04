@@ -8,11 +8,23 @@ class PurchaseFinishedExceptionHandlerTest {
 
     private PurchaseFinishedExceptionHandler purchaseFinishedExceptionHandler;
 
+    private PurchaseFinishedExceptionHandler samePurchaseFinishedExceptionHandler;
+
+    private PurchaseFinishedExceptionHandler differentPurchaseFinishedExceptionHandler;
+
     @BeforeEach
-    void setPurchaseFinishedExceptionHandler(){
+    void setPurchaseFinishedExceptionHandler() {
 
         this.purchaseFinishedExceptionHandler = PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
-                .message("message")
+                .message("message1")
+                .build();
+
+        this.samePurchaseFinishedExceptionHandler = PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
+                .message("message1")
+                .build();
+
+        this.differentPurchaseFinishedExceptionHandler = PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
+                .message("message2")
                 .build();
     }
 
@@ -20,6 +32,26 @@ class PurchaseFinishedExceptionHandlerTest {
     void getMessage() {
 
         Assertions.assertThat(this.purchaseFinishedExceptionHandler.getMessage())
-                .isEqualTo("message");
+                .isEqualTo("message1");
+    }
+
+    @Test
+    void testEquals(){
+
+        Assertions.assertThat(this.purchaseFinishedExceptionHandler.equals(this.samePurchaseFinishedExceptionHandler))
+                .isTrue();
+
+        Assertions.assertThat(this.purchaseFinishedExceptionHandler.equals(this.differentPurchaseFinishedExceptionHandler))
+                .isFalse();
+    }
+
+    @Test
+    void tesHashCode(){
+
+        Assertions.assertThat(this.purchaseFinishedExceptionHandler)
+                .hasSameHashCodeAs(this.samePurchaseFinishedExceptionHandler);
+
+        Assertions.assertThat(this.purchaseFinishedExceptionHandler.hashCode())
+                .isNotEqualTo(this.differentPurchaseFinishedExceptionHandler.hashCode());
     }
 }

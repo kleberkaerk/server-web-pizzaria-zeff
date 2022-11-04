@@ -28,17 +28,6 @@ public class AddressRequestDTO {
         this.state = state;
     }
 
-    @Override
-    public String toString() {
-        return "AddressDTO{" +
-                "number='" + number + '\'' +
-                ", road='" + road + '\'' +
-                ", district='" + district + '\'' +
-                ", city='" + city + '\'' +
-                ", state='" + state + '\'' +
-                '}';
-    }
-
     public String getNumber() {
         return number;
     }
@@ -57,6 +46,17 @@ public class AddressRequestDTO {
 
     public String getState() {
         return state;
+    }
+
+    @Override
+    public String toString() {
+        return "AddressDTO{" +
+                "number='" + number + '\'' +
+                ", road='" + road + '\'' +
+                ", district='" + district + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                '}';
     }
 
     public static final class AddressRequestDTOBuilder {

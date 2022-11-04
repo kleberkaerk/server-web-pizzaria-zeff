@@ -1,21 +1,18 @@
 package com.webservicepizzariazeff.www.util;
 
-import java.util.function.BiPredicate;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 public class Validator {
 
     private Validator() {
     }
 
-    public static <E> boolean checkThatStringIsNotAEnum(String valueToBeValidated, E[] elements, BiPredicate<E, String> behavior) {
+    public static void validateAcceptLanguage(String acceptLanguage) {
 
-        for (E element : elements) {
+        if (!acceptLanguage.equals("pt-BR") && !acceptLanguage.equals("en-US")) {
 
-            if (behavior.test(element, valueToBeValidated)) {
-                return false;
-            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-
-        return true;
     }
 }

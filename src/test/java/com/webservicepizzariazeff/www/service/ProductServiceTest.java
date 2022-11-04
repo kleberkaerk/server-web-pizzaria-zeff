@@ -3,7 +3,9 @@ package com.webservicepizzariazeff.www.service;
 import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Product;
 import com.webservicepizzariazeff.www.domain.Type;
+import com.webservicepizzariazeff.www.dto.request.ProductRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
+import com.webservicepizzariazeff.www.exception.ExistingProductException;
 import com.webservicepizzariazeff.www.repository.ProductRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
 import org.assertj.core.api.Assertions;
@@ -52,7 +54,9 @@ class ProductServiceTest {
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
 
-    private static Product productFindById;
+    private static Product product;
+
+    private static ProductRequestDTO productRequestDTO;
 
     static void setProductsFindAll() {
 
@@ -226,9 +230,20 @@ class ProductServiceTest {
                 .toList();
     }
 
-    static void setProductFindById() {
+    static void setProduct() {
 
-        productFindById = productsFindAll.get(0);
+        product = productsFindAll.get(0);
+    }
+
+    static void setProductRequestDTO() {
+
+        productRequestDTO = ProductRequestDTO.ProductRequestDTOBuilder.builder()
+                .name("name1")
+                .description("description1")
+                .price(new BigDecimal("10"))
+                .type(Type.SALTY_PIZZA)
+                .priceRating(PriceRating.PROMOTION)
+                .build();
     }
 
     @BeforeAll
@@ -242,7 +257,8 @@ class ProductServiceTest {
         setProductsFindByPriceRatingAndIsStocked();
         setProductResponseDTOSToComparisonInFindByPriceRatingAndIsStocked();
         setProductResponseDTOSToComparisonInFindAllGrouped();
-        setProductFindById();
+        setProduct();
+        setProductRequestDTO();
     }
 
     @BeforeEach
@@ -268,7 +284,7 @@ class ProductServiceTest {
                 .thenReturn(productsFindByPriceRatingAndIsStocked);
 
         BDDMockito.when(this.productRepository.findById(ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(productFindById));
+                .thenReturn(Optional.of(product));
 
         BDDMockito.doNothing()
                 .when(this.productRepository).updateIsStockedById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
@@ -281,6 +297,12 @@ class ProductServiceTest {
 
         BDDMockito.doNothing()
                 .when(this.productRepository).deleteById(ArgumentMatchers.any(Long.class));
+
+        BDDMockito.when(this.productRepository.findByNameAndDescription(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(Optional.empty());
+
+        BDDMockito.when(this.productRepository.save(ArgumentMatchers.any(Product.class)))
+                .thenReturn(product);
     }
 
     @Test
@@ -396,19 +418,46 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteProduct_deleteAProduct_whenThePassedIdIsValid(){
+    void deleteProduct_deleteAProduct_whenThePassedIdIsValid() {
 
-        Assertions.assertThatCode(()-> this.productService.deleteProduct(1L))
+        Assertions.assertThatCode(() -> this.productService.deleteProduct(1L))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void deleteProduct_throwsResponseStatusException_whenThePassedIdDoesNotExist(){
+    void deleteProduct_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
 
         BDDMockito.when(this.productRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.productService.deleteProduct(2L));
+                .isThrownBy(() -> this.productService.deleteProduct(2L));
+    }
+
+    @Test
+    void registerNewProduct_registersANewProductAndReturnsTheIdOfTheCreatedProduct_whenTheProductDoesNotExistInTheDatabase() {
+
+        Assertions.assertThatCode(() -> this.productService.registerNewProduct(productRequestDTO, "pt-BR"))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productService.registerNewProduct(productRequestDTO, "pt-BR"))
+                .isEqualTo(1L);
+    }
+
+    @Test
+    void registerNewProduct_throwsExistingProductException_whenTheProductIsAlreadyRegisteredInTheDatabase() {
+
+        BDDMockito.when(this.productRepository.findByNameAndDescription(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+                .thenReturn(Optional.of(product));
+
+        Assertions.assertThatExceptionOfType(ExistingProductException.class)
+                .isThrownBy(() -> this.productService.registerNewProduct(productRequestDTO, "pt-BR"));
+    }
+
+    @Test
+    void registerNewProduct_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid() {
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.productService.registerNewProduct(productRequestDTO, "pt"));
     }
 }

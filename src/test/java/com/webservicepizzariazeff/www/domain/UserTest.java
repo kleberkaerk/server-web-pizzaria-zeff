@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
-import java.util.function.BinaryOperator;
 
 class UserTest {
 

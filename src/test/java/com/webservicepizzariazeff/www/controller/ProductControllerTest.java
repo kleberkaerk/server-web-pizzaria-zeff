@@ -1,9 +1,10 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.controller.ProductController;
 import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Type;
+import com.webservicepizzariazeff.www.dto.request.ProductRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
+import com.webservicepizzariazeff.www.exception.ExistingProductException;
 import com.webservicepizzariazeff.www.service.ProductService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,7 +24,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ExtendWith(SpringExtension.class)
@@ -50,6 +54,8 @@ class ProductControllerTest {
     private static Map<Boolean, List<ProductResponseDTO>> mapFindAllGrouped;
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
+
+    private static ProductRequestDTO productRequestDTO;
 
     static void setProductResponseDTOS() {
 
@@ -262,6 +268,17 @@ class ProductControllerTest {
         productResponseDTOSToComparisonInFindAllGrouped = mapFindAllGrouped.get(true);
     }
 
+    static void setProductRequestDTO() {
+
+        productRequestDTO = ProductRequestDTO.ProductRequestDTOBuilder.builder()
+                .name("name")
+                .description("description")
+                .price(new BigDecimal("10.00"))
+                .type(Type.SALTY_PIZZA)
+                .priceRating(PriceRating.PROMOTION)
+                .build();
+    }
+
     @BeforeAll
     static void initializeObjects() {
 
@@ -273,6 +290,7 @@ class ProductControllerTest {
         setProductResponseDTOSToComparisonInFindProductsInPromotionAndInStock();
         setMapFindAllGrouped();
         setProductResponseDTOSToComparisonInFindAllGrouped();
+        setProductRequestDTO();
     }
 
     @BeforeEach
@@ -301,6 +319,9 @@ class ProductControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.productService).deleteProduct(ArgumentMatchers.any(Long.class));
+
+        BDDMockito.when(this.productService.registerNewProduct(ArgumentMatchers.any(ProductRequestDTO.class), ArgumentMatchers.anyString()))
+                .thenReturn(1L);
     }
 
     @Test
@@ -439,12 +460,32 @@ class ProductControllerTest {
     }
 
     @Test
-    void delete_throwsResponseStatusException_whenThePassedIdIsInvalid(){
+    void delete_throwsResponseStatusException_whenThePassedIdIsInvalid() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
                 .when(this.productService).deleteProduct(ArgumentMatchers.any(Long.class));
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.productController.delete(1L));
+                .isThrownBy(() -> this.productController.delete(1L));
+    }
+
+    @Test
+    void registerProduct_returnsAIdOfTheProductThatWasSavedAndAStatusCodeCreated_whenTheProductIsNotRegistered() {
+
+        Assertions.assertThatCode(() -> this.productController.registerProduct(productRequestDTO, "pt-BR"))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.productController.registerProduct(productRequestDTO, "pt-BR"))
+                .isEqualTo(new ResponseEntity<>(1L, HttpStatus.CREATED));
+    }
+
+    @Test
+    void registerProduct_throwsExistingProductException_whenTheProductIsAlreadyRegistered(){
+
+        BDDMockito.when(this.productService.registerNewProduct(ArgumentMatchers.any(ProductRequestDTO.class), ArgumentMatchers.anyString()))
+                .thenThrow(ExistingProductException.class);
+
+        Assertions.assertThatExceptionOfType(ExistingProductException.class)
+                        .isThrownBy(()-> this.productController.registerProduct(productRequestDTO, "pt-BR"));
     }
 }

@@ -1,6 +1,5 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.controller.AddressController;
 import com.webservicepizzariazeff.www.domain.User;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.AddressResponseDTO;
@@ -123,7 +122,7 @@ class AddressControllerTest {
     }
 
     @Test
-    void registerNewAddress_returnsTheIdOfTheAddressThatWasSavedAndAStatusCodeCreated_WhenTheAddressIsNotRegisteredInTheDatabase() {
+    void registerNewAddress_returnsTheIdOfTheAddressThatWasSavedAndAStatusCodeCreated_WhenTheAddressIsNotRegistered() {
 
         Assertions.assertThatCode(() -> this.addressController.registerNewAddress(user, addressRequestDTO, "pt-BR"))
                 .doesNotThrowAnyException();
@@ -134,7 +133,7 @@ class AddressControllerTest {
     }
 
     @Test
-    void registerNewAddress_throwsExistingAddressException_whenTheAddressIsAlreadyRegisteredInTheDatabase() {
+    void registerNewAddress_throwsExistingAddressException_whenTheAddressIsAlreadyRegistered() {
 
         BDDMockito.when(this.addressService.registerAddress(
                         ArgumentMatchers.any(UserDetails.class),
@@ -163,7 +162,7 @@ class AddressControllerTest {
     }
 
     @Test
-    void deleteAddress_returnsAStatusCodeNoContent_whenTheAddressExistsInTheDatabase() {
+    void deleteAddress_returnsAStatusCodeNoContent_whenTheAddressExists() {
 
         Assertions.assertThatCode(() -> this.addressController.deleteAddress(1L))
                 .doesNotThrowAnyException();
@@ -174,7 +173,7 @@ class AddressControllerTest {
     }
 
     @Test
-    void deleteAddress_throwsResponseStatusException_whenTheAddressNotExistsInTheDatabase() {
+    void deleteAddress_throwsResponseStatusException_whenTheAddressNotExists() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
                 .when(this.addressService).deleteAAddress(ArgumentMatchers.any(Long.class));

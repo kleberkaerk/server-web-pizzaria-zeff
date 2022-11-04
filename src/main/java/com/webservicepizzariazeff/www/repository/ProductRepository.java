@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -37,4 +38,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Modifying
     @Query("update Product p set p.priceRating = :priceRating where p.id = :id")
     void updatePriceRatingById(@Param("priceRating") PriceRating priceRating, @Param("id") Long id);
+
+    Optional<Product> findByNameAndDescription(String name, String description);
 }

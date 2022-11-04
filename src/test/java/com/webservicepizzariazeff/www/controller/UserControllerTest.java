@@ -1,6 +1,5 @@
 package com.webservicepizzariazeff.www.controller;
 
-import com.webservicepizzariazeff.www.controller.UserController;
 import com.webservicepizzariazeff.www.dto.request.UserRequestDTO;
 import com.webservicepizzariazeff.www.exception.ExistingUserException;
 import com.webservicepizzariazeff.www.service.UserService;
@@ -46,7 +45,7 @@ class UserControllerTest {
     }
 
     @Test
-    void registerNewUser_returnsTheIdOfTheUserThatWasSavedAndAStatusCodeCreated_WhenTheUserIsNotRegisteredInTheDatabase() {
+    void registerNewUser_returnsTheIdOfTheUserThatWasSavedAndAStatusCodeCreated_WhenTheUserIsNotRegistered() {
 
         Assertions.assertThatCode(() -> this.userController.registerNewUser(userRequestDTO, ""))
                 .doesNotThrowAnyException();
@@ -57,7 +56,7 @@ class UserControllerTest {
     }
 
     @Test
-    void registerNewUser_throwsExistingUserException_whenTheUserIsAlreadyRegisteredInTheDatabase() {
+    void registerNewUser_throwsExistingUserException_whenTheUserIsAlreadyRegistered() {
 
         BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenThrow(ExistingUserException.class);

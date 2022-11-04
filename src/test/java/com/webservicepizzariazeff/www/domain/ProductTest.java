@@ -139,4 +139,15 @@ class ProductTest {
                         ", image='" + this.product.getImage() + '\'' +
                         '}');
     }
+
+    @Test
+    void prePersist(){
+
+        Product product2 = Product.ProductBuilder.builder().build();
+
+        product2.prePersist();
+
+        Assertions.assertThat(product2.isStocked())
+                .isTrue();
+    }
 }

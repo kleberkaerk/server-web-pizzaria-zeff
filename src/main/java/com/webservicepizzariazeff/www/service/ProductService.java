@@ -3,7 +3,9 @@ package com.webservicepizzariazeff.www.service;
 import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Product;
 import com.webservicepizzariazeff.www.domain.Type;
+import com.webservicepizzariazeff.www.dto.request.ProductRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
+import com.webservicepizzariazeff.www.exception.ExistingProductException;
 import com.webservicepizzariazeff.www.repository.ProductRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
 import com.webservicepizzariazeff.www.util.Validator;
@@ -15,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,10 +99,30 @@ public class ProductService {
         this.productRepository.updatePriceRatingById(priceRating, productToBeUpdated.getId());
     }
 
-    public void deleteProduct(Long id){
+    public void deleteProduct(Long id) {
 
         Product productToBeDeleted = this.findById(id);
 
         this.productRepository.deleteById(productToBeDeleted.getId());
+    }
+
+    public Long registerNewProduct(ProductRequestDTO productRequestDTO, String acceptLanguage) {
+
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
+
+        ResourceBundle messages = ResourceBundle.getBundle("messages", new Locale(languageAndCountry[0], languageAndCountry[1]));
+
+        Optional<Product> optionalProduct = this.productRepository.findByNameAndDescription(
+                productRequestDTO.getName(),
+                productRequestDTO.getDescription()
+        );
+
+        if (optionalProduct.isPresent()) {
+
+            throw new ExistingProductException(messages.getString("existing.product"));
+        }
+
+        return this.productRepository.save(Mapper.ofTheProductRequestDTOToProduct(productRequestDTO)).getId();
     }
 }

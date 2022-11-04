@@ -2,10 +2,11 @@ package com.webservicepizzariazeff.www.exception_handler;
 
 import java.util.Objects;
 
-public class ExistingUserExceptionHandler {
+public class ExistingProductExceptionHandler {
+
     private final String message;
 
-    private ExistingUserExceptionHandler(String message){
+    private ExistingProductExceptionHandler(String message) {
         this.message = message;
     }
 
@@ -17,7 +18,7 @@ public class ExistingUserExceptionHandler {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ExistingUserExceptionHandler that = (ExistingUserExceptionHandler) o;
+        ExistingProductExceptionHandler that = (ExistingProductExceptionHandler) o;
         return Objects.equals(message, that.message);
     }
 
@@ -26,23 +27,23 @@ public class ExistingUserExceptionHandler {
         return Objects.hash(message);
     }
 
-    public static final class ExistingUserExceptionHandlerBuilder {
+    public static final class ExistingProductExceptionHandlerBuilder {
         private String message;
 
-        private ExistingUserExceptionHandlerBuilder() {
+        private ExistingProductExceptionHandlerBuilder() {
         }
 
-        public static ExistingUserExceptionHandlerBuilder builder() {
-            return new ExistingUserExceptionHandlerBuilder();
+        public static ExistingProductExceptionHandlerBuilder builder() {
+            return new ExistingProductExceptionHandlerBuilder();
         }
 
-        public ExistingUserExceptionHandlerBuilder message(String message) {
+        public ExistingProductExceptionHandlerBuilder message(String message) {
             this.message = message;
             return this;
         }
 
-        public ExistingUserExceptionHandler build() {
-            return new ExistingUserExceptionHandler(message);
+        public ExistingProductExceptionHandler build() {
+            return new ExistingProductExceptionHandler(message);
         }
     }
 }

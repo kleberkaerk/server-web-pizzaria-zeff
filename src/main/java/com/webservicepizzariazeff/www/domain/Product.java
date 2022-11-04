@@ -33,7 +33,7 @@ public class Product {
     @Column(name = "stocked")
     private boolean isStocked;
 
-    @Column(name = "image", length = 100)
+    @Column(name = "image", length = 104)
     private String image;
 
     protected Product() {
@@ -80,6 +80,12 @@ public class Product {
 
     public String getImage() {
         return image;
+    }
+
+    @PrePersist
+    public void prePersist(){
+
+        this.isStocked = true;
     }
 
     @Override

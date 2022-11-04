@@ -2,6 +2,7 @@ package com.webservicepizzariazeff.www.util;
 
 import com.webservicepizzariazeff.www.domain.*;
 import com.webservicepizzariazeff.www.dto.request.AddressRequestDTO;
+import com.webservicepizzariazeff.www.dto.request.ProductRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -93,7 +94,7 @@ public class Mapper {
                 .build();
     }
 
-    public static ProductResponseDTO ofTheProductToProductResponseDTO(Product product){
+    public static ProductResponseDTO ofTheProductToProductResponseDTO(Product product) {
 
         return ProductResponseDTO.ProductResponseDTOBuilder.builder()
                 .id(product.getId())
@@ -105,5 +106,27 @@ public class Mapper {
                 .isStocked(product.isStocked())
                 .image(product.getImage())
                 .build();
+    }
+
+    private static String createImageNameToProduct(String productName) {
+
+        return productName.toLowerCase().replace(" ", "-") + ".png";
+    }
+
+    public static Product ofTheProductRequestDTOToProduct(ProductRequestDTO productRequestDTO) {
+
+        return Product.ProductBuilder.builder()
+                .name(productRequestDTO.getName())
+                .description(productRequestDTO.getDescription())
+                .price(productRequestDTO.getPrice())
+                .type(productRequestDTO.getType())
+                .priceRating(productRequestDTO.getPriceRating())
+                .image(createImageNameToProduct(productRequestDTO.getName()))
+                .build();
+    }
+
+    public static String[] fromAcceptLanguageToStringArray(String acceptLanguage) {
+
+        return acceptLanguage.split("-");
     }
 }

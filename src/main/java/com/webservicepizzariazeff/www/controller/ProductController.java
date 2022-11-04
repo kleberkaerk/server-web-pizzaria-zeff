@@ -2,6 +2,7 @@ package com.webservicepizzariazeff.www.controller;
 
 import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Type;
+import com.webservicepizzariazeff.www.dto.request.ProductRequestDTO;
 import com.webservicepizzariazeff.www.dto.response.ProductResponseDTO;
 import com.webservicepizzariazeff.www.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -81,5 +83,14 @@ public class ProductController {
         this.productService.deleteProduct(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("admin/register")
+    public ResponseEntity<Long> registerProduct(
+            @RequestBody @Valid ProductRequestDTO productRequestDTO,
+            @RequestHeader("Accept-Language") String acceptLanguage
+    ) {
+
+        return new ResponseEntity<>(this.productService.registerNewProduct(productRequestDTO, acceptLanguage), HttpStatus.CREATED);
     }
 }
