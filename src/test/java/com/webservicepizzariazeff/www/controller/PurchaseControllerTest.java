@@ -54,6 +54,8 @@ class PurchaseControllerTest {
 
     private static List<PurchaseRestaurantResponseDTO> purchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases;
 
+    private static List<PurchaseRestaurantResponseDTO> purchaseRestaurantResponseDTOSFindDeliveredPurchases;
+
     static void setUser() {
 
         user = User.UserBuilder.builder()
@@ -140,6 +142,45 @@ class PurchaseControllerTest {
                         .user(user)
                         .address(address)
                         .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(4L)
+                        .cardName("cardName4")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .amount(new BigDecimal("40"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(5L)
+                        .cardName("cardName5")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .amount(new BigDecimal("50"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(6L)
+                        .cardName("cardName6")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .amount(new BigDecimal("60"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
                         .build()
         );
     }
@@ -157,7 +198,7 @@ class PurchaseControllerTest {
         purchaseUserResponseDTOSToComparisonInFindPurchasesOfTheUser = mapFindPurchasesOfTheUser.get(true);
     }
 
-    static void setMapFindByAllUsersPurchases(){
+    static void setMapFindByAllUsersPurchases() {
 
         mapFindByAllUsersPurchases = purchases.stream()
                 .filter(purchase -> !purchase.isDelivered())
@@ -165,9 +206,17 @@ class PurchaseControllerTest {
                 .collect(Collectors.groupingBy(PurchaseRestaurantResponseDTO::isActive));
     }
 
-    static void setPurchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases(){
+    static void setPurchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases() {
 
         purchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases = mapFindByAllUsersPurchases.get(false);
+    }
+
+    static void setPurchaseRestaurantResponseDTOSFindDeliveredPurchases() {
+
+        purchaseRestaurantResponseDTOSFindDeliveredPurchases = purchases.stream()
+                .filter(Purchase::isDelivered)
+                .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
+                .toList();
     }
 
     @BeforeAll
@@ -181,6 +230,7 @@ class PurchaseControllerTest {
         setPurchaseUserResponseDTOSToComparisonInFindPurchasesOfTheUser();
         setMapFindByAllUsersPurchases();
         setPurchaseRestaurantResponseDTOSToComparisonInFindUsersPurchases();
+        setPurchaseRestaurantResponseDTOSFindDeliveredPurchases();
     }
 
     @BeforeEach
@@ -207,6 +257,9 @@ class PurchaseControllerTest {
 
         BDDMockito.doNothing()
                 .when(this.purchaseService).deleteAPurchase(ArgumentMatchers.any(Long.class));
+
+        BDDMockito.when(this.purchaseService.findDeliveredPurchases())
+                .thenReturn(purchaseRestaurantResponseDTOSFindDeliveredPurchases);
     }
 
     @Test
@@ -331,5 +384,23 @@ class PurchaseControllerTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseController.deletePurchase(1L));
+    }
+
+    @Test
+    void deliveredPurchases_returnsAListOfTheLast50PurchaseRestaurantResponseDTODeliveredAndAStatusCodeOk_wheneverCalled() {
+
+        Assertions.assertThatCode(()-> this.purchaseController.deliveredPurchases())
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.purchaseController.deliveredPurchases())
+                .isNotNull()
+                .isEqualTo(ResponseEntity.ok(purchaseRestaurantResponseDTOSFindDeliveredPurchases));
+
+        Assertions.assertThat(this.purchaseController.deliveredPurchases().getBody())
+                .isNotNull()
+                .asList()
+                .hasSize(purchaseRestaurantResponseDTOSFindDeliveredPurchases.size())
+                .isEqualTo(purchaseRestaurantResponseDTOSFindDeliveredPurchases)
+                .contains(purchaseRestaurantResponseDTOSFindDeliveredPurchases.get(0));
     }
 }

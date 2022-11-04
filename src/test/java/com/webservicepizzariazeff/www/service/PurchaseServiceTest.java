@@ -58,6 +58,8 @@ class PurchaseServiceTest {
 
     private static Purchase purchaseDeliverPurchase;
 
+    private static List<PurchaseRestaurantResponseDTO> purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases;
+
     static void setUser() {
 
         user = User.UserBuilder.builder()
@@ -123,7 +125,7 @@ class PurchaseServiceTest {
                         .id(1L)
                         .amount(new BigDecimal("10.00"))
                         .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName")
+                        .cardName("cardName1")
                         .isActive(true)
                         .isFinished(false)
                         .isDelivered(false)
@@ -136,7 +138,7 @@ class PurchaseServiceTest {
                         .id(2L)
                         .amount(new BigDecimal("20.00"))
                         .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName")
+                        .cardName("cardName2")
                         .isActive(false)
                         .isFinished(false)
                         .isDelivered(false)
@@ -149,7 +151,33 @@ class PurchaseServiceTest {
                         .id(3L)
                         .amount(new BigDecimal("30.00"))
                         .dateAndTime("12/34/5678T90:12")
-                        .cardName("cardName")
+                        .cardName("cardName3")
+                        .isActive(true)
+                        .isFinished(false)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(4L)
+                        .amount(new BigDecimal("40.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName4")
+                        .isActive(true)
+                        .isFinished(false)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(5L)
+                        .amount(new BigDecimal("50.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName5")
                         .isActive(true)
                         .isFinished(false)
                         .isDelivered(true)
@@ -209,6 +237,16 @@ class PurchaseServiceTest {
                 .build();
     }
 
+    static void setPurchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases() {
+
+        purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases = purchases.stream()
+                .filter(Purchase::isDelivered)
+                .sorted(Comparator.comparing(Purchase::getId).reversed())
+                .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
+                .limit(50)
+                .toList();
+    }
+
     @BeforeAll
     static void initializeObjects() {
 
@@ -222,7 +260,7 @@ class PurchaseServiceTest {
         setPurchasesFindByIsDelivered();
         setPurchasesToComparisonInFndByAllUsersPurchases();
         setPurchaseDeliverPurchase();
-
+        setPurchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases();
     }
 
     @BeforeEach
@@ -266,6 +304,11 @@ class PurchaseServiceTest {
                         ArgumentMatchers.anyBoolean(),
                         ArgumentMatchers.any(Long.class)
                 );
+
+        BDDMockito.when(this.purchaseRepository.findDistinctByIsDelivered(ArgumentMatchers.anyBoolean()))
+                .thenReturn(purchases.stream()
+                        .filter(Purchase::isDelivered)
+                        .toList());
     }
 
     @BeforeEach
@@ -462,5 +505,19 @@ class PurchaseServiceTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseService.deleteAPurchase(1L));
+    }
+
+    @Test
+    void findDeliveredPurchases_returnsAListOfTheLast50PurchaseRestaurantResponseDTODelivered_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.purchaseService.findDeliveredPurchases())
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.purchaseService.findDeliveredPurchases())
+                .isNotNull()
+                .asList()
+                .isEqualTo(purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases)
+                .hasSize(purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases.size())
+                .contains(purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases.get(0));
     }
 }

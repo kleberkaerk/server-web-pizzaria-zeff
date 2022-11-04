@@ -351,7 +351,7 @@ class ProductControllerTest {
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.findByType(Page.empty().getPageable(), Type.DRINK).getBody()).toList())
                 .asList()
-                .hasSize(6)
+                .hasSize(productResponseDTOSFindProductsByTypeAndInStock.size())
                 .contains(productResponseDTOSFindProductsByTypeAndInStock.get(2));
     }
 
@@ -382,7 +382,7 @@ class ProductControllerTest {
         Assertions.assertThat(Objects.requireNonNull(this.productController.searchProducts(Page.empty().getPageable(), "name").getBody()).toList())
                 .isNotNull()
                 .asList()
-                .hasSize(16)
+                .hasSize(productResponseDTOS.size())
                 .contains(productResponseDTOS.get(1));
     }
 

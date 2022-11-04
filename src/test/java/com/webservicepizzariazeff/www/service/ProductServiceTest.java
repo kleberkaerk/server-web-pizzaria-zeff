@@ -379,7 +379,7 @@ class ProductServiceTest {
         Assertions.assertThat(this.productService.searchProductsByName(Page.empty().getPageable(), "name").toList())
                 .isNotNull()
                 .asList()
-                .hasSize(11)
+                .hasSize(productResponseDTOSToComparisonInSearchProductsByName.size())
                 .isEqualTo(productResponseDTOSToComparisonInSearchProductsByName)
                 .contains(productResponseDTOSToComparisonInSearchProductsByName.get(1));
     }

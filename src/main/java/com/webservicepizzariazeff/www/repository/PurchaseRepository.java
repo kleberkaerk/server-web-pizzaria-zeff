@@ -2,6 +2,8 @@ package com.webservicepizzariazeff.www.repository;
 
 import com.webservicepizzariazeff.www.domain.Purchase;
 import com.webservicepizzariazeff.www.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -41,4 +43,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
     @Modifying
     @Query("update Purchase p set p.isDelivered = :isDelivered where p.id = :id")
     void updateIsDeliveredById(@Param("isDelivered") boolean isDelivered, @Param("id") Long id);
+
+    @Query("select distinct p from Purchase p left join fetch p.purchasedProducts where p.isDelivered = :isDelivered")
+    List<Purchase> findDistinctByIsDelivered(@Param("isDelivered") boolean isDelivered);
 }

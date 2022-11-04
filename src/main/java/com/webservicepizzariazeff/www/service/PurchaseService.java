@@ -10,6 +10,8 @@ import com.webservicepizzariazeff.www.repository.PurchaseRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
 import com.webservicepizzariazeff.www.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -143,5 +145,16 @@ public class PurchaseService {
         this.deletePurchasedProducts(purchaseToBeDeleted.getPurchasedProducts());
 
         this.purchaseRepository.deleteById(id);
+    }
+
+    public List<PurchaseRestaurantResponseDTO> findDeliveredPurchases() {
+
+        List<Purchase> deliveredPurchases = this.purchaseRepository.findDistinctByIsDelivered(true);
+
+        return deliveredPurchases.stream()
+                .sorted(Comparator.comparing(Purchase::getId).reversed())
+                .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
+                .limit(50L)
+                .toList();
     }
 }

@@ -4,6 +4,8 @@ import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO
 import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -82,5 +84,11 @@ public class PurchaseController {
         this.purchaseService.deleteAPurchase(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("admin/delivered-purchases")
+    public ResponseEntity<List<PurchaseRestaurantResponseDTO>> deliveredPurchases() {
+
+        return new ResponseEntity<>(this.purchaseService.findDeliveredPurchases(), HttpStatus.OK);
     }
 }

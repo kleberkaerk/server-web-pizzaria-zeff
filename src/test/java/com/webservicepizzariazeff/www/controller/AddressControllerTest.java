@@ -156,7 +156,7 @@ class AddressControllerTest {
                 .isEqualTo(ResponseEntity.ok(addressResponseDTOS));
 
         Assertions.assertThat(this.addressController.findAddressesByUser(user).getBody())
-                .hasSize(4)
+                .hasSize(addressResponseDTOS.size())
                 .asList()
                 .contains(addressResponseDTOS.get(2));
     }
