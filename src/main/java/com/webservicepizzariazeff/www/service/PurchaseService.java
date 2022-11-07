@@ -10,8 +10,6 @@ import com.webservicepizzariazeff.www.repository.PurchaseRepository;
 import com.webservicepizzariazeff.www.util.Mapper;
 import com.webservicepizzariazeff.www.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -156,5 +154,14 @@ public class PurchaseService {
                 .map(Mapper::fromPurchaseToPurchaseRestaurantResponseDTO)
                 .limit(50L)
                 .toList();
+    }
+
+    public void disableDeliveryById(Long id) {
+
+        messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale("en", "US"));
+
+        this.findById(id, messages.getString(INVALID_ID));
+
+        this.purchaseRepository.updateIsDeliveredById(false, id);
     }
 }

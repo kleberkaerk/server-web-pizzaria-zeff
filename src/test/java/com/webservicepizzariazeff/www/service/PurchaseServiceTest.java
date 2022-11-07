@@ -185,6 +185,19 @@ class PurchaseServiceTest {
                         .user(user)
                         .address(address)
                         .purchasedProducts(purchasedProducts)
+                        .build(),
+                Purchase.PurchaseBuilder.builder()
+                        .id(6L)
+                        .amount(new BigDecimal("60.00"))
+                        .dateAndTime("12/34/5678T90:12")
+                        .cardName("cardName6")
+                        .isActive(true)
+                        .isFinished(true)
+                        .isDelivered(true)
+                        .isPaymentThroughTheWebsite(false)
+                        .user(user)
+                        .address(address)
+                        .purchasedProducts(purchasedProducts)
                         .build()
         );
     }
@@ -309,6 +322,9 @@ class PurchaseServiceTest {
                 .thenReturn(purchases.stream()
                         .filter(Purchase::isDelivered)
                         .toList());
+
+        BDDMockito.doNothing()
+                .when(this.purchaseRepository).updateIsDeliveredById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
     }
 
     @BeforeEach
@@ -423,7 +439,7 @@ class PurchaseServiceTest {
     }
 
     @Test
-    void deliverPurchase_updatesTheIsDeliveredOfAPurchaseToTrue_whenTheIdIsValid() {
+    void deliverPurchase_updatesTheIsDeliveredOfAPurchaseToTrue_whenThePassedIdIsValid() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(purchaseDeliverPurchase));
@@ -452,19 +468,7 @@ class PurchaseServiceTest {
     @Test
     void deleteAPurchase_deletesAPurchase_whenThePassedIdIsValid() {
 
-        Purchase purchaseToBeDeleted = Purchase.PurchaseBuilder.builder()
-                .id(1L)
-                .amount(new BigDecimal("10.00"))
-                .dateAndTime("12/34/5678T90:12")
-                .cardName("cardName")
-                .isActive(false)
-                .isFinished(false)
-                .isDelivered(false)
-                .isPaymentThroughTheWebsite(false)
-                .user(user)
-                .address(address)
-                .purchasedProducts(purchasedProducts)
-                .build();
+        Purchase purchaseToBeDeleted = purchases.get(1);
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(purchaseToBeDeleted));
@@ -519,5 +523,27 @@ class PurchaseServiceTest {
                 .isEqualTo(purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases)
                 .hasSize(purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases.size())
                 .contains(purchaseRestaurantResponseDTOToComparisonInFindDeliveredPurchases.get(0));
+    }
+
+    @Test
+    void disableDeliveryById_updatesTheIsDeliveredOfAPurchaseToFalse_whenThePassedIdIsValid() {
+
+        Purchase purchaseFindAllOfDisableDeliveryById = purchases.get(5);
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(purchaseFindAllOfDisableDeliveryById));
+
+        Assertions.assertThatCode(()-> this.purchaseService.disableDeliveryById(1L))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void disableDeliveryById_throwsResponseStatusException_whenThePassedIdDoesNotExist(){
+
+        BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.empty());
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(()-> this.purchaseService.disableDeliveryById(2L));
     }
 }

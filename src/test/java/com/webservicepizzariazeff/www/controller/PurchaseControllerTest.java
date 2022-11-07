@@ -260,6 +260,9 @@ class PurchaseControllerTest {
 
         BDDMockito.when(this.purchaseService.findDeliveredPurchases())
                 .thenReturn(purchaseRestaurantResponseDTOSFindDeliveredPurchases);
+
+        BDDMockito.doNothing()
+                .when(this.purchaseService).disableDeliveryById(ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -324,7 +327,7 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void purchasePreparation_returnsAStatusCodeNoContent_whenTheIdPassedIsValid() {
+    void purchasePreparation_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
 
         Assertions.assertThatCode(() -> this.purchaseController.purchasePreparation(1L, "pt-BR"))
                 .doesNotThrowAnyException();
@@ -389,7 +392,7 @@ class PurchaseControllerTest {
     @Test
     void deliveredPurchases_returnsAListOfTheLast50PurchaseRestaurantResponseDTODeliveredAndAStatusCodeOk_wheneverCalled() {
 
-        Assertions.assertThatCode(()-> this.purchaseController.deliveredPurchases())
+        Assertions.assertThatCode(() -> this.purchaseController.deliveredPurchases())
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.purchaseController.deliveredPurchases())
@@ -402,5 +405,26 @@ class PurchaseControllerTest {
                 .hasSize(purchaseRestaurantResponseDTOSFindDeliveredPurchases.size())
                 .isEqualTo(purchaseRestaurantResponseDTOSFindDeliveredPurchases)
                 .contains(purchaseRestaurantResponseDTOSFindDeliveredPurchases.get(0));
+    }
+
+    @Test
+    void disableDelivery_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
+
+        Assertions.assertThatCode(() -> this.purchaseController.disableDelivery(1L))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.purchaseController.disableDelivery(1L))
+                .isNotNull()
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @Test
+    void disableDelivery_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+
+        BDDMockito.doThrow(ResponseStatusException.class)
+                .when(this.purchaseService).disableDeliveryById(ArgumentMatchers.any(Long.class));
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseController.disableDelivery(2L));
     }
 }

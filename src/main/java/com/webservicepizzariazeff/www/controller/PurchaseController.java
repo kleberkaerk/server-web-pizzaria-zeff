@@ -4,8 +4,6 @@ import com.webservicepizzariazeff.www.dto.response.PurchaseRestaurantResponseDTO
 import com.webservicepizzariazeff.www.dto.response.PurchaseUserResponseDTO;
 import com.webservicepizzariazeff.www.service.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -90,5 +88,13 @@ public class PurchaseController {
     public ResponseEntity<List<PurchaseRestaurantResponseDTO>> deliveredPurchases() {
 
         return new ResponseEntity<>(this.purchaseService.findDeliveredPurchases(), HttpStatus.OK);
+    }
+
+    @PutMapping("admin/disable-delivery/{id}")
+    public ResponseEntity<Void> disableDelivery(@PathVariable("id") Long id){
+
+        this.purchaseService.disableDeliveryById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
