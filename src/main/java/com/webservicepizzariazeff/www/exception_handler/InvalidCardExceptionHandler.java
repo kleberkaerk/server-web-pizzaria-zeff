@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class ExistingUserExceptionHandler {
+public class InvalidCardExceptionHandler {
 
-    @Schema(example = "This email is already being used, please choose another one.")
+    @Schema(example = "Invalid card.")
     private final String message;
 
-    private ExistingUserExceptionHandler(String message){
+    private InvalidCardExceptionHandler(String message) {
         this.message = message;
     }
 
@@ -21,7 +21,7 @@ public class ExistingUserExceptionHandler {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ExistingUserExceptionHandler that = (ExistingUserExceptionHandler) o;
+        InvalidCardExceptionHandler that = (InvalidCardExceptionHandler) o;
         return Objects.equals(message, that.message);
     }
 
@@ -30,23 +30,23 @@ public class ExistingUserExceptionHandler {
         return Objects.hash(message);
     }
 
-    public static final class ExistingUserExceptionHandlerBuilder {
+    public static final class InvalidCardExceptionHandlerBuilder {
         private String message;
 
-        private ExistingUserExceptionHandlerBuilder() {
+        private InvalidCardExceptionHandlerBuilder() {
         }
 
-        public static ExistingUserExceptionHandlerBuilder builder() {
-            return new ExistingUserExceptionHandlerBuilder();
+        public static InvalidCardExceptionHandlerBuilder builder() {
+            return new InvalidCardExceptionHandlerBuilder();
         }
 
-        public ExistingUserExceptionHandlerBuilder message(String message) {
+        public InvalidCardExceptionHandlerBuilder message(String message) {
             this.message = message;
             return this;
         }
 
-        public ExistingUserExceptionHandler build() {
-            return new ExistingUserExceptionHandler(message);
+        public InvalidCardExceptionHandler build() {
+            return new InvalidCardExceptionHandler(message);
         }
     }
 }

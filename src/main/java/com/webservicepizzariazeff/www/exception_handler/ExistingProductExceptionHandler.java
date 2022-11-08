@@ -1,9 +1,12 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Objects;
 
 public class ExistingProductExceptionHandler {
 
+    @Schema(example = "This product has been registered before.")
     private final String message;
 
     private ExistingProductExceptionHandler(String message) {

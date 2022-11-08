@@ -1,9 +1,13 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Objects;
 
 public class PurchaseFinishedExceptionHandler {
 
+
+    @Schema(example = "Your order is already ready, so it cannot be cancelled. In a few minutes it will be delivered in your house.")
     private final String message;
 
     private PurchaseFinishedExceptionHandler(String message) {

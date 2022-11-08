@@ -14,7 +14,7 @@ class ExistingProductExceptionHandlerTest {
 
 
     @BeforeEach
-    void setExistingProductExceptionHandler(){
+    void setObjects(){
 
         this.existingProductExceptionHandler = ExistingProductExceptionHandler.ExistingProductExceptionHandlerBuilder.builder()
                 .message("message1")

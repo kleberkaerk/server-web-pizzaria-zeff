@@ -13,7 +13,7 @@ class PurchaseFinishedExceptionHandlerTest {
     private PurchaseFinishedExceptionHandler differentPurchaseFinishedExceptionHandler;
 
     @BeforeEach
-    void setPurchaseFinishedExceptionHandler() {
+    void setObjects() {
 
         this.purchaseFinishedExceptionHandler = PurchaseFinishedExceptionHandler.PurchaseFinishedExceptionHandlerBuilder.builder()
                 .message("message1")

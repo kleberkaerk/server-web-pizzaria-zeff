@@ -11,7 +11,7 @@ class ExistingUserExceptionHandlerTest {
     private ExistingUserExceptionHandler differentExistingUserExceptionHandler;
 
     @BeforeEach
-    void setExistingUserExceptionHandler() {
+    void setObjects() {
 
         this.existingUserExceptionHandler = ExistingUserExceptionHandler.ExistingUserExceptionHandlerBuilder.builder()
                 .message("message1")

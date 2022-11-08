@@ -13,7 +13,7 @@ class MethodArgumentNotValidExceptionHandlerTest {
     private MethodArgumentNotValidExceptionHandler differentMethodArgumentNotValidExceptionHandler;
 
     @BeforeEach
-    void setMethodArgumentNotValidExceptionHandler() {
+    void setObjects() {
 
         this.methodArgumentNotValidExceptionHandler = MethodArgumentNotValidExceptionHandler.MethodArgumentNotValidExceptionHandlerBuilder.builder()
                 .message("message1")

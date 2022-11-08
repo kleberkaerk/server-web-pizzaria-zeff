@@ -83,7 +83,7 @@ public class AddressService {
         Optional<Address> addressOptional = this.addressRepository.findById(id);
 
         if (addressOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         this.addressRepository.deleteById(id);

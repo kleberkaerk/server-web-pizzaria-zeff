@@ -1,9 +1,6 @@
 package com.webservicepizzariazeff.www.handler;
 
-import com.webservicepizzariazeff.www.exception.ExistingAddressException;
-import com.webservicepizzariazeff.www.exception.ExistingProductException;
-import com.webservicepizzariazeff.www.exception.ExistingUserException;
-import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
+import com.webservicepizzariazeff.www.exception.*;
 import com.webservicepizzariazeff.www.exception_handler.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,5 +55,13 @@ public class ResponseEntityExceptionHandler {
         return new ResponseEntity<>(ExistingProductExceptionHandler.ExistingProductExceptionHandlerBuilder.builder()
                 .message(exception.getMessage())
                 .build(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidCardException.class)
+    public ResponseEntity<InvalidCardExceptionHandler> handlerInvalidCardException(InvalidCardException exception){
+
+        return new ResponseEntity<>(InvalidCardExceptionHandler.InvalidCardExceptionHandlerBuilder.builder()
+                .message(exception.getMessage())
+                .build(), HttpStatus.NOT_FOUND);
     }
 }

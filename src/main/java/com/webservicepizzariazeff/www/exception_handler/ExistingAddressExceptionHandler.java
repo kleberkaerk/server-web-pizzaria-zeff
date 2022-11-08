@@ -1,9 +1,12 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Objects;
 
 public class ExistingAddressExceptionHandler {
 
+    @Schema(example = "This address has already been registered before.")
     private final String message;
 
     private ExistingAddressExceptionHandler(String message) {

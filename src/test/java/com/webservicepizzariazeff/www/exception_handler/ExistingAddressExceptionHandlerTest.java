@@ -13,7 +13,7 @@ class ExistingAddressExceptionHandlerTest {
     private ExistingAddressExceptionHandler differentExistingAddressExceptionHandler;
 
     @BeforeEach
-    void setExistingAddressExceptionHandler() {
+    void setObjects() {
 
         this.existingAddressExceptionHandler = ExistingAddressExceptionHandler.ExistingAddressExceptionHandlerBuilder.builder()
                 .message("message1")

@@ -1,9 +1,6 @@
 package com.webservicepizzariazeff.www.handler;
 
-import com.webservicepizzariazeff.www.exception.ExistingAddressException;
-import com.webservicepizzariazeff.www.exception.ExistingProductException;
-import com.webservicepizzariazeff.www.exception.ExistingUserException;
-import com.webservicepizzariazeff.www.exception.PurchaseFinishedException;
+import com.webservicepizzariazeff.www.exception.*;
 import com.webservicepizzariazeff.www.exception_handler.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,6 +30,10 @@ class ResponseEntityExceptionHandlerTest {
     private static ExistingProductException existingProductExceptionToArgument;
 
     private static ResponseEntity<ExistingProductExceptionHandler> existingProductExceptionHandlerToComparison;
+
+    private static InvalidCardException invalidCardExceptionToArgument;
+
+    private static ResponseEntity<InvalidCardExceptionHandler> invalidCardExceptionHandlerToComparison;
 
     static void setExistingUserExceptionToArgument() {
 
@@ -99,6 +100,20 @@ class ResponseEntityExceptionHandlerTest {
         );
     }
 
+    static void setInvalidCardExceptionToArgument(){
+
+        invalidCardExceptionToArgument = new InvalidCardException("message InvalidCardException");
+    }
+
+    static void setInvalidCardExceptionHandlerToComparison(){
+
+        invalidCardExceptionHandlerToComparison = new ResponseEntity<>(
+                InvalidCardExceptionHandler.InvalidCardExceptionHandlerBuilder.builder()
+                        .message("message InvalidCardException")
+                        .build(), HttpStatus.NOT_FOUND
+        );
+    }
+
     @BeforeAll
     static void initializeObjects() {
 
@@ -111,6 +126,8 @@ class ResponseEntityExceptionHandlerTest {
         setPurchaseFinishedExceptionHandlerToComparison();
         setExistingProductExceptionToArgument();
         setExistingProductExceptionHandlerToComparison();
+        setInvalidCardExceptionToArgument();
+        setInvalidCardExceptionHandlerToComparison();
     }
 
     @BeforeEach
@@ -126,6 +143,7 @@ class ResponseEntityExceptionHandlerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(responseEntityExceptionHandler.handlerExistingUserException(existingUserExceptionToArgument))
+                .isNotNull()
                 .isEqualTo(existingUserExceptionHandlerToComparison);
     }
 
@@ -136,6 +154,7 @@ class ResponseEntityExceptionHandlerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(responseEntityExceptionHandler.handlerMethodArgumentNotValidException())
+                .isNotNull()
                 .isEqualTo(methodArgumentNotValidExceptionHandlerToComparison);
     }
 
@@ -146,6 +165,7 @@ class ResponseEntityExceptionHandlerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingAddressException(existingAddressExceptionToArgument))
+                .isNotNull()
                 .isEqualTo(existingAddressExceptionHandlerToComparison);
     }
 
@@ -156,6 +176,7 @@ class ResponseEntityExceptionHandlerTest {
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerPurchaseFinishedException(purchaseFinishedExceptionToArgument))
+                .isNotNull()
                 .isEqualTo(purchaseFinishedExceptionHandlerToComparison);
     }
 
@@ -165,6 +186,18 @@ class ResponseEntityExceptionHandlerTest {
         Assertions.assertThatCode(()-> this.responseEntityExceptionHandler.handlerExistingProductException(existingProductExceptionToArgument))
                 .doesNotThrowAnyException();
         Assertions.assertThat(this.responseEntityExceptionHandler.handlerExistingProductException(existingProductExceptionToArgument))
+                .isNotNull()
                 .isEqualTo(existingProductExceptionHandlerToComparison);
+    }
+
+    @Test
+    void handlerInvalidCardException_returnsAResponseEntityOfTypeInvalidCardExceptionHandler_wheneverCalled(){
+
+        Assertions.assertThatCode(()-> this.responseEntityExceptionHandler.handlerInvalidCardException(invalidCardExceptionToArgument))
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.responseEntityExceptionHandler.handlerInvalidCardException(invalidCardExceptionToArgument))
+                .isNotNull()
+                .isEqualTo(invalidCardExceptionHandlerToComparison);
     }
 }
