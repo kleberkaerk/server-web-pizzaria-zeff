@@ -439,6 +439,13 @@ class PurchaseServiceTest {
     }
 
     @Test
+    void preparePurchase_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid() {
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.preparePurchase(1L, "a"));
+    }
+
+    @Test
     void deliverPurchase_updatesTheIsDeliveredOfAPurchaseToTrue_whenThePassedIdIsValid() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
@@ -463,6 +470,13 @@ class PurchaseServiceTest {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
                 .isThrownBy(() -> this.purchaseService.deliverPurchase(1L, "pt-BR"));
+    }
+
+    @Test
+    void deliverPurchase_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid() {
+
+        Assertions.assertThatExceptionOfType(ResponseStatusException.class)
+                .isThrownBy(() -> this.purchaseService.deliverPurchase(1L, "a"));
     }
 
     @Test
@@ -533,17 +547,17 @@ class PurchaseServiceTest {
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(purchaseFindAllOfDisableDeliveryById));
 
-        Assertions.assertThatCode(()-> this.purchaseService.disableDeliveryById(1L))
+        Assertions.assertThatCode(() -> this.purchaseService.disableDeliveryById(1L))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void disableDeliveryById_throwsResponseStatusException_whenThePassedIdDoesNotExist(){
+    void disableDeliveryById_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.purchaseService.disableDeliveryById(2L));
+                .isThrownBy(() -> this.purchaseService.disableDeliveryById(2L));
     }
 }

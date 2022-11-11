@@ -93,7 +93,8 @@ public class PurchaseService {
 
     public void preparePurchase(Long id, String acceptLanguage) {
 
-        String[] languageAndCountry = acceptLanguage.split("-");
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
 
         messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
@@ -109,7 +110,8 @@ public class PurchaseService {
 
     public void deliverPurchase(Long id, String acceptLanguage) {
 
-        String[] languageAndCountry = acceptLanguage.split("-");
+        Validator.validateAcceptLanguage(acceptLanguage);
+        String[] languageAndCountry = Mapper.fromAcceptLanguageToStringArray(acceptLanguage);
 
         messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale(languageAndCountry[0], languageAndCountry[1]));
 
