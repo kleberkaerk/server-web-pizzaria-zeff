@@ -1,12 +1,16 @@
 package com.webservicepizzariazeff.www.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class PurchasedProductResponseDTO {
 
     private final String name;
 
-    private PurchasedProductResponseDTO(String name){
+    @JsonCreator()
+    private PurchasedProductResponseDTO(@JsonProperty("name") String name) {
 
         this.name = name;
     }

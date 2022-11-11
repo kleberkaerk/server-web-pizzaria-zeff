@@ -1,5 +1,7 @@
 package com.webservicepizzariazeff.www.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.webservicepizzariazeff.www.domain.PriceRating;
 import com.webservicepizzariazeff.www.domain.Type;
 
@@ -18,7 +20,17 @@ public class ProductResponseDTO {
     private final String image;
     private final boolean isStocked;
 
-    private ProductResponseDTO(Long id, String name, String description, BigDecimal price, Type type, PriceRating priceRating, String image, boolean isStocked) {
+    @JsonCreator()
+    private ProductResponseDTO(
+            @JsonProperty("id") Long id,
+            @JsonProperty("name") String name,
+            @JsonProperty("description") String description,
+            @JsonProperty("price") BigDecimal price,
+            @JsonProperty("type") Type type,
+            @JsonProperty("priceRating") PriceRating priceRating,
+            @JsonProperty("image") String image,
+            @JsonProperty("stocked") boolean isStocked) {
+
         this.id = id;
         this.name = name;
         this.description = description;

@@ -1,5 +1,7 @@
 package com.webservicepizzariazeff.www.exception_handler;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
@@ -9,7 +11,8 @@ public class ExistingProductExceptionHandler {
     @Schema(example = "This product has been registered before.")
     private final String message;
 
-    private ExistingProductExceptionHandler(String message) {
+    @JsonCreator()
+    private ExistingProductExceptionHandler(@JsonProperty("message") String message) {
         this.message = message;
     }
 

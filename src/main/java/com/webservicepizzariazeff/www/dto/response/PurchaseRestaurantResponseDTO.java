@@ -1,5 +1,8 @@
 package com.webservicepizzariazeff.www.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -15,15 +18,16 @@ public class PurchaseRestaurantResponseDTO {
     private final List<PurchasedProductResponseDTO> purchasedProductResponseDTOS;
     private final AddressResponseDTO addressResponseDTO;
 
+    @JsonCreator()
     private PurchaseRestaurantResponseDTO(
-            Long id,
-            String clientName,
-            boolean isActive,
-            boolean isFinished,
-            boolean isDelivered,
-            boolean isPaymentThroughTheWebsite,
-            List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
-            AddressResponseDTO addressResponseDTO
+            @JsonProperty("id") Long id,
+            @JsonProperty("clientName") String clientName,
+            @JsonProperty("isActive") boolean isActive,
+            @JsonProperty("isFinished") boolean isFinished,
+            @JsonProperty("isDelivered") boolean isDelivered,
+            @JsonProperty("isPaymentThroughTheWebsite") boolean isPaymentThroughTheWebsite,
+            @JsonProperty("purchasedProductResponseDTOS") List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
+            @JsonProperty("addressResponseDTO") AddressResponseDTO addressResponseDTO
     ) {
 
         this.id = id;

@@ -1,5 +1,8 @@
 package com.webservicepizzariazeff.www.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,7 +19,12 @@ public class SaleRequestDTO {
 
     private final boolean isPaymentThroughTheWebsite;
 
-    private SaleRequestDTO(List<Long> productsId, Long addressId, CardRequestDTO cardRequestDTO, boolean isPaymentThroughTheWebsite) {
+    @JsonCreator
+    private SaleRequestDTO(
+            @JsonProperty("productsId") List<Long> productsId,
+            @JsonProperty("addressId") Long addressId,
+            @JsonProperty("cardRequestDTO") CardRequestDTO cardRequestDTO,
+            @JsonProperty("paymentThroughTheWebsite") boolean isPaymentThroughTheWebsite) {
         this.productsId = productsId;
         this.addressId = addressId;
         this.cardRequestDTO = cardRequestDTO;

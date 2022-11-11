@@ -1,0 +1,56 @@
+package com.webservicepizzariazeff.www.integration.wrapper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
+
+@SuppressWarnings("unused")
+public class PageableResponse<T> extends PageImpl<T> {
+    private final boolean first;
+    private final boolean last;
+    private final int totalPages;
+    private final int numberOfElements;
+
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public PageableResponse(@JsonProperty("content") List<T> content,
+                            @JsonProperty("number") int number,
+                            @JsonProperty("size") int size,
+                            @JsonProperty("totalElements") int totalElements,
+                            @JsonProperty("last") boolean last,
+                            @JsonProperty("first") boolean first,
+                            @JsonProperty("totalPages") int totalPages,
+                            @JsonProperty("numberOfElements") int numberOfElements,
+                            @JsonProperty("pageable") JsonNode pageable,
+                            @JsonProperty("sort") JsonNode sort) {
+
+        super(content, PageRequest.of(number, size), totalElements);
+        this.last = last;
+        this.first = first;
+        this.totalPages = totalPages;
+        this.numberOfElements = numberOfElements;
+    }
+
+    @Override
+    public boolean isFirst() {
+        return first;
+    }
+
+    @Override
+    public boolean isLast() {
+        return last;
+    }
+
+    @Override
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    @Override
+    public int getNumberOfElements() {
+        return numberOfElements;
+    }
+}

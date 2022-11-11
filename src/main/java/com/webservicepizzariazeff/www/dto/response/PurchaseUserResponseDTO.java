@@ -1,5 +1,8 @@
 package com.webservicepizzariazeff.www.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -18,17 +21,18 @@ public class PurchaseUserResponseDTO {
     private final List<PurchasedProductResponseDTO> purchasedProductResponseDTOS;
     private final AddressResponseDTO addressResponseDTO;
 
+    @JsonCreator()
     private PurchaseUserResponseDTO(
-            Long id,
-            BigDecimal amount,
-            String dateAndTime,
-            String cardName,
-            boolean isActive,
-            boolean isFinished,
-            boolean isDelivered,
-            boolean isPaymentThroughTheWebsite,
-            List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
-            AddressResponseDTO addressResponseDTO
+            @JsonProperty("id") Long id,
+            @JsonProperty("amount") BigDecimal amount,
+            @JsonProperty("dateAndTime") String dateAndTime,
+            @JsonProperty("cardName") String cardName,
+            @JsonProperty("isActive") boolean isActive,
+            @JsonProperty("isFinished") boolean isFinished,
+            @JsonProperty("isDelivered") boolean isDelivered,
+            @JsonProperty("isPaymentThroughTheWebsite") boolean isPaymentThroughTheWebsite,
+            @JsonProperty("purchasedProductResponseDTOS") List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
+            @JsonProperty("addressResponseDTO") AddressResponseDTO addressResponseDTO
     ) {
         this.id = id;
         this.amount = amount;
