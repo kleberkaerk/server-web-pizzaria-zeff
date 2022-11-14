@@ -58,9 +58,11 @@ public class AddressController {
     @DeleteMapping(value = "{id}")
     @Operation(responses = {@ApiResponse(responseCode = "204", description = "When the passed id is valid"),
             @ApiResponse(responseCode = "400", description = "When the passed id is invalid")})
-    public ResponseEntity<Void> deleteAddress(@PathVariable @Parameter(example = "1") Long id) {
+    public ResponseEntity<Void> deleteAddress(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable @Parameter(example = "1") Long id) {
 
-        this.addressService.deleteAAddress(id);
+        this.addressService.deleteAAddress(userDetails, id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

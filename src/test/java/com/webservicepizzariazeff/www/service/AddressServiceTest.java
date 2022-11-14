@@ -40,7 +40,7 @@ class AddressServiceTest {
 
     private static AddressResponseDTO addressResponseDTOToComparisonInFindByUser;
 
-    static void setUser(){
+    static void setUser() {
 
         user = User.UserBuilder.builder()
                 .id(1L)
@@ -51,7 +51,7 @@ class AddressServiceTest {
                 .build();
     }
 
-    static void setAddress(){
+    static void setAddress() {
 
         address = Address.AddressBuilder.builder()
                 .id(1L)
@@ -99,7 +99,7 @@ class AddressServiceTest {
         );
     }
 
-    static void setAddressResponseDTOToComparisonInFindByUser(){
+    static void setAddressResponseDTOToComparisonInFindByUser() {
 
         addressResponseDTOToComparisonInFindByUser = AddressResponseDTO.AddressResponseDTOBuilder.builder()
                 .id(1L)
@@ -143,8 +143,13 @@ class AddressServiceTest {
         BDDMockito.when(this.addressRepository.findByUser(ArgumentMatchers.any(User.class)))
                 .thenReturn(addresses);
 
+        BDDMockito.when(this.addressRepository.findByIdAndUser(
+                        ArgumentMatchers.any(Long.class),
+                        ArgumentMatchers.any(User.class)))
+                .thenReturn(Optional.of(address));
+
         BDDMockito.doNothing()
-                .when(this.addressRepository).deleteById(ArgumentMatchers.any());
+                .when(this.addressRepository).deleteById(ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -195,10 +200,10 @@ class AddressServiceTest {
     }
 
     @Test
-    void registerAddress_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid(){
+    void registerAddress_throwsResponseStatusException_whenThePassedAcceptLanguageIsInvalid() {
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(()-> this.addressService.registerAddress(user, addressRequestDTO, "a"));
+                .isThrownBy(() -> this.addressService.registerAddress(user, addressRequestDTO, "a"));
     }
 
     @Test
@@ -216,17 +221,19 @@ class AddressServiceTest {
     @Test
     void deleteAAddress_deleteAnAddressUsingTheId_whenTheAddressExistsInTheDatabase() {
 
-        Assertions.assertThatCode(() -> this.addressService.deleteAAddress(1L))
+        Assertions.assertThatCode(() -> this.addressService.deleteAAddress(user, 1L))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void deleteAAddress_throwsResponseStatusException_whenTheAddressNotExistsInTheDatabase() {
 
-        BDDMockito.when(this.addressRepository.findById(ArgumentMatchers.any(Long.class)))
+        BDDMockito.when(this.addressRepository.findByIdAndUser(
+                        ArgumentMatchers.any(Long.class),
+                        ArgumentMatchers.any(User.class)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.addressService.deleteAAddress(1L));
+                .isThrownBy(() -> this.addressService.deleteAAddress(user, 1L));
     }
 }

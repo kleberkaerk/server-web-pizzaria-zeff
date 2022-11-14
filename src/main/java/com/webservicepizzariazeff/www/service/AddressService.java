@@ -78,9 +78,11 @@ public class AddressService {
                 .toList();
     }
 
-    public void deleteAAddress(Long id) {
+    public void deleteAAddress(UserDetails userDetails, Long id) {
 
-        Optional<Address> addressOptional = this.addressRepository.findById(id);
+        User user = Mapper.fromUserDetailsToUser(userDetails);
+
+        Optional<Address> addressOptional = this.addressRepository.findByIdAndUser(id, user);
 
         if (addressOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
