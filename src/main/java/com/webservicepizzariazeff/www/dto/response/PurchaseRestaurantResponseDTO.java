@@ -22,10 +22,10 @@ public class PurchaseRestaurantResponseDTO {
     private PurchaseRestaurantResponseDTO(
             @JsonProperty("id") Long id,
             @JsonProperty("clientName") String clientName,
-            @JsonProperty("isActive") boolean isActive,
-            @JsonProperty("isFinished") boolean isFinished,
-            @JsonProperty("isDelivered") boolean isDelivered,
-            @JsonProperty("isPaymentThroughTheWebsite") boolean isPaymentThroughTheWebsite,
+            @JsonProperty("active") boolean isActive,
+            @JsonProperty("finished") boolean isFinished,
+            @JsonProperty("delivered") boolean isDelivered,
+            @JsonProperty("paymentThroughTheWebsite") boolean isPaymentThroughTheWebsite,
             @JsonProperty("purchasedProductResponseDTOS") List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
             @JsonProperty("addressResponseDTO") AddressResponseDTO addressResponseDTO
     ) {

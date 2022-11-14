@@ -27,10 +27,10 @@ public class PurchaseUserResponseDTO {
             @JsonProperty("amount") BigDecimal amount,
             @JsonProperty("dateAndTime") String dateAndTime,
             @JsonProperty("cardName") String cardName,
-            @JsonProperty("isActive") boolean isActive,
-            @JsonProperty("isFinished") boolean isFinished,
-            @JsonProperty("isDelivered") boolean isDelivered,
-            @JsonProperty("isPaymentThroughTheWebsite") boolean isPaymentThroughTheWebsite,
+            @JsonProperty("active") boolean isActive,
+            @JsonProperty("finished") boolean isFinished,
+            @JsonProperty("delivered") boolean isDelivered,
+            @JsonProperty("paymentThroughTheWebsite") boolean isPaymentThroughTheWebsite,
             @JsonProperty("purchasedProductResponseDTOS") List<PurchasedProductResponseDTO> purchasedProductResponseDTOS,
             @JsonProperty("addressResponseDTO") AddressResponseDTO addressResponseDTO
     ) {
@@ -107,12 +107,12 @@ public class PurchaseUserResponseDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PurchaseUserResponseDTO that = (PurchaseUserResponseDTO) o;
-        return isActive == that.isActive && isFinished == that.isFinished && isDelivered == that.isDelivered && isPaymentThroughTheWebsite == that.isPaymentThroughTheWebsite && Objects.equals(id, that.id) && Objects.equals(amount, that.amount) && Objects.equals(dateAndTime, that.dateAndTime) && Objects.equals(cardName, that.cardName) && Objects.equals(purchasedProductResponseDTOS, that.purchasedProductResponseDTOS) && Objects.equals(addressResponseDTO, that.addressResponseDTO);
+        return isActive == that.isActive && isFinished == that.isFinished && isDelivered == that.isDelivered && isPaymentThroughTheWebsite == that.isPaymentThroughTheWebsite && Objects.equals(id, that.id) && Objects.equals(amount, that.amount) && Objects.equals(cardName, that.cardName) && Objects.equals(purchasedProductResponseDTOS, that.purchasedProductResponseDTOS) && Objects.equals(addressResponseDTO, that.addressResponseDTO);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, amount, dateAndTime, cardName, isActive, isFinished, isDelivered, isPaymentThroughTheWebsite, purchasedProductResponseDTOS, addressResponseDTO);
+        return Objects.hash(id, amount, cardName, isActive, isFinished, isDelivered, isPaymentThroughTheWebsite, purchasedProductResponseDTOS, addressResponseDTO);
     }
 
     public static final class PurchaseUserResponseDTOBuilder {
