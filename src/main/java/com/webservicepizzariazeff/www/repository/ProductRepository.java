@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByPriceRatingAndIsStocked(PriceRating priceRating, boolean isStocked);
 
-    Page<Product> findByNameContainsIgnoreCaseAllIgnoreCase(String name, Pageable pageable);
+    Page<Product> findByNameContainsAndIsStockedAllIgnoreCase(String name, boolean isStocked, Pageable pageable);
 
     @Transactional
     @Modifying

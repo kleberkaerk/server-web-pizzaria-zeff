@@ -69,7 +69,7 @@ public class ProductController {
             @ParameterObject Pageable pageable,
             @RequestParam @Parameter(example = "foobar") String name) {
 
-        return new ResponseEntity<>(this.productService.searchProductsByName(pageable, name), HttpStatus.OK);
+        return new ResponseEntity<>(this.productService.searchProductsByNameAndInStock(pageable, name), HttpStatus.OK);
     }
 
     @GetMapping(value = "admin/find-all", produces = MediaType.APPLICATION_JSON_VALUE)

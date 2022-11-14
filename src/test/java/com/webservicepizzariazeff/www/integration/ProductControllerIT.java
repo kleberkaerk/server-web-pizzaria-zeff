@@ -527,7 +527,7 @@ class ProductControllerIT {
     }
 
     @Test
-    void searchProducts_returnsAPageOfTheProductOfAGivenNameAndAStatusCode200_wheneverCalled() {
+    void searchProducts_returnsAPageOfTheProductsInStockAndOfAGivenNameAndAStatusCode200_wheneverCalled() {
 
         productsSearchProducts.forEach(
                 product -> this.productRepository.save(product)

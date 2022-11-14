@@ -64,9 +64,9 @@ public class ProductService {
         return mapAndSortAndGroupProductByType(productsByPriceRating);
     }
 
-    public Page<ProductResponseDTO> searchProductsByName(Pageable pageable, String name) {
+    public Page<ProductResponseDTO> searchProductsByNameAndInStock(Pageable pageable, String name) {
 
-        Page<Product> productPage = this.productRepository.findByNameContainsIgnoreCaseAllIgnoreCase(name, pageable);
+        Page<Product> productPage = this.productRepository.findByNameContainsAndIsStockedAllIgnoreCase(name, true, pageable);
 
         return productPage.map(Mapper::fromProductToProductResponseDTO);
     }

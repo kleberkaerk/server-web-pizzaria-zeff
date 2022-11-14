@@ -52,7 +52,9 @@ class ProductServiceTest {
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindProductsInPromotionAndInStock;
 
-    private static List<ProductResponseDTO> productResponseDTOSToComparisonInSearchProductsByName;
+    private static List<Product> productsFindByNameContainsAndIsStockedAllIgnoreCase;
+
+    private static List<ProductResponseDTO> productResponseDTOSToComparisonInSearchProductsByNameAndInStock;
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllGrouped;
 
@@ -223,9 +225,16 @@ class ProductServiceTest {
                 .toList();
     }
 
+    static void setProductsSearchProductsByNameAndInStock() {
+
+        productsFindByNameContainsAndIsStockedAllIgnoreCase = products.stream()
+                .filter(Product::isStocked)
+                .toList();
+    }
+
     static void setProductResponseDTOSToComparisonInSearchProductsByName() {
 
-        productResponseDTOSToComparisonInSearchProductsByName = products.stream()
+        productResponseDTOSToComparisonInSearchProductsByNameAndInStock = productsFindByNameContainsAndIsStockedAllIgnoreCase.stream()
                 .map(Mapper::fromProductToProductResponseDTO)
                 .toList();
     }
@@ -265,6 +274,7 @@ class ProductServiceTest {
         setProductResponseDTOSToComparisonInFindProductsByTypeAndInStock();
         setProductsFindByPriceRatingAndIsStocked();
         setProductResponseDTOSToComparisonInFindProductsInPromotionAndInStock();
+        setProductsSearchProductsByNameAndInStock();
         setProductResponseDTOSToComparisonInSearchProductsByName();
         setProductResponseDTOSToComparisonInFindAllGrouped();
         setProduct();
@@ -314,8 +324,11 @@ class ProductServiceTest {
         BDDMockito.when(this.productRepository.save(ArgumentMatchers.any(Product.class)))
                 .thenReturn(product);
 
-        BDDMockito.when(this.productRepository.findByNameContainsIgnoreCaseAllIgnoreCase(ArgumentMatchers.anyString(), ArgumentMatchers.any(Pageable.class)))
-                .thenReturn(new PageImpl<>(products));
+        BDDMockito.when(this.productRepository.findByNameContainsAndIsStockedAllIgnoreCase(
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyBoolean(),
+                        ArgumentMatchers.any(Pageable.class)))
+                .thenReturn(new PageImpl<>(productsFindByNameContainsAndIsStockedAllIgnoreCase));
     }
 
     @Test
@@ -367,21 +380,21 @@ class ProductServiceTest {
     }
 
     @Test
-    void searchProductsByName_returnsAPageOfTheAllProductsThatHaveACertainName_wheneverCalled() {
+    void searchProductsByNameAndInStock_returnsAPageOfTheAllProductsThatHaveACertainName_wheneverCalled() {
 
-        Assertions.assertThatCode(() -> this.productService.searchProductsByName(Page.empty().getPageable(), "name"))
+        Assertions.assertThatCode(() -> this.productService.searchProductsByNameAndInStock(Page.empty().getPageable(), "name"))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.productService.searchProductsByName(Page.empty().getPageable(), "name"))
+        Assertions.assertThat(this.productService.searchProductsByNameAndInStock(Page.empty().getPageable(), "name"))
                 .isNotNull()
-                .isEqualTo(new PageImpl<>(productResponseDTOSToComparisonInSearchProductsByName));
+                .isEqualTo(new PageImpl<>(productResponseDTOSToComparisonInSearchProductsByNameAndInStock));
 
-        Assertions.assertThat(this.productService.searchProductsByName(Page.empty().getPageable(), "name").toList())
+        Assertions.assertThat(this.productService.searchProductsByNameAndInStock(Page.empty().getPageable(), "name").toList())
                 .isNotNull()
                 .asList()
-                .hasSize(productResponseDTOSToComparisonInSearchProductsByName.size())
-                .isEqualTo(productResponseDTOSToComparisonInSearchProductsByName)
-                .contains(productResponseDTOSToComparisonInSearchProductsByName.get(1));
+                .hasSize(productResponseDTOSToComparisonInSearchProductsByNameAndInStock.size())
+                .isEqualTo(productResponseDTOSToComparisonInSearchProductsByNameAndInStock)
+                .contains(productResponseDTOSToComparisonInSearchProductsByNameAndInStock.get(1));
     }
 
     @Test

@@ -48,6 +48,8 @@ class ProductControllerTest {
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindProductsInPromotion;
 
+    private static List<ProductResponseDTO> productResponseDTOSSearchProductsByNameAndInStock;
+
     private static Map<Boolean, List<ProductResponseDTO>> mapFindAllGrouped;
 
     private static List<ProductResponseDTO> productResponseDTOSToComparisonInFindAllProducts;
@@ -253,6 +255,13 @@ class ProductControllerTest {
         productResponseDTOSToComparisonInFindProductsInPromotion = mapFindProductsInPromotionAndInStock.get(Type.SWEET_ESFIHA);
     }
 
+    static void setProductResponseDTOSSearchProductsByNameAndInStock() {
+
+        productResponseDTOSSearchProductsByNameAndInStock = productResponseDTOS.stream()
+                .filter(ProductResponseDTO::isStocked)
+                .toList();
+    }
+
     static void setMapFindAllGrouped() {
 
         mapFindAllGrouped = productResponseDTOS.stream()
@@ -285,6 +294,7 @@ class ProductControllerTest {
         setProductResponseDTOSFindProductsByTypeAndInStock();
         setMapFindProductsInPromotionAndInStock();
         setProductResponseDTOSToComparisonInFindProductsInPromotion();
+        setProductResponseDTOSSearchProductsByNameAndInStock();
         setMapFindAllGrouped();
         setProductResponseDTOSToComparisonInFindAllProducts();
         setProductRequestDTO();
@@ -320,8 +330,8 @@ class ProductControllerTest {
         BDDMockito.when(this.productService.registerNewProduct(ArgumentMatchers.any(ProductRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenReturn(1L);
 
-        BDDMockito.when(this.productService.searchProductsByName(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
-                .thenReturn(new PageImpl<>(productResponseDTOS));
+        BDDMockito.when(this.productService.searchProductsByNameAndInStock(ArgumentMatchers.any(Pageable.class), ArgumentMatchers.anyString()))
+                .thenReturn(new PageImpl<>(productResponseDTOSSearchProductsByNameAndInStock));
     }
 
     @Test
@@ -370,20 +380,20 @@ class ProductControllerTest {
     }
 
     @Test
-    void searchProducts_returnsAPageOfTheAllProductsThatHaveACertainNameAndAStatusCodeOk_wheneverCalled() {
+    void searchProducts_returnsAPageOfTheAllProductsInStockAndThatHaveACertainNameAndAStatusCodeOk_wheneverCalled() {
 
         Assertions.assertThatCode(()-> this.productController.searchProducts(Page.empty().getPageable(), "name"))
                 .doesNotThrowAnyException();
 
         Assertions.assertThat(this.productController.searchProducts(Page.empty().getPageable(), "name"))
                 .isNotNull()
-                .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOS)));
+                .isEqualTo(ResponseEntity.ok(new PageImpl<>(productResponseDTOSSearchProductsByNameAndInStock)));
 
         Assertions.assertThat(Objects.requireNonNull(this.productController.searchProducts(Page.empty().getPageable(), "name").getBody()).toList())
                 .isNotNull()
                 .asList()
-                .hasSize(productResponseDTOS.size())
-                .contains(productResponseDTOS.get(1));
+                .hasSize(productResponseDTOSSearchProductsByNameAndInStock.size())
+                .contains(productResponseDTOSSearchProductsByNameAndInStock.get(1));
     }
 
     @Test
