@@ -262,7 +262,7 @@ class PurchaseControllerTest {
                 .thenReturn(purchaseRestaurantResponseDTOSFindDeliveredPurchases);
 
         BDDMockito.doNothing()
-                .when(this.purchaseService).disableDeliveryById(ArgumentMatchers.any(Long.class));
+                .when(this.purchaseService).disableFinalizationById(ArgumentMatchers.any(Long.class));
     }
 
     @Test
@@ -408,23 +408,23 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void disableDelivery_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
+    void disableFinalization_returnsAStatusCodeNoContent_whenThePassedIdIsValid() {
 
-        Assertions.assertThatCode(() -> this.purchaseController.disableDelivery(1L))
+        Assertions.assertThatCode(() -> this.purchaseController.disableFinalization(1L))
                 .doesNotThrowAnyException();
 
-        Assertions.assertThat(this.purchaseController.disableDelivery(1L))
+        Assertions.assertThat(this.purchaseController.disableFinalization(1L))
                 .isNotNull()
                 .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @Test
-    void disableDelivery_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+    void disableFinalization_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
 
         BDDMockito.doThrow(ResponseStatusException.class)
-                .when(this.purchaseService).disableDeliveryById(ArgumentMatchers.any(Long.class));
+                .when(this.purchaseService).disableFinalizationById(ArgumentMatchers.any(Long.class));
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.purchaseController.disableDelivery(2L));
+                .isThrownBy(() -> this.purchaseController.disableFinalization(2L));
     }
 }

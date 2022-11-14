@@ -158,12 +158,12 @@ public class PurchaseService {
                 .toList();
     }
 
-    public void disableDeliveryById(Long id) {
+    public void disableFinalizationById(Long id) {
 
         messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, new Locale("en", "US"));
 
         this.findById(id, messages.getString(INVALID_ID));
 
-        this.purchaseRepository.updateIsDeliveredById(false, id);
+        this.purchaseRepository.updateIsFinishedAndIsDeliveredById(false, false, id);
     }
 }

@@ -120,14 +120,14 @@ public class PurchaseController {
         return new ResponseEntity<>(this.purchaseService.findDeliveredPurchases(), HttpStatus.OK);
     }
 
-    @PutMapping("admin/disable-delivery/{id}")
+    @PutMapping("admin/disable-finalization/{id}")
     @Operation(
             responses = {@ApiResponse(responseCode = "204", description = "If the passed id is valid"),
                     @ApiResponse(responseCode = "400", description = "If the passed id is invalid")}
     )
-    public ResponseEntity<Void> disableDelivery(@PathVariable("id") @Parameter(example = "1") Long id) {
+    public ResponseEntity<Void> disableFinalization(@PathVariable("id") @Parameter(example = "1") Long id) {
 
-        this.purchaseService.disableDeliveryById(id);
+        this.purchaseService.disableFinalizationById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

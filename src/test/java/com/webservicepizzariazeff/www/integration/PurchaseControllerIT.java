@@ -1198,7 +1198,7 @@ class PurchaseControllerIT {
     }
 
     @Test
-    void disableDelivery_updatesIsDeliveredOfAPurchaseToFalseAndReturnsAStatusCode204_whenThePassedIdIsValid() {
+    void disableFinalization_updatesIsFinishedAndIsDeliveredOfAPurchaseToFalseAndReturnsAStatusCode204_whenThePassedIdIsValid() {
 
         this.userRepository.save(userAdmin);
         this.addressRepository.save(address);
@@ -1209,7 +1209,7 @@ class PurchaseControllerIT {
         this.httpHeaders = this.getHeaders();
 
         ResponseEntity<Void> responseEntity = this.testRestTemplateUserAdmin.exchange(
-                "/purchases/admin/disable-delivery/1",
+                "/purchases/admin/disable-finalization/1",
                 HttpMethod.PUT,
                 new HttpEntity<>(this.httpHeaders),
                 new ParameterizedTypeReference<>() {
@@ -1222,14 +1222,14 @@ class PurchaseControllerIT {
     }
 
     @Test
-    void disableDelivery_returnsAStatusCode400_whenTheIdPassedDoesNotExistsInDatabase() {
+    void disableFinalization_returnsAStatusCode400_whenTheIdPassedDoesNotExistsInDatabase() {
 
         this.userRepository.save(userAdmin);
 
         this.httpHeaders = this.getHeaders();
 
         ResponseEntity<Void> responseEntity = this.testRestTemplateUserAdmin.exchange(
-                "/purchases/admin/disable-delivery/2",
+                "/purchases/admin/disable-finalization/2",
                 HttpMethod.PUT,
                 new HttpEntity<>(this.httpHeaders),
                 new ParameterizedTypeReference<>() {

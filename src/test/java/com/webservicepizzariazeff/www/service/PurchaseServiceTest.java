@@ -325,6 +325,12 @@ class PurchaseServiceTest {
 
         BDDMockito.doNothing()
                 .when(this.purchaseRepository).updateIsDeliveredById(ArgumentMatchers.anyBoolean(), ArgumentMatchers.any(Long.class));
+
+        BDDMockito.doNothing()
+                .when(this.purchaseRepository).updateIsFinishedAndIsDeliveredById(
+                        ArgumentMatchers.anyBoolean(),
+                        ArgumentMatchers.anyBoolean(),
+                        ArgumentMatchers.any(Long.class));
     }
 
     @BeforeEach
@@ -540,24 +546,24 @@ class PurchaseServiceTest {
     }
 
     @Test
-    void disableDeliveryById_updatesTheIsDeliveredOfAPurchaseToFalse_whenThePassedIdIsValid() {
+    void disableFinalizationById_updatesTheIsFinishedAndIsDeliveredOfAPurchaseToFalse_whenThePassedIdIsValid() {
 
         Purchase purchaseFindAllOfDisableDeliveryById = purchases.get(5);
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(purchaseFindAllOfDisableDeliveryById));
 
-        Assertions.assertThatCode(() -> this.purchaseService.disableDeliveryById(1L))
+        Assertions.assertThatCode(() -> this.purchaseService.disableFinalizationById(1L))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void disableDeliveryById_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
+    void disableFinalizationById_throwsResponseStatusException_whenThePassedIdDoesNotExist() {
 
         BDDMockito.when(this.purchaseRepository.findById(ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatExceptionOfType(ResponseStatusException.class)
-                .isThrownBy(() -> this.purchaseService.disableDeliveryById(2L));
+                .isThrownBy(() -> this.purchaseService.disableFinalizationById(2L));
     }
 }
