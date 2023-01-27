@@ -28,6 +28,9 @@ public class UserController {
     }
 
     @GetMapping(value = "auth")
+    @Operation(responses = {
+            @ApiResponse(responseCode = "204", description = "Whenever called")
+    })
     public ResponseEntity<Void> authenticateUser() {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
