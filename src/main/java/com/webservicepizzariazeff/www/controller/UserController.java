@@ -27,6 +27,12 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping(value = "auth")
+    public ResponseEntity<Void> authenticateUser() {
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PutMapping(value = "register")
     @Operation(responses = {
             @ApiResponse(responseCode = "201", description = "If the request body is valid",

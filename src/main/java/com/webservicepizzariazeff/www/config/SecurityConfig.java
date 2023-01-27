@@ -18,11 +18,12 @@ public class SecurityConfig {
         http
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/**/admin/**/**").hasRole("ADMIN")
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .antMatchers("/users/auth").fullyAuthenticated()
                 .antMatchers("/users/register").not().authenticated()
                 .antMatchers("/products**/**").permitAll()
                 .antMatchers("/addresses/register").authenticated()
