@@ -28,7 +28,7 @@ class UserControllerTest {
     private static UserRequestDTO userRequestDTO;
 
     @BeforeAll
-    static void setUserRequestDTO(){
+    static void setUserRequestDTO() {
 
         userRequestDTO = UserRequestDTO.UserDTOBuilder.builder()
                 .name("name")
@@ -42,6 +42,17 @@ class UserControllerTest {
 
         BDDMockito.when(this.userService.registerUser(ArgumentMatchers.any(UserRequestDTO.class), ArgumentMatchers.anyString()))
                 .thenReturn(1L);
+    }
+
+    @Test
+    void authenticateUser_returnsAStatusCodeNoContent_wheneverCalled() {
+
+        Assertions.assertThatCode(() -> this.userController.authenticateUser())
+                .doesNotThrowAnyException();
+
+        Assertions.assertThat(this.userController.authenticateUser())
+                .isNotNull()
+                .isEqualTo(new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
 
     @Test

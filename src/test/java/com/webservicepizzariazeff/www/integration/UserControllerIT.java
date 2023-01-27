@@ -7,7 +7,6 @@ import com.webservicepizzariazeff.www.integration.mapper.MapperToIntegration;
 import com.webservicepizzariazeff.www.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,10 +37,16 @@ class UserControllerIT {
     private UserRepository userRepository;
 
     @Autowired
-    @Qualifier(value = "testRestTemplateUserToUserControllerIT")
-    private TestRestTemplate testRestTemplate;
+    @Qualifier(value = "testRestTemplateUserAuthenticatedToUserControllerIT")
+    private TestRestTemplate testRestTemplateAuthenticated;
+
+    @Autowired
+    @Qualifier(value = "testRestTemplateUserUnauthenticatedToUserControllerIT")
+    private TestRestTemplate testRestTemplateUnauthenticated;
 
     private HttpHeaders httpHeaders;
+
+    private static User userAuthenticateUser;
 
     private static final String[] acceptLanguage = {"Accept-Language", "pt-BR"};
 
@@ -50,6 +55,17 @@ class UserControllerIT {
     private static User userRegisterNewUser;
 
     private static ExistingUserExceptionHandler existingUserExceptionHandlerToComparisonInRegisterNewUser;
+
+    static void setUserAuthenticateUser() {
+
+        userAuthenticateUser = User.UserBuilder.builder()
+                .id(1L)
+                .name("name")
+                .username("name@gmail.com")
+                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password"))
+                .authorities("ROLE_USER")
+                .build();
+    }
 
     static void setUserRequestDTO() {
 
@@ -70,7 +86,6 @@ class UserControllerIT {
                 .build();
     }
 
-    @BeforeAll
     static void setExistingUserExceptionHandlerToComparisonInRegisterNewUser() {
 
         existingUserExceptionHandlerToComparisonInRegisterNewUser = ExistingUserExceptionHandler.
@@ -79,16 +94,18 @@ class UserControllerIT {
                 .build();
     }
 
-    @BeforeEach
-    void initializeObjects() {
+    @BeforeAll
+    static void initializeObjects() {
 
+        setUserAuthenticateUser();
         setUserRequestDTO();
         setUserRegisterNewUser();
+        setExistingUserExceptionHandlerToComparisonInRegisterNewUser();
     }
 
     private HttpHeaders getHeaders() {
 
-        ResponseEntity<Void> responseEntityWithCsrfToken = this.testRestTemplate.exchange(
+        ResponseEntity<Void> responseEntityWithCsrfToken = this.testRestTemplateUnauthenticated.exchange(
                 "/products/find-promotions",
                 HttpMethod.GET,
                 null,
@@ -111,11 +128,29 @@ class UserControllerIT {
     }
 
     @Test
+    void authenticateUser_returnsAStatusCodeNoContent_wheneverCalled() {
+
+        this.userRepository.save(userAuthenticateUser);
+
+        ResponseEntity<Void> responseEntity = this.testRestTemplateAuthenticated.exchange(
+                "/users/auth",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        Assertions.assertThat(responseEntity.getStatusCode())
+                .isNotNull()
+                .isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
     void registerNewUser_registersANewUserAndReturnsAStatusCode201_whenTheUserIsNotRegistered() {
 
         this.httpHeaders = getHeaders();
 
-        ResponseEntity<Long> idOfTheUserThatWasCreated = this.testRestTemplate.exchange(
+        ResponseEntity<Long> idOfTheUserThatWasCreated = this.testRestTemplateUnauthenticated.exchange(
                 "/users/register",
                 HttpMethod.PUT,
                 new HttpEntity<>(userRequestDTO, httpHeaders),
@@ -139,7 +174,7 @@ class UserControllerIT {
 
         this.httpHeaders = getHeaders();
 
-        ResponseEntity<ExistingUserExceptionHandler> responseEntity = this.testRestTemplate.exchange(
+        ResponseEntity<ExistingUserExceptionHandler> responseEntity = this.testRestTemplateUnauthenticated.exchange(
                 "/users/register",
                 HttpMethod.PUT,
                 new HttpEntity<>(userRequestDTO, httpHeaders),
@@ -158,7 +193,7 @@ class UserControllerIT {
     @Test
     void registerNewUser_returnsAStatusCode400_whenThePassedAcceptLanguageIsInvalid() {
 
-        ResponseEntity<Void> responseEntityWithCsrfToken = this.testRestTemplate.exchange(
+        ResponseEntity<Void> responseEntityWithCsrfToken = this.testRestTemplateUnauthenticated.exchange(
                 "/products/find-promotions",
                 HttpMethod.GET,
                 null,
@@ -177,7 +212,7 @@ class UserControllerIT {
         this.httpHeaders.add("Cookie", "XSRF-TOKEN=" + csrfToken);
         this.httpHeaders.add("X-XSRF-TOKEN", csrfToken);
 
-        ResponseEntity<Void> responseEntity = this.testRestTemplate.exchange(
+        ResponseEntity<Void> responseEntity = this.testRestTemplateUnauthenticated.exchange(
                 "/users/register",
                 HttpMethod.PUT,
                 new HttpEntity<>(userRequestDTO, httpHeaders),
@@ -194,11 +229,21 @@ class UserControllerIT {
     @Lazy
     static class Config {
 
-        @Bean(name = "testRestTemplateUserToUserControllerIT")
-        public TestRestTemplate testRestTemplateUser(@Value("${local.server.port}") int port) {
+        @Bean(name = "testRestTemplateUserUnauthenticatedToUserControllerIT")
+        public TestRestTemplate testRestTemplateUserUnauthenticated(@Value("${local.server.port}") int port) {
 
             RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
                     .rootUri("http://localhost:" + port);
+
+            return new TestRestTemplate(restTemplateBuilder);
+        }
+
+        @Bean(name = "testRestTemplateUserAuthenticatedToUserControllerIT")
+        public TestRestTemplate testRestTemplateUserAuthenticated(@Value("${local.server.port}") int port) {
+
+            RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
+                    .rootUri("http://localhost:" + port)
+                    .basicAuthentication("name@gmail.com", "password");
 
             return new TestRestTemplate(restTemplateBuilder);
         }
