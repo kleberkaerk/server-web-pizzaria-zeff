@@ -42,7 +42,8 @@ Para ler a documentação swagger da aplicação, acesse [documentação-swagger
 1. Java 17
 2. Maven
 3. Spring Boot
-4. Docker
+4. MySql
+5. Docker
 
 # Execução 
 
