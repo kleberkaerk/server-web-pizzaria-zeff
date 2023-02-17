@@ -2,13 +2,9 @@
 
 ![GitHub](https://img.shields.io/github/license/kleberkaerk/web-service-pizzaria-zeff)
 
-<br>
-
 # Descrição
 
 Esta aplicação é um serviço web para uma simulação de pizzaria. Ela atende a requisições vindas do projeto [pizzaria-zeff-front-v1](https://github.com/kleberkaerk/pizzaria-zeff-front-v1), e processa uma resposta para o mesmo.
-
-<br>
 
 # Funcionalidades
 
@@ -37,13 +33,9 @@ Esta aplicação é um serviço web para uma simulação de pizzaria. Ela atende
 * Efetua a exclusão de endereços
 * Efetua a simulação de uma venda
 
-<br>
-
 # Documentação swagger
 
 Para ler a documentação swagger da aplicação, acesse [documentação-swagger](http://ec2-54-196-35-87.compute-1.amazonaws.com:8080/swagger-ui/index.html).
-
-<br>
 
 # Tecnologias utilizadas
 
@@ -51,8 +43,6 @@ Para ler a documentação swagger da aplicação, acesse [documentação-swagger
 2. Maven
 3. Spring Boot
 4. Docker
-
-<br>
 
 # Execução 
 
@@ -62,8 +52,6 @@ Para executar a aplicação localmente siga os seguintes passos:
 * Abra um terminal e execute o comando <code>docker-compose up</code>.
 * Abra outro terminal e execute o comando <code>mvn clean package spring-boot:run</code>.
 
-<br>
-
 # Testes unitários
 
 Para executar os testes unitários siga os seguintes passos:
@@ -71,8 +59,6 @@ Para executar os testes unitários siga os seguintes passos:
 * Navegue até o diretório raiz do projeto (onde se encontra o arquivo docker-compose).
 * Abra um terminal e execute o comando <code>docker-compose up</code>.
 * Abra outro terminal e execute o comando <code>mvn test</code>.
-
-<br>
 
 # Autor
 
